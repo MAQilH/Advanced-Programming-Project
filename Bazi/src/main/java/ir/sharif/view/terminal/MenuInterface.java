@@ -4,9 +4,8 @@ import ir.sharif.model.CommandResult;
 
 import java.util.Scanner;
 
-public interface Menu {
+public interface MenuInterface {
 
-    CommandResult checkCommand(Scanner scanner);
     CommandResult checkCommand(String command);
 
 }

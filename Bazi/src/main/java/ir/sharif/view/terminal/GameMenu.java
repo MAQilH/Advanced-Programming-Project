@@ -3,16 +3,12 @@ package ir.sharif.view.terminal;
 import ir.sharif.controller.GameController;
 import ir.sharif.model.CommandResult;
 
-import java.util.regex.Matcher;
+import java.util.Scanner;
 
 public class GameMenu extends Menu {
     private GameController controller;
 
-    public GameMenu() {
-        super();
-    }
-    @Override
-    protected CommandResult runCommand(String command, Matcher matcher) {
+    public CommandResult checkCommand(String command) {
         return null;
     }
 }

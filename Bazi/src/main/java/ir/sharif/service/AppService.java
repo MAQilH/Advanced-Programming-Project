@@ -3,7 +3,7 @@ package ir.sharif.service;
 import ir.sharif.view.terminal.Menu;
 
 public class AppService {
-    private Menu currentMenu;
+    private static Menu currentMenu;
     private static AppService instance;
 
     private AppService() {

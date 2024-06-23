@@ -1,15 +1,13 @@
 package ir.sharif.view.terminal;
 
+import ir.sharif.controller.ProfileController;
 import ir.sharif.model.CommandResult;
 
-import java.util.regex.Matcher;
+import java.util.Scanner;
 
 public class ProfileMenu extends Menu {
-    public ProfileMenu() {
-        super();
-    }
-    @Override
-    protected CommandResult runCommand(String command, Matcher matcher) {
+    private ProfileController controller;
+    public CommandResult checkCommand(String command) {
         return null;
     }
 }
