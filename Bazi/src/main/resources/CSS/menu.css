@@ -1,0 +1,209 @@
+.button {
+    -fx-text-fill: #8B4513; /* Tomato text color */
+    -fx-background-color: rgba(60, 63, 65, 0.1); /* Almost transparent background */
+    -fx-border-color: #4a4d50;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-padding: 10;
+    -fx-font-size: 20px; /* Increase the font size */
+    -fx-font-weight: bold;
+    -fx-pref-width: 150px;
+    -fx-pref-height: 50px;
+    -fx-transition: all 0.3s ease;
+    -fx-font-family: 'Comic Sans MS', cursive, sans-serif; /* Change the font family */
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 ); /* Add a shadow effect */
+}
+
+.button:hover {
+    -fx-background-color: #8B4513; /* Tomato background */
+    -fx-text-fill: #ffffff; /* White text color */
+}
+
+.title-label {
+    -fx-font-family: Chalkduster !important;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,2,3 ) !important;
+}
+
+.label {
+    -fx-text-fill: #8B4513; /* Brown text color */
+    -fx-font-family: 'Courier New', Courier, monospace; /* Ancient-themed font */
+    -fx-font-size: 50px;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 );
+}
+
+.text-field, .password-field {
+    -fx-background-color: rgba(60, 63, 65, 0.1);
+    -fx-border-color: #4a4d50;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-padding: 10;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Courier New', Courier, monospace; /* Ancient-themed font */
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 );
+    -fx-text-fill: #8B4513; /* Brown text color */
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-background-color: #A52A2A; /* Darker brown background */
+    -fx-text-fill: #ffffff; /* White text color */
+}
+
+.username-label {
+    -fx-text-fill: #8B4513; /* Brown text color */
+    -fx-font-family: 'Courier New', Courier, monospace; /* Ancient-themed font */
+    -fx-font-size: 20px;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 );
+}
+
+.error-label {
+    -fx-text-fill: #ffffff;
+    -fx-font-family: 'Comic Sans MS', cursive, sans-serif;
+    -fx-font-size: 20px;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 );
+}
+
+.check-box {
+    -fx-background-color: rgba(60, 63, 65, 0.1);
+    -fx-border-color: #4a4d50;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-padding: 10;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Comic Sans MS', cursive, sans-serif;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 );
+}
+
+.check-box:hover {
+    -fx-background-color: #ff6347;
+    -fx-text-fill: #ffffff;
+}
+
+.checkbox:selected {
+    -fx-text-fill: #ffffff; /* White text color */
+    -fx-background-color: #ff6347; /* Tomato background */
+}
+
+.checkbox:selected .box,
+.checkbox:indeterminate .box {
+    -fx-background-color: #ff6347; /* Tomato box color */
+}
+
+.checkbox:selected .mark,
+.checkbox:indeterminate .mark {
+    -fx-background-color: #ffffff; /* White tick color */
+}
+
+.combo-box {
+    -fx-text-fill: #ff6347; /* Tomato text color */
+    -fx-background-color: rgba(60, 63, 65, 0.1); /* Almost transparent background */
+    -fx-border-color: #4a4d50;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-padding: 10;
+    -fx-font-size: 20px; /* Increase the font size */
+    -fx-font-weight: bold;
+    -fx-pref-width: 150px;
+    -fx-pref-height: 50px;
+    -fx-transition: all 0.3s ease;
+    -fx-font-family: 'Comic Sans MS', cursive, sans-serif; /* Change the font family */
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 ); /* Add a shadow effect */
+}
+
+.combo-box:hover {
+    -fx-background-color: #ff6347; /* Tomato background */
+    -fx-text-fill: #ffffff; /* White text color */
+}
+
+.combo-box-base {
+    -fx-text-fill: #ffffff; /* White text color */
+    -fx-background-color: #ff6347; /* Tomato background */
+    -fx-border-color: #4a4d50;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-padding: 10;
+    -fx-font-size: 20px; /* Increase the font size */
+    -fx-font-weight: bold;
+    -fx-pref-width: 150px;
+    -fx-pref-height: 50px;
+    -fx-transition: all 0.3s ease;
+    -fx-font-family: 'Comic Sans MS', cursive, sans-serif; /* Change the font family */
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 ); /* Add a shadow effect */
+}
+
+.combo-box-popup {
+    -fx-text-fill: #ffffff; /* White text color */
+    -fx-background-color: #ff6347; /* Tomato background */
+    -fx-border-color: #4a4d50;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-padding: 10;
+    -fx-font-size: 20px; /* Increase the font size */
+    -fx-font-weight: bold;
+    -fx-pref-width: 150px;
+    -fx-pref-height: 50px;
+    -fx-transition: all 0.3s ease;
+    -fx-font-family: 'Comic Sans MS', cursive, sans-serif; /* Change the font family */
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 ); /* Add a shadow effect */
+}
+
+.combo-box-popup:hover {
+    -fx-background-color: #ff6347; /* Tomato background */
+    -fx-text-fill: #ffffff; /* White text color */
+}
+
+.combo-box-popup .list-cell:filled:selected, .combo-box-popup .list-cell:filled:selected:hover {
+    -fx-background-color: #ff6347; /* Tomato background */
+    -fx-text-fill: #ffffff; /* White text color */
+}
+
+.settings-text-field {
+    -fx-text-fill: #ffffff; /* White text color */
+    -fx-background-color: #ff6347; /* Tomato background */
+    -fx-border-color: #4a4d50;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-padding: 10;
+    -fx-font-size: 20px; /* Increase the font size */
+    -fx-font-weight: bold;
+    -fx-pref-width: 150px;
+    -fx-pref-height: 50px;
+    -fx-transition: all 0.3s ease;
+    -fx-font-family: 'Comic Sans MS', cursive, sans-serif; /* Change the font family */
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 ); /* Add a shadow effect */
+}
+
+.settings-text-field:hover {
+    -fx-background-color: #ff6347; /* Tomato background */
+    -fx-text-fill: #ffffff; /* White text color */
+}
+
+.settings-text-field:focused {
+    -fx-background-color: #ff6347; /* Tomato background */
+    -fx-text-fill: #ffffff; /* White text color */
+}
+
+.check-box .label {
+    -fx-text-fill: #ffffff !important;
+}
+
+.settings-label {
+    -fx-text-fill: #ff6347;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+
+.first-row {
+    -fx-background-color: #ffd700;
+}
+
+.second-row {
+    -fx-background-color: #c0c0c0;
+}
+
+.third-row {
+    -fx-background-color: #cd7f32;
+}
