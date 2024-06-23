@@ -1,5 +1,6 @@
 package ir.sharif.enums;
 
+import ir.sharif.model.CommandResult;
 import ir.sharif.view.terminal.*;
 
 public enum Menus {
@@ -16,7 +17,7 @@ public enum Menus {
         this.menu = menu;
     }
 
-    public void checkCommand(String command) {
-        this.menu.checkCommand(command);
+    public CommandResult checkCommand(String command) {
+        return this.menu.checkCommand(command);
     }
 }
