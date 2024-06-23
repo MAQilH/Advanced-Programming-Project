@@ -11,4 +11,5 @@ public class PreGameMenu extends Menu {
     public CommandResult checkCommand(String command) {
         return null;
     }
+
 }
