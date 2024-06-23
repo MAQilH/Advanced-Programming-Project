@@ -7,8 +7,6 @@ import java.util.regex.Matcher;
 
 public abstract class Menu {
     public void run(String command) {
-        CommandResult commandResult = new CommandResult(2, "salam");
-        commandResult.message();
 
     }
 

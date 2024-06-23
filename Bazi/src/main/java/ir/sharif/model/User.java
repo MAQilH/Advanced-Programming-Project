@@ -1,7 +1,6 @@
 package ir.sharif.model;
 
 import java.nio.file.Path;
-import java.sql.Savepoint;
 
 public class User implements Savable {
     private String username, password, nickname, email, id;
