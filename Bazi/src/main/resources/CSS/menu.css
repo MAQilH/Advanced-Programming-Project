@@ -39,28 +39,25 @@
     -fx-padding: 10;
     -fx-font-size: 20px;
     -fx-font-weight: bold;
-    -fx-font-family: 'Comic Sans MS', cursive, sans-serif;
+    -fx-font-family: 'Courier New', Courier, monospace; /* Ancient-themed font */
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 );
-    -fx-text-fill: #ff6347
+    -fx-text-fill: #8B4513; /* Brown text color */
 }
 
 .text-field:focused, .password-field:focused {
-    -fx-background-color: #ff6347;
-    -fx-text-fill: #ffffff;
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
+    -fx-background-color: #A52A2A; /* Darker brown background */
+    -fx-text-fill: #ffffff; /* White text color */
 }
 
-.error-label {
-    -fx-text-fill: #ffffff;
-    -fx-font-family: 'Comic Sans MS', cursive, sans-serif;
+.username-label {
+    -fx-text-fill: #8B4513; /* Brown text color */
+    -fx-font-family: 'Courier New', Courier, monospace; /* Ancient-themed font */
     -fx-font-size: 20px;
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 );
 }
 
-
-.username-label {
-    -fx-text-fill: #ff6347;
+.error-label {
+    -fx-text-fill: #ffffff;
     -fx-font-family: 'Comic Sans MS', cursive, sans-serif;
     -fx-font-size: 20px;
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 );

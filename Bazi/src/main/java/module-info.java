@@ -11,6 +11,8 @@ module Bazi {
 	requires eu.hansolo.tilesfx;
 	requires com.almasb.fxgl.all;
 	requires javafx.media;
+	requires annotations;
+	requires java.desktop;
 
 	exports ir.sharif.view to javafx.graphics;
 	exports ir.sharif.view.controllers to javafx.fxml;
