@@ -1,6 +1,8 @@
 package ir.sharif.controller;
 
+import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
+import ir.sharif.model.User;
 import ir.sharif.service.UserService;
 import ir.sharif.view.terminal.Menu;
 
@@ -19,10 +21,19 @@ public class LoginController {
     }
 
     public CommandResult login(String username, String password, boolean stayLoggedIn) {
-        return null;
+        User user = UserService.getInstance().getUserByUsername(username);
+        if(user == null)
+            return new CommandResult(ResultCode.NOT_FOUND, "user not found");
+        if(!user.getPassword().equals(password))
+            return new CommandResult(ResultCode.NOT_FOUND, "password is incorrect");
+
+        UserService.getInstance().setStayLoggedIn(stayLoggedIn);
+        UserService.getInstance().setCurrentUser(user);
+        return new CommandResult(ResultCode.ACCEPT, "login successful");
     }
 
     public CommandResult forgotPassword(String username) {
+
         return null;
     }
 

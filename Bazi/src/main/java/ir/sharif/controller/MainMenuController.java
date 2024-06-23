@@ -1,8 +1,9 @@
 package ir.sharif.controller;
 
+import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
-import ir.sharif.service.UserService;
-import ir.sharif.view.terminal.Menu;
+import ir.sharif.service.AppService;
+import ir.sharif.view.terminal.*;
 
 public class MainMenuController {
     private UserService userService;
@@ -15,38 +16,20 @@ public class MainMenuController {
         return null;
     }
 
-    public CommandResult menuEnter(Menu menu) {
-        return null;
+    public CommandResult menuProfile() {
+        AppService.getInstance().setCurrentMenu(new ProfileMenu());
+        return new CommandResult(ResultCode.ACCEPT, "enter profile menu");
+    }
+
+    public CommandResult menuRegister() {
+        AppService.getInstance().setCurrentMenu(new GameMenu());
+        return new CommandResult(ResultCode.ACCEPT, "enter game menu");
     }
 
     public CommandResult menuExit() {
-        return null;
+        AppService.getInstance().setCurrentMenu(new LoginMenu());
+        return new CommandResult(ResultCode.ACCEPT, "enter login menu");
     }
-
-    public CommandResult changeUsername(String newUsername) {
-        return null;
-    }
-
-    public CommandResult changeNickname(String newNickname) {
-        return null;
-    }
-
-    public CommandResult changeEmail(String newEmail) {
-        return null;
-    }
-
-    public CommandResult changePassword(String currentPassword, String newPassword) {
-        return null;
-    }
-
-    public CommandResult showInfo() {
-        return null;
-    }
-
-    public CommandResult showGameHistoies(int n) {
-        return null;
-    }
-
 
 }
 

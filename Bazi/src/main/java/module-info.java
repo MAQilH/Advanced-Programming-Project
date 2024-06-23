@@ -13,6 +13,7 @@ module Bazi {
 	requires javafx.media;
 	requires annotations;
 	requires java.desktop;
+	requires  org.json;
 
 	exports ir.sharif.view to javafx.graphics;
 	exports ir.sharif.view.controllers to javafx.fxml;

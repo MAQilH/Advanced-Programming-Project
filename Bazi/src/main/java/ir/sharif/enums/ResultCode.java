@@ -2,8 +2,10 @@ package ir.sharif.enums;
 
 public enum ResultCode {
 
-    NotFound(404),
-    InvalidCommand(100);
+    NOT_FOUND(404),
+    INVALID_COMMAND(100),
+    ACCEPT(200),
+    FAILED(300);
 
     private final int result;
 
