@@ -26,7 +26,7 @@
                             <Insets />
                         </HBox.margin>
                     </Button>
-                    <Button mnemonicParsing="false" onMouseClicked="#newGamePress" text="New Game" />
+                    <Button mnemonicParsing="false" onMouseClicked="#newGamePress" text="Game Panel" />
                 </children>
                 <VBox.margin>
                     <Insets />

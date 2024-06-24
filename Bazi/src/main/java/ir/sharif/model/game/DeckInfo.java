@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 public class DeckInfo {
 
-    private Leader leader;
+    private LeaderType leader;
     private Faction faction;
-    private final ArrayList<Card> storage;
+    private final ArrayList<CardTypes> storage;
 
     public DeckInfo() {
         leader = null;
@@ -14,7 +14,7 @@ public class DeckInfo {
         storage = new ArrayList<>();
     }
 
-    public void setLeader(Leader leader) {
+    public void setLeader(LeaderType leader) {
         this.leader = leader;
     }
 
@@ -22,7 +22,7 @@ public class DeckInfo {
         this.faction = faction;
     }
 
-    public void addCard(Card card) {
+    public void addCard(CardTypes card) {
         storage.add(card);
     }
 
@@ -30,7 +30,7 @@ public class DeckInfo {
         storage.remove(card);
     }
 
-    public Leader getLeader() {
+    public LeaderType getLeader() {
         return leader;
     }
 
@@ -38,7 +38,7 @@ public class DeckInfo {
         return faction;
     }
 
-    public ArrayList<Card> getStorage() {
+    public ArrayList<CardTypes> getStorage() {
         return storage;
     }
 

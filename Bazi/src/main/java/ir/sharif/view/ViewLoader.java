@@ -26,8 +26,7 @@ public class ViewLoader {
 		FXMLLoader fxmlLoader = new FXMLLoader(ViewLoader.class.getResource("/FXML/" + menuName + "-view.fxml"));
 		Scene scene = null;
 		try {
-			scene = new Scene(fxmlLoader.load(), ConstantsLoader.getInstance().getMenuWidth(),
-				ConstantsLoader.getInstance().getMenuHeight());
+			scene = new Scene(fxmlLoader.load());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -35,9 +34,9 @@ public class ViewLoader {
 		scene.getStylesheets().add(ViewLoader.class.getResource("/CSS/menu.css").toExternalForm());
 		System.out.println(scene.getStylesheets());
 		Pane pane = (Pane) scene.getRoot();
-		pane.setBackground(new Background(createBackgroundImage()));
 
 		stage.setScene(scene);
+		pane.setBackground(new Background(createBackgroundImage("background.jpg")));
 		stage.show();
 		centerStage();
 	}
@@ -47,9 +46,9 @@ public class ViewLoader {
 		stage.setY(Screen.getPrimary().getBounds().getHeight() / 2 - stage.getHeight() / 2);
 	}
 
-	private static BackgroundImage createBackgroundImage() {
-		Image image = new Image(ViewLoader.class.getResource("/images/background.jpg").toExternalForm(),
-			ConstantsLoader.getInstance().getMenuWidth(), ConstantsLoader.getInstance().getMenuHeight(),
+	public static BackgroundImage createBackgroundImage(String name) {
+		Image image = new Image(ViewLoader.class.getResource("/images/" + name).toExternalForm(),
+			stage.getScene().getWidth(), stage.getScene().getHeight(),
 			false, false);
 
 		BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT,

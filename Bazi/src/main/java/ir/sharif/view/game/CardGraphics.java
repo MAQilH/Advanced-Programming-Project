@@ -11,10 +11,10 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-import java.awt.*;
 import java.io.InputStream;
 
 public class CardGraphics extends VBox {
@@ -93,16 +93,22 @@ public class CardGraphics extends VBox {
 	}
 
 	private ImageView loadIcon(String iconName) {
-		InputStream iconStream = getClass().getResourceAsStream("/icons/" + iconName + ".png");
-		Image iconImage = new Image(iconStream);
-		ImageView iconView = new ImageView(iconImage);
-		iconView.setFitHeight(iconSize);
-		iconView.setFitWidth(iconSize);
-		return iconView;
+		try {
+			InputStream iconStream = getClass().getResourceAsStream("/icons/" + iconName + ".png");
+			Image iconImage = new Image(iconStream);
+			ImageView iconView = new ImageView(iconImage);
+			iconView.setFitHeight(iconSize);
+			iconView.setFitWidth(iconSize);
+			return iconView;
+		} catch (Exception e) {
+			System.err.println("Error loading icon: " + iconName);
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	private void setBackground() {
-		Image image = new Image(ViewLoader.class.getResource("/images/old_card.jpg").toExternalForm(),
+		Image image = new Image(ViewLoader.class.getResource("/images/old_card.png").toExternalForm(),
 			ConstantsLoader.getInstance().getMenuWidth(), ConstantsLoader.getInstance().getMenuHeight(),
 			false, false);
 
