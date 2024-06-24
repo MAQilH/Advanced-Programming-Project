@@ -42,4 +42,12 @@ public enum LeaderType {
     public Leader getInstance() {
         return new Leader(this.name(), this.faction, this.ability);
     }
+
+	public Faction getFaction() {
+		return faction;
+	}
+
+	public String getName() {
+		return name;
+	}
 }

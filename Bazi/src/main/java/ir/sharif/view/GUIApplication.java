@@ -1,5 +1,6 @@
 package ir.sharif.view;
 
+import ir.sharif.controller.LoginController;
 import ir.sharif.controller.RegisterController;
 import ir.sharif.model.game.CardTypes;
 import ir.sharif.utils.ConstantsLoader;
@@ -21,6 +22,8 @@ public class GUIApplication extends Application {
 		//pane.getChildren().add(new CardGraphics(CardTypes.MENNO_COEHOORN_2.getInstance(), 1));
 		//new TerminalGUI(null);
 		new RegisterController().register("sohsoh", "Soheil@84", "Soheil@84", "sohsoh", "sohsoh84@gmail.com");
+		new LoginController().login("sohsoh", "Soheil@84", true);
+		ViewLoader.newScene("pregame");
 	}
 
 	public static void main(String[] args) {

@@ -6,9 +6,9 @@ import java.util.ArrayList;
 public class DeckInfo implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Leader leader;
+    private LeaderType leader;
     private Faction faction;
-    private final ArrayList<Card> storage;
+    private final ArrayList<CardTypes> storage;
 
     public DeckInfo() {
         leader = null;
@@ -16,7 +16,7 @@ public class DeckInfo implements Serializable {
         storage = new ArrayList<>();
     }
 
-    public void setLeader(Leader leader) {
+    public void setLeader(LeaderType leader) {
         this.leader = leader;
     }
 
@@ -24,7 +24,7 @@ public class DeckInfo implements Serializable {
         this.faction = faction;
     }
 
-    public void addCard(Card card) {
+    public void addCard(CardTypes card) {
         storage.add(card);
     }
 
@@ -32,7 +32,7 @@ public class DeckInfo implements Serializable {
         storage.remove(card);
     }
 
-    public Leader getLeader() {
+    public LeaderType getLeader() {
         return leader;
     }
 
@@ -40,7 +40,7 @@ public class DeckInfo implements Serializable {
         return faction;
     }
 
-    public ArrayList<Card> getStorage() {
+    public ArrayList<CardTypes> getStorage() {
         return storage;
     }
 
