@@ -1,10 +1,13 @@
 package ir.sharif.model;
 
+import ir.sharif.model.game.DeckInfo;
+
 import java.nio.file.Path;
 
 public class User implements Savable {
     private String username, password, nickname, email, id;
     private SecurityQuestion securityQuestion;
+    private DeckInfo deckInfo;
 
     public User(String username, String password, String nickname, String email, SecurityQuestion securityQuestion) {
         this.username = username;
@@ -12,6 +15,7 @@ public class User implements Savable {
         this.nickname = nickname;
         this.email = email;
         this.securityQuestion = securityQuestion;
+        this.deckInfo = null;
     }
 
     public String getId() {
@@ -59,5 +63,13 @@ public class User implements Savable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public DeckInfo getDeckInfo() {
+        return deckInfo;
+    }
+
+    public void setDeckInfo(DeckInfo deckInfo) {
+        this.deckInfo = deckInfo;
     }
 }
