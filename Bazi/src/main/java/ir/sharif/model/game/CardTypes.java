@@ -147,7 +147,6 @@ public enum CardTypes {
     BITING_FROST("Biting Frost", 0, 3, CardPosition.WEATHER, null, null, false),
     IMPENETRABLE_FOG("Impenetrable fog", 0, 3, CardPosition.WEATHER, null, null, false),
     TORRENTIAL_RAIN("Torrential Rain", 0, 3, CardPosition.WEATHER, null, null, false),
-    SKELLIGE_STORM("Skellige Storm", 0, 3, CardPosition.WEATHER, null, null, false),
     CLEAR_WEATHER("Clear Weather", 0, 3, CardPosition.WEATHER, null, null, false),
     SCORCH("Scorch", 0, 3, CardPosition.SPELL, null, null, false),
     COMMANDERS_HORN("Commander’s horn", 0, 3, CardPosition.SPELL, null, null, false),
