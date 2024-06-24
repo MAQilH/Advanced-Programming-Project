@@ -69,22 +69,22 @@ public class PreGameController {
         return new CommandResult(ResultCode.ACCEPT, "faction selected successfully");
     }
 
-    public CommandResult showCards() {
-        HashMap<Card, Integer> map = new HashMap<>();
-        DeckInfo deckInfo = UserService.getInstance().getCurrentUser().getDeckInfo();
-        for(Card card: deckInfo.getStorage()){
-            map.put(card, map.getOrDefault(card, 0) + 1);
-        }
-        JSONArray jsonArray = new JSONArray();
-        for(Map.Entry<Card, Integer> entry: map.entrySet()){
-            JSONObject jsonObject = new JSONObject();
-            Card card = entry.getKey();
-            jsonObject.put("name", CardTypes.getCardType(card.getName()).name());
-            jsonObject.put("count", entry.getValue());
-            jsonArray.put(jsonObject);
-        }
-        return new CommandResult(ResultCode.ACCEPT, jsonArray.toString());
-    }
+//    public CommandResult showCards() {
+//        HashMap<Card, Integer> map = new HashMap<>();
+//        DeckInfo deckInfo = UserService.getInstance().getCurrentUser().getDeckInfo();
+//        for(CardTypes card: deckInfo.getStorage()){
+//            map.put(card, map.getOrDefault(card, 0) + 1);
+//        }
+//        JSONArray jsonArray = new JSONArray();
+//        for(Map.Entry<Card, Integer> entry: map.entrySet()){
+//            JSONObject jsonObject = new JSONObject();
+//            Card card = entry.getKey();
+//            jsonObject.put("name", CardTypes.getCardType(card.getName()).name());
+//            jsonObject.put("count", entry.getValue());
+//            jsonArray.put(jsonObject);
+//        }
+//        return new CommandResult(ResultCode.ACCEPT, jsonArray.toString());
+//    }
 
     public CommandResult showDeck() {
         return null;
@@ -92,7 +92,7 @@ public class PreGameController {
 
     public int numberOfSoldiers(DeckInfo deckInfo){
         int count = 0;
-        for(Card card: deckInfo.getStorage()){
+        for(CardTypes card: deckInfo.getStorage()){
             if(!card.isHero() && !isSpecialCard(card)){
                 count++;
             }
@@ -102,7 +102,7 @@ public class PreGameController {
 
     public int numberOfSpecial(DeckInfo deckInfo){
         int count = 0;
-        for(Card card: deckInfo.getStorage()){
+        for(CardTypes card: deckInfo.getStorage()){
             if(!card.isHero() && isSpecialCard(card)){
                 count++;
             }
@@ -112,7 +112,7 @@ public class PreGameController {
 
     public int numberOfHero(DeckInfo deckInfo){
         int count = 0;
-        for(Card card: deckInfo.getStorage()){
+        for(CardTypes card: deckInfo.getStorage()){
             if(card.isHero()){
                 count++;
             }
@@ -122,13 +122,13 @@ public class PreGameController {
 
     public int getSumOfDeckPower(DeckInfo deckInfo){
         int sum = 0;
-        for(Card card: deckInfo.getStorage()){
+        for(CardTypes card: deckInfo.getStorage()){
             sum += card.getPower();
         }
         return sum;
     }
 
-    private boolean isSpecialCard(Card card){
+    private boolean isSpecialCard(CardTypes card){
         return card.getCardPosition() == CardPosition.WEATHER || card.getCardPosition() == CardPosition.SPELL;
     }
 
@@ -210,6 +210,7 @@ public class PreGameController {
         return new CommandResult(ResultCode.ACCEPT, "deck is valid");
     }
 
+
     public CommandResult startGame() {
         CommandResult result = validateDeck(UserService.getInstance().getCurrentUser().getDeckInfo());
         if(result.statusCode() == ResultCode.FAILED){
@@ -220,5 +221,9 @@ public class PreGameController {
             return result;
         }
         return new CommandResult(ResultCode.ACCEPT, "game started successfully");
+    }
+
+    private DeckInfo getDeck(){
+        return UserService.getInstance().getCurrentUser().getDeckInfo();
     }
 }
