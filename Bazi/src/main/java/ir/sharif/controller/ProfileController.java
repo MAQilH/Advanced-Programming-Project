@@ -2,12 +2,16 @@ package ir.sharif.controller;
 
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
+import ir.sharif.model.GameHistory;
 import ir.sharif.model.User;
 
+import ir.sharif.service.AppService;
 import ir.sharif.service.GameHistoryService;
 import ir.sharif.service.UserService;
 import ir.sharif.view.Regex;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 
 public class ProfileController {
@@ -74,13 +78,27 @@ public class ProfileController {
         jsonObject.put("numberOfDraws", GameHistoryService.getInstance().getNumberOfDraws(user.getUsername()));
         jsonObject.put("numberOfWins", GameHistoryService.getInstance().getNumberOfWins(user.getUsername()));
         jsonObject.put("numberOfLoose", GameHistoryService.getInstance().getNumberOfLosses(user.getUsername()));
-        
-        jsonObject.put("score", user);
         return new CommandResult(ResultCode.ACCEPT, jsonObject.toString());
     }
 
     public CommandResult showGameHistories(int n) {
-        return null;
+        if(n <= 1){
+            return new CommandResult(ResultCode.FAILED, "number of games is invalid");
+        }
+        User currentUser = UserService.getInstance().getCurrentUser();
+        ArrayList<GameHistory> histories = new ArrayList<>();
+        ArrayList<GameHistory> allHistories = GameHistoryService.getInstance().getUserHistory(currentUser.getUsername());
+        for(int i = Math.max(0, allHistories.size() - n); i < allHistories.size(); i++){
+            GameHistory gameHistory = allHistories.get(i);
+            if(gameHistory.getUser2().getUsername().equals(currentUser.getUsername())){
+                User tmp = gameHistory.getUser1();
+                gameHistory.setUser1(gameHistory.getUser2());
+                gameHistory.setUser2(tmp);
+            }
+            histories.add(allHistories.get(i));
+        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("histories", histories);
+        return new CommandResult(ResultCode.ACCEPT, jsonObject.toString());
     }
-
 }

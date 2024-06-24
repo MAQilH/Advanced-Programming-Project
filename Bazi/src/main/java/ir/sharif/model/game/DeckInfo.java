@@ -42,4 +42,8 @@ public class DeckInfo {
         return storage;
     }
 
+    public void clearStorage() {
+        storage.clear();
+    }
+
 }

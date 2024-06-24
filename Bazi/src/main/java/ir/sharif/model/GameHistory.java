@@ -39,4 +39,23 @@ public class GameHistory implements Savable {
 	public User getWinner() {
 		return winner;
 	}
+
+	public Pair<Integer, Integer> getRoundResult(){
+		Pair<Integer, Integer> result = new Pair<>(0, 0);
+		for (Pair<Integer, Integer> roundScore : getRoundScores()) {
+			if(roundScore.getFirst() > roundScore.getSecond())
+				result.setFirst(result.getFirst() + 1);
+			else if(roundScore.getFirst() < roundScore.getSecond())
+				result.setSecond(result.getSecond() + 1);
+		}
+		return result;
+	}
+
+	public void setUser1(User user1) {
+		this.user1 = user1;
+	}
+
+	public void setUser2(User user2) {
+		this.user2 = user2;
+	}
 }
