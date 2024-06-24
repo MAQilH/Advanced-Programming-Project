@@ -1,23 +1,31 @@
 package ir.sharif.controller;
 
+import ir.sharif.enums.Menus;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.User;
+import ir.sharif.service.AppService;
 import ir.sharif.service.UserService;
+import ir.sharif.view.Regex;
 import ir.sharif.view.terminal.Menu;
 
 public class LoginController {
     private UserService userService;
-    public CommandResult menuEnter(Menu menu) {
-        return null;
-    }
-
-    public CommandResult menuExit() {
-        return null;
+    public CommandResult menuEnter(Menus menu) {
+        switch (menu){
+            case RegisterMenu:
+                AppService.getInstance().setCurrentMenu(Menus.LoginMenu);
+                return new CommandResult(ResultCode.ACCEPT, "enter register menu");
+            case ExitMenu:
+                AppService.getInstance().setCurrentMenu(Menus.ExitMenu);
+                return new CommandResult(ResultCode.ACCEPT, "exit from game");
+            default:
+                return new CommandResult(ResultCode.FAILED, "menu not found");
+        }
     }
 
     public CommandResult showCurrentMenu() {
-        return null;
+        return new CommandResult(ResultCode.ACCEPT, "login menu");
     }
 
     public CommandResult login(String username, String password, boolean stayLoggedIn) {
@@ -25,7 +33,7 @@ public class LoginController {
         if(user == null)
             return new CommandResult(ResultCode.NOT_FOUND, "user not found");
         if(!user.getPassword().equals(password))
-            return new CommandResult(ResultCode.NOT_FOUND, "password is incorrect");
+            return new CommandResult(ResultCode.FAILED, "password is incorrect");
 
         UserService.getInstance().setStayLoggedIn(stayLoggedIn);
         UserService.getInstance().setCurrentUser(user);
@@ -33,15 +41,20 @@ public class LoginController {
     }
 
     public CommandResult forgotPassword(String username) {
-
+        // TODO: forget password
         return null;
     }
 
     public CommandResult answerQuestion(int questionNumber, String answer) {
+        // TODO: answer question
         return null;
     }
 
     public CommandResult setPassword(String password) {
-        return null;
+        if(!Regex.PASSWORD.matches(password))
+            return new CommandResult(ResultCode.FAILED, "password is invalid");
+        if(!Regex.STRONG_PASSWORD.matches(password))
+            return new CommandResult(ResultCode.FAILED, "password is weak");
+        return new CommandResult(ResultCode.ACCEPT, "password changed successfully");
     }
 }

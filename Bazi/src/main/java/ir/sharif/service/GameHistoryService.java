@@ -1,10 +1,15 @@
 package ir.sharif.service;
 
 import ir.sharif.model.GameHistory;
+import ir.sharif.model.Pair;
+import ir.sharif.model.User;
 import org.json.JSONObject;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 
 public class GameHistoryService {
 
@@ -12,7 +17,6 @@ public class GameHistoryService {
     private GameHistoryService() {
 
     }
-
 
     static GameHistoryService instance;
     public static GameHistoryService getInstance() {
@@ -37,28 +41,67 @@ public class GameHistoryService {
     }
 
     public int getUserRank(String username){
-        return 0;
+        ArrayList<User> users = UserService.getInstance().getAllUsers();
+        HashMap<User, Integer> numberOfWins = new HashMap<>();
+        for(User user: users){
+            numberOfWins.put(user, getNumberOfWins(user.getUsername()));
+        }
+        users.sort((User user1, User user2) -> numberOfWins.get(user2) - numberOfWins.get(user1));
+        return users.indexOf(UserService.getInstance().getUserByUsername(username)) + 1;
     }
 
     public int getNumberOfWins(String username){
         ArrayList<GameHistory> gameHistories = getUserHistory(username);
-//        for(GameHistory gameHistory: )
-        return 0;
+        int numberOfWins = 0;
+        for(GameHistory gameHistory: gameHistories){
+            if(gameHistory.getWinner() != null && gameHistory.getWinner().getUsername().equals(username)){
+                numberOfWins++;
+            }
+        }
+        return numberOfWins;
     }
 
     public int getNumberOfLosses(String username){
-        return 0;
+        ArrayList<GameHistory> gameHistories = getUserHistory(username);
+        int numberOfLoose = 0;
+        for(GameHistory gameHistory: gameHistories){
+            if(gameHistory.getWinner() != null && !gameHistory.getWinner().getUsername().equals(username)){
+                numberOfLoose++;
+            }
+        }
+        return numberOfLoose;
     }
 
     public int getNumberOfDraws(String username){
-        return 0;
+        ArrayList<GameHistory> gameHistories = getUserHistory(username);
+        int numberOfDraws= 0;
+        for(GameHistory gameHistory: gameHistories){
+            if(gameHistory.getWinner() == null){
+                numberOfDraws++;
+            }
+        }
+        return numberOfDraws;
     }
 
     public int getNumberOfGames(String username){
-        return 0;
+        ArrayList<GameHistory> gameHistories = getUserHistory(username);
+        return gameHistories.size();
     }
 
     public int getHighestScore(String username){
-        return 0;
+        int maxScore = 0;
+        ArrayList<GameHistory> gameHistories = getUserHistory(username);
+        for(GameHistory gameHistory: gameHistories){
+            if(gameHistory.getUser1().getUsername().equals(username)){
+                for (Pair<Integer, Integer> roundScore : gameHistory.getRoundScores()) {
+                    maxScore = Math.max(maxScore, roundScore.getFirst());
+                }
+            } else {
+                for (Pair<Integer, Integer> roundScore : gameHistory.getRoundScores()) {
+                    maxScore = Math.max(maxScore, roundScore.getSecond());
+                }
+            }
+        }
+        return maxScore;
     }
 }

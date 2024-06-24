@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class AppView {
 
     public static CommandResult run(String command) {
-        return AppService.getCurrentMenu().checkCommand(command);
+        return AppService.getInstance().getCurrentMenu().checkCommand(command);
     }
 
     public static void main(String[] args) {
@@ -17,7 +17,7 @@ public class AppView {
         do {
             String command = scanner.nextLine();
             run(command);
-        } while(AppService.getCurrentMenu() != Menus.ExitMenu);
+        } while(AppService.getInstance().getCurrentMenu() != Menus.ExitMenu);
 
     }
 

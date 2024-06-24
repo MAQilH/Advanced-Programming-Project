@@ -4,14 +4,14 @@ import ir.sharif.view.terminal.Menu;
 import ir.sharif.enums.Menus;
 
 public class AppService {
-    private static Menus currentMenu;
+    private Menus currentMenu;
     private static AppService instance;
 
     private AppService() {
         currentMenu = Menus.RegisterMenu;
     }
 
-	public static void setCurrentMenu(Menus menu) {
+	public void setCurrentMenu(Menus menu) {
 		currentMenu = menu;
 	}
 
@@ -22,7 +22,7 @@ public class AppService {
         return instance;
     }
 
-    public static Menus getCurrentMenu() {
+    public Menus getCurrentMenu() {
         return currentMenu;
     }
 }
