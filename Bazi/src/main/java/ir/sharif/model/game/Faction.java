@@ -18,4 +18,7 @@ public enum Faction {
         return null;
     }
 
+    public String getName() {
+        return name;
+    }
 }

@@ -39,10 +39,15 @@ public class PreGameController {
             return new CommandResult(ResultCode.FAILED, "you can not play with yourself");
         }
         // TODO: create game
+        return null;
     }
 
     public CommandResult showFactions() {
-        return null;
+        DeckInfo deckInfo = UserService.getInstance().getCurrentUser().getDeckInfo();
+        if(deckInfo.getFaction() == null) {
+            return new CommandResult(ResultCode.FAILED, "no faction already selected");
+        }
+        return new CommandResult(ResultCode.ACCEPT, UserService.getInstance().getCurrentUser().getDeckInfo().getFaction().getName());
     }
 
     public CommandResult selectFaction(String factionName) {
