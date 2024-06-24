@@ -64,7 +64,7 @@ public class ProfileController {
 
         user.setPassword(newPassword);
         // TODO: change in database
-        return new CommandResult(ResultCode.ACCEPT, "Email changed successfully");
+        return new CommandResult(ResultCode.ACCEPT, "password changed successfully");
     }
 
     public CommandResult showInfo() {
@@ -78,6 +78,7 @@ public class ProfileController {
         jsonObject.put("numberOfDraws", GameHistoryService.getInstance().getNumberOfDraws(user.getUsername()));
         jsonObject.put("numberOfWins", GameHistoryService.getInstance().getNumberOfWins(user.getUsername()));
         jsonObject.put("numberOfLoose", GameHistoryService.getInstance().getNumberOfLosses(user.getUsername()));
+
         return new CommandResult(ResultCode.ACCEPT, jsonObject.toString());
     }
 

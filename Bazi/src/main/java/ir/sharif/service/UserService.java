@@ -8,7 +8,7 @@ public class UserService {
     private static UserService instance;
     private User currentUser;
     private boolean stayLoggedIn;
-    private ArrayList<User> allUsers;
+    private ArrayList<User> allUsers = new ArrayList<>();
 
     private UserService() {
 
@@ -35,6 +35,7 @@ public class UserService {
                 return user;
             }
         }
+
         return null;
     }
 
