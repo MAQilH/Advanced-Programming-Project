@@ -1,8 +1,12 @@
 package ir.sharif.view.controllers;
 
+import ir.sharif.controller.RegisterController;
+import ir.sharif.enums.ResultCode;
+import ir.sharif.model.CommandResult;
 import ir.sharif.utils.Random;
 import ir.sharif.view.ViewLoader;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
@@ -16,14 +20,28 @@ public class Signup {
 	@FXML
 	TextField passwordTextField;
 	@FXML
+	TextField passwordConfirmTextField;
+	@FXML
 	TextField emailTextField;
+	@FXML
+	TextField nicknameTextField;
+	@FXML
+	Label errorLabel;
+	private RegisterController controller = new RegisterController();
 
 	public void signupButtonPress(MouseEvent mouseEvent) {
 		String username = usernameTextField.getText();
 		String password = passwordTextField.getText();
+		String nickname = nicknameTextField.getText();
+		String password2 = passwordConfirmTextField.getText();
 		String email = emailTextField.getText();
 
-		System.err.println("Signup button pressed" + " " + username + " " + password + " " + email);
+		CommandResult commandResult = controller.register(username, password, password2, nickname, email);
+		if (commandResult.statusCode() == ResultCode.ACCEPT) {
+			ViewLoader.newScene("start");
+		} else {
+			errorLabel.setText(commandResult.message());
+		}
 	}
 
 	public void backButtonPress(MouseEvent mouseEvent) {

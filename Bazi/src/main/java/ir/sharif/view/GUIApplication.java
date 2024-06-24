@@ -1,5 +1,6 @@
 package ir.sharif.view;
 
+import ir.sharif.controller.RegisterController;
 import ir.sharif.model.game.CardTypes;
 import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.view.game.CardGraphics;
@@ -18,7 +19,8 @@ public class GUIApplication extends Application {
 		ViewLoader.newScene("start");
 		Pane pane = (Pane) (ViewLoader.getStage().getScene().getRoot());
 		//pane.getChildren().add(new CardGraphics(CardTypes.MENNO_COEHOORN_2.getInstance(), 1));
-		// new TerminalGUI(null);
+		//new TerminalGUI(null);
+		new RegisterController().register("sohsoh", "Soheil@84", "Soheil@84", "sohsoh", "sohsoh84@gmail.com");
 	}
 
 	public static void main(String[] args) {

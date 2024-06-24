@@ -39,7 +39,8 @@ public class PreGameController {
             return new CommandResult(ResultCode.FAILED, "you can not play with yourself");
         }
         // TODO: create game
-    }
+        return null;
+	}
 
     public CommandResult showFactions() {
         return null;
