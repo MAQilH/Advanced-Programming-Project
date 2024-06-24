@@ -18,6 +18,10 @@ public class AppService {
         return instance;
     }
 
+    public void setCurrentMenu(Menus menu) {
+        currentMenu = menu;
+    }
+
     public static Menus getCurrentMenu() {
         return currentMenu;
     }

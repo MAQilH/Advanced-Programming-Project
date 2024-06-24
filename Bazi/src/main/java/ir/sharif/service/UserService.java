@@ -38,7 +38,6 @@ public class UserService {
         return null;
     }
 
-
     public boolean isUsernameTaken(String username) {
         return getUserByUsername(username) != null;
     }
@@ -49,5 +48,13 @@ public class UserService {
 
     public void setStayLoggedIn(boolean stayLoggedIn) {
         this.stayLoggedIn = stayLoggedIn;
+    }
+
+    public void addUser(User user){
+        allUsers.add(user);
+    }
+
+    public ArrayList<User> getAllUsers() {
+        return allUsers;
     }
 }
