@@ -2,12 +2,14 @@ package ir.sharif.view;
 
 import com.almasb.fxgl.core.View;
 import ir.sharif.utils.ConstantsLoader;
+import javafx.animation.FadeTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 
@@ -22,6 +24,9 @@ public class ViewLoader {
 		return stage;
 	}
 
+	public static Scene newScene;
+	private static boolean isBegin = true;
+
 	public static void newScene(String menuName) {
 		FXMLLoader fxmlLoader = new FXMLLoader(ViewLoader.class.getResource("/FXML/" + menuName + "-view.fxml"));
 		Scene scene = null;
@@ -35,9 +40,28 @@ public class ViewLoader {
 		System.out.println(scene.getStylesheets());
 		Pane pane = (Pane) scene.getRoot();
 
-		stage.setScene(scene);
-		pane.setBackground(new Background(createBackgroundImage("background.jpg")));
+		if (!isBegin) {
+			FadeTransition ft = new FadeTransition(Duration.millis(1000), stage.getScene().getRoot());
+			ft.setFromValue(1.0);
+			ft.setToValue(0.0);
+
+			newScene = scene;
+			ft.setOnFinished(event -> {
+				stage.setScene(newScene);
+				FadeTransition fadeIn = new FadeTransition(Duration.millis(1000), newScene.getRoot());
+				fadeIn.setFromValue(0.0);
+				fadeIn.setToValue(1.0);
+				fadeIn.play();
+			});
+
+			ft.play();
+		} else {
+			isBegin = false;
+			stage.setScene(scene);
+		}
+
 		stage.show();
+		pane.setBackground(new Background(createBackgroundImage("background.jpg")));
 		centerStage();
 	}
 

@@ -47,5 +47,7 @@
               </children>
           </HBox>
       </children>
+
+        <Label fx:id="errorLabel" styleClass="error-label" />
     </VBox>
 </Pane>
