@@ -1,8 +1,10 @@
 package ir.sharif.model.game;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class DeckInfo {
+public class DeckInfo implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private Leader leader;
     private Faction faction;

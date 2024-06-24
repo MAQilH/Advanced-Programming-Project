@@ -4,15 +4,23 @@ import ir.sharif.enums.Menus;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.User;
-import ir.sharif.model.game.DeckInfo;
-import ir.sharif.model.game.Faction;
+import ir.sharif.model.game.*;
 import ir.sharif.service.AppService;
 import ir.sharif.service.UserService;
+import ir.sharif.utils.FileSaver;
 import ir.sharif.view.terminal.Menu;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import javax.swing.*;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PreGameController {
+
+    private User enemy;
     public CommandResult showCurrentMenu() {
         return new CommandResult(ResultCode.ACCEPT, "pre game");
     }
@@ -31,7 +39,7 @@ public class PreGameController {
     }
 
     public CommandResult createGame(String username) {
-        User enemy = UserService.getInstance().getUserByUsername(username);
+        enemy = UserService.getInstance().getUserByUsername(username);
         if(enemy ==  null){
             return new CommandResult(ResultCode.NOT_FOUND, "user not found");
         }
@@ -39,7 +47,7 @@ public class PreGameController {
             return new CommandResult(ResultCode.FAILED, "you can not play with yourself");
         }
         // TODO: create game
-        return null;
+        return new CommandResult(ResultCode.ACCEPT, "game created successfully");
     }
 
     public CommandResult showFactions() {
@@ -47,7 +55,7 @@ public class PreGameController {
         if(deckInfo.getFaction() == null) {
             return new CommandResult(ResultCode.FAILED, "no faction already selected");
         }
-        return new CommandResult(ResultCode.ACCEPT, UserService.getInstance().getCurrentUser().getDeckInfo().getFaction().getName());
+        return new CommandResult(ResultCode.ACCEPT, UserService.getInstance().getCurrentUser().getDeckInfo().getFaction().name());
     }
 
     public CommandResult selectFaction(String factionName) {
@@ -62,54 +70,155 @@ public class PreGameController {
     }
 
     public CommandResult showCards() {
-        return null;
+        HashMap<Card, Integer> map = new HashMap<>();
+        DeckInfo deckInfo = UserService.getInstance().getCurrentUser().getDeckInfo();
+        for(Card card: deckInfo.getStorage()){
+            map.put(card, map.getOrDefault(card, 0) + 1);
+        }
+        JSONArray jsonArray = new JSONArray();
+        for(Map.Entry<Card, Integer> entry: map.entrySet()){
+            JSONObject jsonObject = new JSONObject();
+            Card card = entry.getKey();
+            jsonObject.put("name", CardTypes.getCardType(card.getName()).name());
+            jsonObject.put("count", entry.getValue());
+            jsonArray.put(jsonObject);
+        }
+        return new CommandResult(ResultCode.ACCEPT, jsonArray.toString());
     }
 
     public CommandResult showDeck() {
         return null;
     }
 
+    public int numberOfSoldiers(DeckInfo deckInfo){
+        int count = 0;
+        for(Card card: deckInfo.getStorage()){
+            if(!card.isHero() && !isSpecialCard(card)){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int numberOfSpecial(DeckInfo deckInfo){
+        int count = 0;
+        for(Card card: deckInfo.getStorage()){
+            if(!card.isHero() && isSpecialCard(card)){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int numberOfHero(DeckInfo deckInfo){
+        int count = 0;
+        for(Card card: deckInfo.getStorage()){
+            if(card.isHero()){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int getSumOfDeckPower(DeckInfo deckInfo){
+        int sum = 0;
+        for(Card card: deckInfo.getStorage()){
+            sum += card.getPower();
+        }
+        return sum;
+    }
+
+    private boolean isSpecialCard(Card card){
+        return card.getCardPosition() == CardPosition.WEATHER || card.getCardPosition() == CardPosition.SPELL;
+    }
+
     public CommandResult showInfoCurrentUser() {
-        return null;
+        DeckInfo deckInfo = UserService.getInstance().getCurrentUser().getDeckInfo();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("username", UserService.getInstance().getCurrentUser().getUsername());
+        jsonObject.put("faction", deckInfo.getFaction().name());
+        jsonObject.put("numberOfDeckCards", deckInfo.getStorage().size());
+        jsonObject.put("numberOfSoldiers", numberOfSoldiers(deckInfo));
+        jsonObject.put("numberOfSpecial", numberOfSpecial(deckInfo));
+        jsonObject.put("numberOfHero", numberOfHero(deckInfo));
+        jsonObject.put("powerSum", getSumOfDeckPower(deckInfo));
+        return new CommandResult(ResultCode.ACCEPT, jsonObject.toString());
+    }
+
+    public CommandResult setDeck(DeckInfo deckInfo){
+        User user = UserService.getInstance().getCurrentUser();
+        user.setDeckInfo(deckInfo);
+        return new CommandResult(ResultCode.ACCEPT, "deck set successfully");
     }
 
     public CommandResult saveDeck(String name) {
-        return null;
+        name += ".ser";
+        boolean result = FileSaver.saveObject(UserService.getInstance().getCurrentUser().getDeckInfo(), name);
+        if(!result)
+            return new CommandResult(ResultCode.FAILED, "error in saving deck");
+        return new CommandResult(ResultCode.ACCEPT, "deck saved successfully");
     }
 
     public CommandResult saveDeck(Path path) {
-        return null;
+        boolean result = FileSaver.saveObject(UserService.getInstance().getCurrentUser().getDeckInfo(), path);
+        if(!result)
+            return new CommandResult(ResultCode.FAILED, "error in saving deck");
+        return new CommandResult(ResultCode.ACCEPT, "deck saved successfully");
     }
 
     public CommandResult loadDeck(String name) {
-        return null;
+        name += ".ser";
+        DeckInfo deckInfo;
+        try{
+            deckInfo = (DeckInfo) FileSaver.loadObject(name);
+        } catch (Exception e){
+            deckInfo = null;
+        }
+        if(deckInfo == null)
+            return new CommandResult(ResultCode.FAILED, "error in loading deck");
+        UserService.getInstance().getCurrentUser().setDeckInfo(deckInfo);
+        return new CommandResult(ResultCode.ACCEPT, "deck loaded successfully");
     }
 
     public CommandResult loadDeck(Path path) {
-        return null;
-    }
-
-    public CommandResult showLeaders() {
-        return null;
-    }
-
-    public CommandResult selectLeader(int leaderNumber) {
-        return null;
-    }
-
-    public CommandResult addToDeck(String cardName, int count) {
-        return null;
-    }
-
-    public CommandResult removeFromDeck(String cardName, int count) {
-        return null;
+        DeckInfo deckInfo = (DeckInfo) FileSaver.loadObject(path);
+        try{
+            deckInfo = (DeckInfo) FileSaver.loadObject(path);
+        } catch (Exception e){
+            deckInfo = null;
+        }
+        if(deckInfo == null)
+            return new CommandResult(ResultCode.FAILED, "error in loading deck");
+        UserService.getInstance().getCurrentUser().setDeckInfo(deckInfo);
+        return new CommandResult(ResultCode.ACCEPT, "deck loaded successfully");
     }
 
     public CommandResult changeTurn() {
-        return null;
+        User temp = UserService.getInstance().getCurrentUser();
+        UserService.getInstance().setCurrentUser(enemy);
+        enemy = temp;
+        return new CommandResult(ResultCode.ACCEPT, "turn changed successfully");
+    }
+
+    public CommandResult validateDeck(DeckInfo deckInfo){
+        if(numberOfSoldiers(deckInfo) < 22){
+            return new CommandResult(ResultCode.FAILED, "you should have at least 22 soldiers in your deck");
+        }
+        if(numberOfSpecial(deckInfo) > 10){
+            return new CommandResult(ResultCode.FAILED, "you should have at most 10 special cards in your deck");
+        }
+        return new CommandResult(ResultCode.ACCEPT, "deck is valid");
     }
 
     public CommandResult startGame() {
-        return null;
+        CommandResult result = validateDeck(UserService.getInstance().getCurrentUser().getDeckInfo());
+        if(result.statusCode() == ResultCode.FAILED){
+            return result;
+        }
+        result = validateDeck(enemy.getDeckInfo());
+        if(result.statusCode() == ResultCode.FAILED){
+            return result;
+        }
+        return new CommandResult(ResultCode.ACCEPT, "game started successfully");
     }
 }

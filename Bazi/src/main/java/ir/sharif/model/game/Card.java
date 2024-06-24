@@ -45,4 +45,9 @@ public class Card {
 	public boolean isHero() {
 		return isHero;
 	}
+
+	public CardPosition getCardPosition() {
+		return cardType;
+	}
+
 }

@@ -167,8 +167,6 @@ public enum CardTypes {
     ZOLTAN_CHIVAY("Zoltan Chivay", 5, 1, CardPosition.CLOSE_COMBAT_UNIT, null, null, false);
 
 
-
-
     private String name;
     private int power, noOfCards;
     private CardPosition cardType;
@@ -186,6 +184,14 @@ public enum CardTypes {
         this.isHero = isHero;
     }
 
+    public static CardTypes getCardType(String name) {
+        for (CardTypes cardType : CardTypes.values()) {
+            if (cardType.name.equals(name)) {
+                return cardType;
+            }
+        }
+        return null;
+    }
     public Card getInstance() {
         return new Card(name, power, noOfCards, cardType, ability, faction, isHero);
     }
