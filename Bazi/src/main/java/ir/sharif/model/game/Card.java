@@ -17,4 +17,32 @@ public class Card {
         this.faction = faction;
         this.isHero = isHero;
     }
+
+	public String getName() {
+		return name;
+	}
+
+	public int getPower() {
+		return power;
+	}
+
+	public int getNoOfCards() {
+		return noOfCards;
+	}
+
+	public CardPosition getCardType() {
+		return cardType;
+	}
+
+	public Ability getAbility() {
+		return ability;
+	}
+
+	public Faction getFaction() {
+		return faction;
+	}
+
+	public boolean isHero() {
+		return isHero;
+	}
 }

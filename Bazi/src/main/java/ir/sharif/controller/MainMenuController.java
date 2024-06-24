@@ -1,8 +1,10 @@
 package ir.sharif.controller;
 
+import ir.sharif.enums.Menus;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
 import ir.sharif.service.AppService;
+import ir.sharif.service.UserService;
 import ir.sharif.view.terminal.*;
 
 public class MainMenuController {
@@ -17,17 +19,17 @@ public class MainMenuController {
     }
 
     public CommandResult menuProfile() {
-        AppService.getInstance().setCurrentMenu(new ProfileMenu());
+        AppService.setCurrentMenu(Menus.ProfileMenu);
         return new CommandResult(ResultCode.ACCEPT, "enter profile menu");
     }
 
     public CommandResult menuRegister() {
-        AppService.getInstance().setCurrentMenu(new GameMenu());
+        AppService.setCurrentMenu(Menus.RegisterMenu);
         return new CommandResult(ResultCode.ACCEPT, "enter game menu");
     }
 
     public CommandResult menuExit() {
-        AppService.getInstance().setCurrentMenu(new LoginMenu());
+        AppService.setCurrentMenu(Menus.LoginMenu);
         return new CommandResult(ResultCode.ACCEPT, "enter login menu");
     }
 

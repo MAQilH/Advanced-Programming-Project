@@ -1,0 +1,33 @@
+.card {
+    /* Set the font to a handwriting-like font */
+    -fx-font-family: 'Brush Script MT', cursive;
+
+    /* Set the text color to a dark brown to simulate ink */
+    -fx-text-fill: #5D4037;
+
+    /* Add some padding and border to the card */
+    -fx-padding: 20px;
+    -fx-border-color: #5D4037;
+    -fx-border-width: 1px;
+
+    /* Add some shadow to the card to give it a 3D effect */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 5, 5);
+}
+
+.card .icons {
+    /* Set the layout of the icons */
+    -fx-spacing: 10px;
+}
+
+.card .name {
+    /* Set the style of the card name */
+    -fx-font-size: 1.5em;
+    -fx-font-family: Chalkduster;
+    -fx-alignment: center;
+}
+
+.card .image {
+    /* Set the style of the card image */
+    -fx-fit-width: 100%;
+    -fx-preserve-ratio: true;
+}

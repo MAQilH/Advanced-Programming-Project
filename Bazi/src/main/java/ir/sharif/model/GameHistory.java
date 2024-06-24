@@ -19,4 +19,24 @@ public class GameHistory implements Savable {
     public Savable load(Path path) {
         return null;
     }
+
+	public User getUser1() {
+		return user1;
+	}
+
+	public User getUser2() {
+		return user2;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public ArrayList<Pair<Integer, Integer>> getRoundScores() {
+		return roundScores;
+	}
+
+	public User getWinner() {
+		return winner;
+	}
 }

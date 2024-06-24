@@ -11,6 +11,10 @@ public class AppService {
         currentMenu = Menus.RegisterMenu;
     }
 
+	public static void setCurrentMenu(Menus menu) {
+		currentMenu = menu;
+	}
+
     public static AppService getInstance() {
         if (instance == null) {
             instance = new AppService();
