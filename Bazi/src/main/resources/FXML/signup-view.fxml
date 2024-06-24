@@ -21,8 +21,10 @@
             </Label>
             <TextField fx:id="usernameTextField" maxWidth="250.0" promptText="Username:" />
             <TextField fx:id="emailTextField" maxWidth="250.0" promptText="Email:" />
-            <TextField fx:id="nicknameTextField" maxWidth="250.0" promptText="Email:" />
+            <TextField fx:id="nicknameTextField" maxWidth="250.0" promptText="Nickname:" />
             <PasswordField fx:id="passwordTextField" maxWidth="250.0" promptText="Password:" />
+            <PasswordField fx:id="passwordConfirmTextField" maxWidth="250.0" promptText="Password Confirmation:" />
+
             <HBox alignment="CENTER" prefHeight="96.0" prefWidth="300.0" spacing="10.0">
                 <children>
                     <Button mnemonicParsing="false" onMouseClicked="#randomPasswordPress" text="ًRandomPassword">
@@ -30,7 +32,7 @@
                             <Insets />
                         </HBox.margin>
                     </Button>
-                    <Button mnemonicParsing="false" onMouseClicked="#signupButtonPress" text="Login">
+                    <Button mnemonicParsing="false" onMouseClicked="#signupButtonPress" text="Sign Up">
                         <HBox.margin>
                             <Insets />
                         </HBox.margin>

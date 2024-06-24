@@ -27,7 +27,7 @@
 .label {
     -fx-text-fill: #8B4513; /* Brown text color */
     -fx-font-family: 'Courier New', Courier, monospace; /* Ancient-themed font */
-    -fx-font-size: 50px;
+    -fx-font-size: 25px;
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 );
 }
 
