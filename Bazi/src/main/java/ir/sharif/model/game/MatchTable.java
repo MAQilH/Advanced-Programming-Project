@@ -8,17 +8,20 @@ public class MatchTable {
     private final UserTable[] userTables;
     private final User[] users;
     private int[] lives;
-    private ArrayList<Card> weatherCards;
+    private final ArrayList<Card> weatherCards;
     int turn, roundNumber;
 
-    public MatchTable(User user1, User user2) {
+    public MatchTable(User user0, User user1) {
         turn = 0;
         roundNumber = 0;
         userTables = new UserTable[2];
         users = new User[2];
         lives = new int[2];
-        users[0] = user1;
-        users[1] = user2;
+        weatherCards = new ArrayList<>();
+        userTables[0] = new UserTable(user0.getDeckInfo());
+        userTables[1] = new UserTable(user1.getDeckInfo());
+        users[0] = user0;
+        users[1] = user1;
         lives[0] = lives[1] = 2;
     }
 

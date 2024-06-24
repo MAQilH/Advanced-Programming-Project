@@ -8,8 +8,8 @@ public class UserTable {
     private final ArrayList<Card> outOfPlays, hand, deck;
     private final int Score;
 
-    public UserTable(Leader leader) {
-        this.leader = leader;
+    public UserTable(DeckInfo deckInfo) {
+        this.leader = deckInfo.getLeader();
         this.siege = new Row();
         this.ranged = new Row();
         this.closeCombat = new Row();
@@ -17,6 +17,7 @@ public class UserTable {
         this.hand = new ArrayList<>();
         this.deck = new ArrayList<>();
         this.Score = 0;
+        //TODO: add random cards to hand using deckInfo
     }
 
     public Leader getLeader() {
