@@ -1,10 +1,13 @@
 package ir.sharif.view;
 
+import ir.sharif.controller.GameController;
 import ir.sharif.controller.LoginController;
+import ir.sharif.controller.PreGameController;
 import ir.sharif.controller.RegisterController;
 import ir.sharif.model.game.CardTypes;
 import ir.sharif.service.BackgroundMusicService;
 import ir.sharif.utils.ConstantsLoader;
+import ir.sharif.view.controllers.Game;
 import ir.sharif.view.game.CardGraphics;
 import ir.sharif.view.gui.terminal.TerminalGUI;
 import javafx.application.Application;
@@ -30,6 +33,15 @@ public class GUIApplication extends Application {
 		new RegisterController().register("sohsoh", "Soheil@84", "Soheil@84", "sohsoh", "sohsoh84@gmail.com");
 		new RegisterController().register("guest", "Soheil@84", "Soheil@84", "guest", "aqil@gmail.com");
 		new LoginController().login("sohsoh", "Soheil@84", true);
+		PreGameController preGameController = new PreGameController();
+		System.err.println(preGameController.createGame("guest").statusCode());
+		System.err.println(preGameController.loadDeck("test").statusCode());
+		System.err.println(preGameController.changeTurn().statusCode());
+		System.err.println(preGameController.loadDeck("test").statusCode());
+		System.err.println(preGameController.startGame().statusCode());
+
+		GameController controller = new GameController();
+		System.err.println(controller.getCurrentUserTable(true).getDeck());
 		ViewLoader.newScene("game");
 
 	}

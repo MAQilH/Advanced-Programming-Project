@@ -19,27 +19,28 @@ import java.io.InputStream;
 
 public class CardGraphics extends Pane {
 	private final Card card;
-	private final int width;
-	private final int height;
+	private final double width;
+	private final double height;
 	private final int iconSize = 50;
 
 	private HBox icons;
 	private Label nameLabel;
 	private ImageView imageView;
+	private double scale = 1.0;
 
-	public CardGraphics(Card card, double scale) {
+	public CardGraphics(Card card, double height) {
 		this.card = card;
-		this.width = Integer.parseInt(ConstantsLoader.getInstance().getProperty("card.defaultwidth"));
-		this.height = (int)(width * Float.parseFloat(ConstantsLoader.getInstance().getProperty("card.scale")));
-		this.getStyleClass().add("card"); // Add the style class to the VBox
-		this.setMaxWidth(width); // Set the preferred width of the VBox
-		this.setMaxHeight(height);
-		this.setMinWidth(width); // Set the preferred width of the VBox
+		this.width = height / Double.parseDouble(ConstantsLoader.getInstance().getProperty("card.scale"));
+		this.height = height;
+		double initWidth = Double.parseDouble(ConstantsLoader.getInstance().getProperty("card.width"));
+		scale = width / initWidth;
+
+		this.setMinWidth(width);
+		this.setMaxWidth(width);
 		this.setMinHeight(height);
+		this.setMaxHeight(height);
 
 		init();
-		scale(this, scale);
-		this.getStylesheets().add(getClass().getResource("/CSS/card.css").toExternalForm());
 	}
 
 	private void init() {
@@ -72,22 +73,13 @@ public class CardGraphics extends Pane {
 		this.getChildren().addAll(icons, imageView, nameLabel);
 	}
 
-	public void scale(Node node, double scale) {
-		this.setScaleX(scale);
-		this.setScaleY(scale);
-	}
-
-	public void update() {
-
-	}
-
 	private ImageView loadIcon(String iconName) {
 		try {
 			InputStream iconStream = getClass().getResourceAsStream("/icons/" + iconName + ".png");
 			Image iconImage = new Image(iconStream);
 			ImageView iconView = new ImageView(iconImage);
-			iconView.setFitHeight(iconSize);
-			iconView.setFitWidth(iconSize);
+			iconView.setFitHeight(iconSize * scale);
+			iconView.setFitWidth(iconSize * scale);
 			return iconView;
 		} catch (Exception e) {
 			System.err.println("Error loading icon: " + iconName);
