@@ -1,6 +1,6 @@
 package ir.sharif.model.game;
 
-import ir.sharif.model.game.leadersAbillity.*;
+import ir.sharif.model.game.abilities.*;
 
 public enum LeaderType {
     THE_SIEGEMASTER("The Siegemaster", Faction.NORTHEN_REALMS, new TheSiegeMaster()),
@@ -28,14 +28,14 @@ public enum LeaderType {
 
     private final String name;
     private final Faction faction;
-    private final LeadersAbility ability;
+    private final Ability ability;
 
     LeaderType() { // TODO: remove that
         this.name = "";
         this.faction = null;
         this.ability = null;
     }
-    LeaderType(String name, Faction faction, LeadersAbility ability) {
+    LeaderType(String name, Faction faction, Ability ability) {
         this.name = name;
         this.faction = faction;
         this.ability = ability;
