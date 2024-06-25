@@ -58,7 +58,8 @@ public class GameController {
     }
 
     public int calculatePower(int player, int rowNumber, Card card) {
-        return 0;
+        double cofficient = 1;
+        //TODO: complete this
     }
 
     public CommandResult vetoCard(int cardNumber) {
