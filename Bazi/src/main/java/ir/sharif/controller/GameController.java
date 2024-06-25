@@ -8,9 +8,9 @@ import ir.sharif.model.game.abilities.Spy;
 import ir.sharif.model.game.abilities.Transformers;
 import ir.sharif.service.GameService;
 import ir.sharif.utils.ConstantsLoader;
+import ir.sharif.utils.Random;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class GameController {
     private final MatchTable matchTable;
@@ -18,12 +18,6 @@ public class GameController {
     public GameController() {
         this.matchTable = GameService.getInstance().getMatchTable();
         startGame();
-    }
-
-    public int getRandomNumber(int n) {
-        Random random = new Random();
-        return random.nextInt(n);
-        //[0, n)
     }
 
     public CardPosition getCardPositionByRowNumber(int rowNumber) {
@@ -66,10 +60,12 @@ public class GameController {
         if(matchTable.getVetoesLeft(player) == 0) {
             return new CommandResult(ResultCode.FAILED, "You don't have any vetoes left");
         }
+        if(matchTable.getUserTable(player).getDeck().isEmpty())
+            return new CommandResult(ResultCode.FAILED, "deck is empty");
         Card card = matchTable.getUserTable(player).getHand().get(cardNumber);
         matchTable.getUserTable(player).getHand().remove(cardNumber);
         matchTable.getUserTable(player).getDeck().add(card);
-        int randomNumber = getRandomNumber(matchTable.getUserTable(player).getDeck().size());
+        int randomNumber = Random.getRandomInt(matchTable.getUserTable(player).getDeck().size());
         Card randomCard = matchTable.getUserTable(player).getDeck().get(randomNumber);
         matchTable.getUserTable(player).getDeck().remove(randomNumber);
         matchTable.getUserTable(player).getHand().add(randomCard);
@@ -146,7 +142,7 @@ public class GameController {
         matchTable.getUserTable(player).getRowByNumber(rowNumber).addCard(card);
         player = 1 - player;
         for(int i = 0; i < 2 && !matchTable.getUserTable(player).getDeck().isEmpty(); i++) {
-            int randomNumber = getRandomNumber(matchTable.getUserTable(player).getDeck().size());
+            int randomNumber = Random.getRandomInt(matchTable.getUserTable(player).getDeck().size());
             Card randomCard = matchTable.getUserTable(player).getDeck().get(randomNumber);
             matchTable.getUserTable(player).getDeck().remove(randomNumber);
             matchTable.getUserTable(player).getHand().add(randomCard);
@@ -237,7 +233,7 @@ public class GameController {
                 if(matchTable.getUserTable(userIndex).getFaction() == Faction.SCOIATAEL) scoiataelUsers.add(userIndex);
             }
             if(scoiataelUsers.isEmpty() || scoiataelUsers.size() == 2){
-                matchTable.setTurn(getRandomNumber(2));
+                matchTable.setTurn(Random.getRandomInt(2));
             } else {
                 matchTable.setTurn(scoiataelUsers.get(0));
             }
@@ -248,7 +244,7 @@ public class GameController {
             Card heroRemain = null;
             if(userTable.getFaction() == Faction.MONSTERS) {
                 ArrayList<Card> heroCards = userTable.getHeroesCard();
-                heroRemain = heroCards.get(getRandomNumber(heroCards.size()));
+                if(!heroCards.isEmpty()) heroRemain = heroCards.get(Random.getRandomInt(heroCards.size()));
             }
 
             for (int rowIndex = 0; rowIndex < 3; rowIndex++) {
@@ -275,7 +271,9 @@ public class GameController {
                 }
             }
             if(userTable.getFaction() == Faction.NORTHEN_REALMS && winner == userIndex){
-                Card newAddedCard = userTable.getDeck().get(getRandomNumber(userTable.getDeck().size()));
+                Card newAddedCard = null;
+                if(!userTable.getDeck().isEmpty())
+                    newAddedCard = userTable.getDeck().get(Random.getRandomInt(userTable.getDeck().size()));
                 if(newAddedCard != null){
                     userTable.getDeck().remove(newAddedCard);
                     userTable.addHand(newAddedCard);
@@ -284,7 +282,9 @@ public class GameController {
 
             if(userTable.getFaction() == Faction.SKELLIGE && matchTable.getRoundNumber() == 2){
                 for (int addedCardIndex = 0; addedCardIndex < 2; addedCardIndex++) {
-                    Card newAddedCard = userTable.getOutOfPlays().get(getRandomNumber(userTable.getOutOfPlays().size()));
+                    Card newAddedCard = null;
+                    if(!userTable.getOutOfPlays().isEmpty())
+                        newAddedCard = userTable.getOutOfPlays().get(Random.getRandomInt(userTable.getOutOfPlays().size()));
                     if(newAddedCard != null){
                         userTable.getOutOfPlays().remove(newAddedCard);
                         userTable.addHand(newAddedCard);
@@ -300,7 +300,8 @@ public class GameController {
         for (int playerIndex = 0; playerIndex < 2; playerIndex++) {
             int startNumberOfCard = Integer.parseInt(ConstantsLoader.getInstance().getProperty("game.start_number_card"));
             for(int cardIndex = 0; cardIndex < startNumberOfCard; cardIndex++){
-                int randomNumber = getRandomNumber(matchTable.getUserTable(playerIndex).getDeck().size());
+                if(matchTable.getUserTable(playerIndex).getDeck().isEmpty()) break;
+                int randomNumber = Random.getRandomInt(matchTable.getUserTable(playerIndex).getDeck().size());
                 Card randomCard = matchTable.getUserTable(playerIndex).getDeck().get(randomNumber);
                 matchTable.getUserTable(playerIndex).getDeck().remove(randomNumber);
                 matchTable.getUserTable(playerIndex).getHand().add(randomCard);
