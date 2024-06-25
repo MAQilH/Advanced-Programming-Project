@@ -28,6 +28,7 @@ public class GUIApplication extends Application {
 		//new TerminalGUI(null);
 		// BackgroundMusicService.getInstance().playMusic();
 		new RegisterController().register("sohsoh", "Soheil@84", "Soheil@84", "sohsoh", "sohsoh84@gmail.com");
+		new RegisterController().register("guest", "Soheil@84", "Soheil@84", "guest", "aqil@gmail.com");
 		new LoginController().login("sohsoh", "Soheil@84", true);
 		ViewLoader.newScene("pregame");
 	}

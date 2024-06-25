@@ -55,6 +55,8 @@ public class Pregame {
 		leaderList.setMinWidth(300);
 		factionList.setMinWidth(300);
 
+		pregameController.createGame("guest");
+
 	}
 
 	private void updateLeaders() {
