@@ -204,6 +204,13 @@ public class PreGameController {
 
     public CommandResult changeTurn() {
         User temp = UserService.getInstance().getCurrentUser();
+        DeckInfo deckInfo = getDeck();
+        if(numberOfSoldiers(deckInfo) < 22){
+            return new CommandResult(ResultCode.FAILED, "you should have at least 22 soldiers in your deck");
+        }
+        if(numberOfSpecial(deckInfo) > 10){
+            return new CommandResult(ResultCode.FAILED, "you should have at most 10 special cards in your deck");
+        }
         UserService.getInstance().setCurrentUser(enemy);
         enemy = temp;
         return new CommandResult(ResultCode.ACCEPT, "turn changed successfully");
