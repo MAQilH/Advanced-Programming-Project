@@ -1,23 +1,26 @@
 package ir.sharif.view.controllers;
 
+import ir.sharif.controller.PreGameController;
+import ir.sharif.enums.ResultCode;
+import ir.sharif.model.CommandResult;
 import ir.sharif.model.game.*;
 import ir.sharif.view.ViewLoader;
 import ir.sharif.view.game.CardGraphics;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 
-import javax.swing.text.View;
+import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
@@ -28,17 +31,23 @@ public class Pregame {
 	private ComboBox leaderList;
 	@FXML
 	private ScrollPane cardsPane;
+	@FXML
+	private Label errorLabel;
+	@FXML
+	private TextField deckName;
+
+	private PreGameController pregameController = new PreGameController();
 
 	@FXML
 	public void initialize() {
 		for (Faction faction : Faction.values())
-			factionList.getItems().add(faction.getName());
+			factionList.getItems().add(faction.toString());
 
 		factionList.valueProperty().addListener((obs, oldVal, newVal) -> {
 			updateLeaders();
 		});
 
-		leaderList.valueProperty().addListener((obs, oldVal, newVal) -> {
+		factionList.valueProperty().addListener((obs, oldVal, newVal) -> {
 			updateCardLists();
 		});
 
@@ -57,7 +66,7 @@ public class Pregame {
 
 		for (LeaderType leaderType : LeaderType.values()) {
 			if (leaderType.getFaction() == faction) {
-				leaderList.getItems().add(leaderType.getName());
+				leaderList.getItems().add(leaderType.toString());
 			}
 		}
 	}
@@ -120,7 +129,7 @@ public class Pregame {
 				allCards.getChildren().add(lastRow);
 			}
 
-			if (cardTypes.getInstance().getFaction() == Faction.findFaction(factionList.getValue().toString())) {
+			if (cardTypes.getInstance().getFaction() == null || cardTypes.getInstance().getFaction() == Faction.findFaction(factionList.getValue().toString())) {
 				lastRow.getChildren().add(createCardAdder(cardTypes));
 			}
 		}
@@ -139,32 +148,90 @@ public class Pregame {
 		deckInfo.setFaction(Faction.findFaction(factionList.getValue().toString()));
 		deckInfo.setLeader(LeaderType.valueOf(leaderList.getValue().toString()));
 
-		for (CardTypes cardTypes : CardTypes.values()) {
-			VBox vBox = (VBox) cardsPane.getContent();
-			for (int i = 0; i < vBox.getChildren().size(); i++) {
-				HBox hBox = (HBox) vBox.getChildren().get(i);
-				Label countLabel = (Label) hBox.getChildren().get(1);
+		VBox vBox = (VBox) cardsPane.getContent();
+		for (int i = 0; i < vBox.getChildren().size(); i++) {
+			HBox hBox = (HBox) vBox.getChildren().get(i);
+			for (Node node : hBox.getChildren()) {
+				VBox cardVBox = (VBox) node;
+				String cardName = ((CardGraphics) cardVBox.getChildren().get(0)).getCard().getName();
+				HBox detailsHBox = (HBox) cardVBox.getChildren().get(1);
+				Label countLabel = (Label) detailsHBox.getChildren().get(1);
 				int count = Integer.parseInt(countLabel.getText().split("/")[0]);
-				for (int j = 0; j < count; j++)
-					deckInfo.addCard(cardTypes);
+				for (int j = 0; j < count; j++) {
+					deckInfo.addCard(CardTypes.getCardType(cardName));
+				}
 			}
 		}
-
 		return deckInfo;
 	}
 
 	public void loadUsingName(MouseEvent mouseEvent) {
-		DeckInfo deckInfo = getDeckInfo();
+		CommandResult result = pregameController.loadDeck(deckName.getText());
+		if (result.statusCode() == ResultCode.ACCEPT)
+			updateDeckUsingController();
+		errorLabel.setText(result.message());
+	}
 
+	public void updateDeckUsingController() {
+		DeckInfo deckInfo = pregameController.getDeck();
+		factionList.setValue(deckInfo.getFaction().toString());
+		leaderList.setValue(deckInfo.getLeader().toString());
+		updateCardLists();
+		updateCardGraphicsWithDeckInfo(deckInfo);
 	}
 
 	public void saveUsingName(MouseEvent mouseEvent) {
 		DeckInfo deckInfo = getDeckInfo();
-
+		pregameController.setDeck(deckInfo);
+		CommandResult result = pregameController.saveDeck(deckName.getText());
+		errorLabel.setText(result.message());
 	}
 
 	public void loadUsingPath(MouseEvent mouseEvent) {
-		// get a path using a file chooser
 		Path path = null;
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Open Deck File");
+		fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Deck Files",
+			"*.deck"));
+
+		File file = fileChooser.showOpenDialog(ViewLoader.getStage());
+		if (file != null)
+			path = file.toPath();
+
+		CommandResult result = pregameController.loadDeck(path);
+		if (result.statusCode() == ResultCode.ACCEPT) updateDeckUsingController();
+		errorLabel.setText(result.message());
+	}
+
+	private void updateCardGraphicsWithDeckInfo(DeckInfo deckInfo) {
+		for (CardTypes cardTypes : deckInfo.getStorage()) {
+			VBox vBox = (VBox) cardsPane.getContent();
+			for (int i = 0; i < vBox.getChildren().size(); i++) {
+				HBox hBox = (HBox) vBox.getChildren().get(i);
+				for (Node node : hBox.getChildren()) {
+					VBox cardVBox = (VBox) node;
+					if (((CardGraphics) cardVBox.getChildren().get(0)).getCard().getName().equals(cardTypes.getInstance().getName())) {
+						HBox detailsHBox = (HBox) cardVBox.getChildren().get(1);
+						Label countLabel = (Label) detailsHBox.getChildren().get(1);
+						int count = Integer.parseInt(countLabel.getText().split("/")[0]);
+						countLabel.setText(count + 1 + "/" + cardTypes.getInstance().getNoOfCards());
+					}
+				}
+			}
+		}
+	}
+
+	public void saveUsingPath(MouseEvent mouseEvent) {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Save Deck File");
+		fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Deck Files",
+			"*.deck"));
+
+		File file = fileChooser.showSaveDialog(ViewLoader.getStage());
+		if (file != null) {
+			pregameController.setDeck(getDeckInfo());
+			CommandResult result = pregameController.saveDeck(file.toPath());
+			errorLabel.setText(result.message());
+		}
 	}
 }

@@ -119,4 +119,8 @@ public class CardGraphics extends VBox {
 		Background background = new Background(backgroundImage);
 		this.setBackground(background);
 	}
+
+	public Card getCard() {
+		return card;
+	}
 }

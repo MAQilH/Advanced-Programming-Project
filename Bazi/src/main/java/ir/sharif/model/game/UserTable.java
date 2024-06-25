@@ -9,7 +9,7 @@ public class UserTable {
     private final int Score;
 
     public UserTable(DeckInfo deckInfo) {
-        this.leader = deckInfo.getLeader();
+        this.leader = deckInfo.getLeader().getInstance();
         this.siege = new Row();
         this.ranged = new Row();
         this.closeCombat = new Row();

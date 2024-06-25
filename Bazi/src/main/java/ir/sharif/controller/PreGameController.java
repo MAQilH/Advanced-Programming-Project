@@ -227,7 +227,7 @@ public class PreGameController {
         return new CommandResult(ResultCode.ACCEPT, "game started successfully");
     }
 
-    private DeckInfo getDeck(){
+    public DeckInfo getDeck(){
         return UserService.getInstance().getCurrentUser().getDeckInfo();
     }
 }

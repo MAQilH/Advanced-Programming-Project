@@ -14,21 +14,18 @@
 
 <VBox alignment="CENTER" prefHeight="600" prefWidth="800.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Label text="Login">
-            <font>
-                <Font name="Apple Braille" size="43.0" />
-            </font>
+        <Label text="Login" styleClass="title-label">
         </Label>
-      <TextField fx:id="usernameTextField" maxWidth="250.0" promptText="Username:" />
+      <TextField styleClass="ancient" fx:id="usernameTextField" maxWidth="250.0" promptText="Username:" />
       <PasswordField fx:id="passwordTextField" maxWidth="250.0" promptText="Password:" />
       <HBox alignment="CENTER" prefHeight="96.0" prefWidth="300.0" spacing="10.0">
          <children>
-            <Button mnemonicParsing="false" onMouseClicked="#loginButtonPress" text="Login">
+            <Button styleClass="ancient" mnemonicParsing="false" onMouseClicked="#loginButtonPress" text="Login">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onMouseClicked="#backButtonPress" text="Back" />
+            <Button styleClass="ancient" mnemonicParsing="false" onMouseClicked="#backButtonPress" text="Back" />
          </children>
          <VBox.margin>
             <Insets />
