@@ -26,7 +26,6 @@ public class MatchTable {
         users[1] = user1;
         lives[0] = lives[1] = 2;
         vetoesLeft[0] = vetoesLeft[1] = 2;
-
     }
 
     public int getTurn() {

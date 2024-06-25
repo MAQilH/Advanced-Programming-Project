@@ -4,14 +4,15 @@ import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.game.*;
 import ir.sharif.model.game.abilities.Spy;
+import ir.sharif.service.GameService;
 
 import java.util.Random;
 
 public class GameController {
     private MatchTable matchTable;
 
-    public GameController(MatchTable matchTable) {
-        this.matchTable = matchTable;
+    public GameController() {
+        this.matchTable = GameService.getInstance().getMatchTable();
     }
 
     public int getRandomNumber(int n) {

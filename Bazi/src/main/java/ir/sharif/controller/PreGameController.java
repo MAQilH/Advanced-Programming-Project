@@ -6,6 +6,7 @@ import ir.sharif.model.CommandResult;
 import ir.sharif.model.User;
 import ir.sharif.model.game.*;
 import ir.sharif.service.AppService;
+import ir.sharif.service.GameService;
 import ir.sharif.service.UserService;
 import ir.sharif.utils.FileSaver;
 import ir.sharif.view.terminal.Menu;
@@ -220,14 +221,24 @@ public class PreGameController {
 
 
     public CommandResult startGame() {
-        CommandResult result = validateDeck(getDeck());
-        if(result.statusCode() == ResultCode.FAILED){
-            return result;
+        DeckInfo deckInfo = getDeck();
+        if(numberOfSoldiers(deckInfo) < 22){
+            return new CommandResult(ResultCode.FAILED, "you should have at least 22 soldiers in your deck");
         }
-        result = validateDeck(enemy.getDeckInfo());
-        if(result.statusCode() == ResultCode.FAILED){
-            return result;
+        if(numberOfSpecial(deckInfo) > 10){
+            return new CommandResult(ResultCode.FAILED, "you should have at most 10 special cards in your deck");
         }
+        DeckInfo enemyDeck = enemy.getDeckInfo();
+        if(numberOfSoldiers(enemyDeck) < 22){
+            return new CommandResult(ResultCode.FAILED, "enemy should have at least 22 soldiers in your deck");
+        }
+        if(numberOfSpecial(enemyDeck) > 10){
+            return new CommandResult(ResultCode.FAILED, "enemy should have at most 10 special cards in your deck");
+        }
+
+        AppService.getInstance().setCurrentMenu(Menus.GameMenu);
+        GameService.getInstance().setMatchTable(new MatchTable(UserService.getInstance().getCurrentUser(), enemy));
+
         return new CommandResult(ResultCode.ACCEPT, "game started successfully");
     }
 
