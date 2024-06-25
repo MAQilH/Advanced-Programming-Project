@@ -19,4 +19,8 @@ public class GameService {
         return matchTable;
     }
 
+    public void setMatchTable(MatchTable matchTable){
+        this.matchTable = matchTable;
+    }
+
 }
