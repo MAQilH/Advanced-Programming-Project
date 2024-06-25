@@ -17,6 +17,7 @@ public class GameController {
     public int getRandomNumber(int n) {
         Random random = new Random();
         return random.nextInt(n);
+        //[0, n)
     }
 
     public CardPosition getCardPositionByRowNumber(int rowNumber) {
@@ -25,7 +26,6 @@ public class GameController {
             case 1 -> CardPosition.RANGED_UNIT;
             case 2 -> CardPosition.SIEGE_UNIT;
             case -1 -> CardPosition.WEATHER;
-            case -2 -> CardPosition.SPELL;
             default -> null;
         };
     }
@@ -43,7 +43,7 @@ public class GameController {
         int answer = 0;
         for(Card card : matchTable.getWeatherCards()) {
             if(card.getName().equals("Torrential rain")) {
-                answer |= 4;
+                answer |= 4;//4 = 2^2 -> bit 2vom 1hast, dar natije male radife 2vom(siege)
             }
             if(card.getName().equals("Impenetrable fog")) {
                 answer |= 2;
@@ -97,6 +97,7 @@ public class GameController {
     }
 
     public CommandResult placeCard(int cardNumber, int rowNumber) {
+        //TODO: do the abilities when they are placed
         if(matchTable.getUserTable(matchTable.getTurn()).getHand().size() <= cardNumber) {
             return new CommandResult(ResultCode.FAILED, "Invalid card number");
         }
@@ -133,15 +134,25 @@ public class GameController {
     }
 
     public CommandResult placeSpyCard(Card card, int rowNumber) {
-        // Implement the logic for placing a spy card
-        //TODO: complete this
-        return null;
+        int player = 1 - matchTable.getTurn();
+        matchTable.getUserTable(player).getRowByNumber(rowNumber).addCard(card);
+        player = 1 - player;
+        for(int i = 0; i < 2 && !matchTable.getUserTable(player).getDeck().isEmpty(); i++) {
+            int randomNumber = getRandomNumber(matchTable.getUserTable(player).getDeck().size());
+            Card randomCard = matchTable.getUserTable(player).getDeck().get(randomNumber);
+            matchTable.getUserTable(player).getDeck().remove(randomNumber);
+            matchTable.getUserTable(player).getHand().add(randomCard);
+        }
+        return new CommandResult(ResultCode.ACCEPT, "Spy card placed successfully");
+        //done here
     }
 
     public CommandResult placeUnitCard(Card card, int rowNumber) {
-        // Implement the logic for placing a unit card
-        //TODO: complete this
-        return null;
+        int player = matchTable.getTurn();
+        Row row = matchTable.getUserTable(player).getRowByNumber(rowNumber);
+        row.addCard(card);
+        return new CommandResult(ResultCode.ACCEPT, "Unit card placed successfully");
+        //done here
     }
 
     public CommandResult showCommander() {
