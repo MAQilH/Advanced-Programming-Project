@@ -2,6 +2,7 @@ package ir.sharif.controller;
 
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
+import ir.sharif.model.User;
 import ir.sharif.model.game.*;
 import ir.sharif.model.game.abilities.Spy;
 
@@ -184,8 +185,44 @@ public class GameController {
         return null;
     }
 
+
+
     public CommandResult passTurn() {
         // Implement the logic for passing the turn
+        matchTable.changeTurn();
+        if(matchTable.isPreviousRoundPassed()){
+                finishRound();
+                return new CommandResult(ResultCode.ACCEPT, "Round finished successfully");
+        }
+        matchTable.setPreviousRoundPassed(true);
+        return new CommandResult(ResultCode.ACCEPT, "Turn passed successfully");
+    }
+
+    private CommandResult startRound(){
+        int winner = getRoundWinner();
+
         return null;
+    }
+
+    private CommandResult finishRound(){
+        int winner = getRoundWinner();
+        if(winner != 0) matchTable.decreaseLife(0);
+        if(winner != 1) matchTable.decreaseLife(1);
+
+
+        return null;
+    }
+
+    private int getRoundWinner(){
+        int firstUserPower = matchTable.getUserTable(0).getPower();
+        int secondUserPower = matchTable.getUserTable(1).getPower();
+        if(firstUserPower > secondUserPower) return firstUserPower;
+        if(secondUserPower > firstUserPower) return secondUserPower;
+        Faction firstUserFaction = matchTable.getUserTable(0).getFaction();
+        Faction secondUserFaction = matchTable.getUserTable(1).getFaction();
+        if(firstUserFaction == secondUserFaction) return -1;
+        if(firstUserFaction == Faction.NILFGAARDIAN_EMPIRE) return 0;
+        if(secondUserFaction == Faction.NILFGAARDIAN_EMPIRE) return 1;
+        return -1;
     }
 }
