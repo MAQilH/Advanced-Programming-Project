@@ -18,6 +18,6 @@
        <HBox fx:id="row3" layoutX="519.0" layoutY="314.0" minHeight="85.0" maxHeight="85.0" minWidth="590.0" maxWidth="590.0" spacing="5" alignment="CENTER" />
        <HBox fx:id="row4" layoutX="517.0" layoutY="415.0" minHeight="85.0" maxHeight="85.0" minWidth="590.0" maxWidth="590.0" spacing="5" alignment="CENTER" />
        <HBox fx:id="row5" layoutX="519.0" layoutY="513.0" minHeight="85.0" maxHeight="85.0" minWidth="590.0" maxWidth="590.0" spacing="5" alignment="CENTER" />
-       <HBox fx:id="deck" layoutX="419.0" layoutY="611.0" minHeight="100.0" maxHeight="100.0" minWidth="687.0" maxWidth="687.0" spacing="5" alignment="CENTER" />
+       <HBox fx:id="hand" layoutX="419.0" layoutY="611.0" minHeight="100.0" maxHeight="100.0" minWidth="687.0" maxWidth="687.0" spacing="5" alignment="CENTER" />
    </children>
 </Pane>

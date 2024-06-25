@@ -6,6 +6,7 @@ import ir.sharif.controller.PreGameController;
 import ir.sharif.controller.RegisterController;
 import ir.sharif.model.game.CardTypes;
 import ir.sharif.service.BackgroundMusicService;
+import ir.sharif.service.GameService;
 import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.view.controllers.Game;
 import ir.sharif.view.game.CardGraphics;
@@ -40,10 +41,8 @@ public class GUIApplication extends Application {
 		System.err.println(preGameController.loadDeck("test").statusCode());
 		System.err.println(preGameController.startGame().statusCode());
 
-		GameController controller = new GameController();
-		System.err.println(controller.getCurrentUserTable(true).getDeck());
+		GameService.getInstance().createController();
 		ViewLoader.newScene("game");
-
 	}
 
 	public static void main(String[] args) {

@@ -330,9 +330,13 @@ public class GameController {
         return -1;
     }
 
-    public UserTable getCurrentUserTable(boolean isCurrentPlayer) {
-        return matchTable.getUserTable(matchTable.getTurn() ^ (isCurrentPlayer ? 0 : 1));
+    public UserTable getCurrentUserTable() {
+        return matchTable.getUserTable(matchTable.getTurn() ^ 1);
     }
+
+	public UserTable getOpponentUserTable() {
+		return matchTable.getUserTable(matchTable.getTurn());
+	}
 
     public UserTable getUserUserTable(int playerNumber) {
         return matchTable.getUserTable(playerNumber);

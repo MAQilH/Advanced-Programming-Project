@@ -2,8 +2,13 @@ package ir.sharif.utils;
 
 public class Random {
     public static int getRandomInt(int min, int max) {
-        return (int) (Math.random() * (max - min + 1) + min);
+        return (int) (Math.random() * (max - min) + min);
     }
+
+	public static int getRandomInt(int max) {
+		return getRandomInt(0, max);
+	}
+
 
     public static String getRandomPassword() {
 		// generate a random password with length 16 containing digits, lowercase and uppercase and special characters

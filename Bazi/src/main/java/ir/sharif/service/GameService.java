@@ -1,12 +1,15 @@
 package ir.sharif.service;
 
+import ir.sharif.controller.GameController;
 import ir.sharif.model.game.MatchTable;
+import ir.sharif.view.controllers.Game;
 
 public class GameService {
     private GameService() {}
 
     private static GameService instance;
     private MatchTable matchTable;
+	private GameController controller;
 
     public static GameService getInstance() {
         if (instance == null) {
@@ -23,4 +26,11 @@ public class GameService {
         this.matchTable = matchTable;
     }
 
+	public void createController() {
+		controller = new GameController();
+	}
+
+	public GameController getController() {
+		return controller;
+	}
 }
