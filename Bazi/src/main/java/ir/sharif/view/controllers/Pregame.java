@@ -208,10 +208,14 @@ public class Pregame {
 			VBox vBox = (VBox) cardsPane.getContent();
 			for (int i = 0; i < vBox.getChildren().size(); i++) {
 				HBox hBox = (HBox) vBox.getChildren().get(i);
-				Label countLabel = (Label) hBox.getChildren().get(1);
-				int count = Integer.parseInt(countLabel.getText().split("/")[0]);
-				if (cardTypes.getInstance().getName().equals(((CardGraphics) ((VBox) hBox.getChildren().get(0)).getChildren().get(0)).getCard().getName())) {
-					countLabel.setText(count + 1 + "/" + cardTypes.getInstance().getNoOfCards());
+				for (Node node : hBox.getChildren()) {
+					VBox cardVBox = (VBox) node;
+					if (((CardGraphics) cardVBox.getChildren().get(0)).getCard().getName().equals(cardTypes.getInstance().getName())) {
+						HBox detailsHBox = (HBox) cardVBox.getChildren().get(1);
+						Label countLabel = (Label) detailsHBox.getChildren().get(1);
+						int count = Integer.parseInt(countLabel.getText().split("/")[0]);
+						countLabel.setText(count + 1 + "/" + cardTypes.getInstance().getNoOfCards());
+					}
 				}
 			}
 		}

@@ -26,9 +26,10 @@ public class GUIApplication extends Application {
 		Pane pane = (Pane) (ViewLoader.getStage().getScene().getRoot());
 		//pane.getChildren().add(new CardGraphics(CardTypes.MENNO_COEHOORN_2.getInstance(), 1));
 		//new TerminalGUI(null);
-		BackgroundMusicService.getInstance().playMusic();
+		//BackgroundMusicService.getInstance().playMusic();
 		new RegisterController().register("sohsoh", "Soheil@84", "Soheil@84", "sohsoh", "sohsoh84@gmail.com");
 		new LoginController().login("sohsoh", "Soheil@84", true);
+		ViewLoader.newScene("pregame");
 	}
 
 	public static void main(String[] args) {
