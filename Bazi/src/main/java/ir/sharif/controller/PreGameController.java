@@ -152,6 +152,10 @@ public class PreGameController {
     }
 
     public CommandResult saveDeck(String name) {
+        CommandResult commandResult = validateDeck(getDeck());
+        if(commandResult.statusCode() == ResultCode.FAILED){
+            return commandResult;
+        }
         name += ".deck";
         boolean result = FileSaver.saveObject(getDeck(), name);
         if(!result)
