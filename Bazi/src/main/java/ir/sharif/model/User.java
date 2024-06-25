@@ -2,9 +2,11 @@ package ir.sharif.model;
 
 import ir.sharif.model.game.DeckInfo;
 
+import java.io.Serializable;
 import java.nio.file.Path;
 
-public class User implements Savable {
+public class User implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String username, password, nickname, email, id;
     private SecurityQuestion securityQuestion;
     private DeckInfo deckInfo;
@@ -47,14 +49,6 @@ public class User implements Savable {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
-    }
-
-    @Override
-    public void save(Path path) {}
-
-    @Override
-    public Savable load(Path path) {
-        return null;
     }
 
     public void setUsername(String username) {

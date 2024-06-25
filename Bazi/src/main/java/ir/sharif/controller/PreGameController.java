@@ -51,11 +51,11 @@ public class PreGameController {
     }
 
     public CommandResult showFactions() {
-        DeckInfo deckInfo = UserService.getInstance().getCurrentUser().getDeckInfo();
+        DeckInfo deckInfo = getDeck();
         if(deckInfo.getFaction() == null) {
             return new CommandResult(ResultCode.FAILED, "no faction already selected");
         }
-        return new CommandResult(ResultCode.ACCEPT, UserService.getInstance().getCurrentUser().getDeckInfo().getFaction().name());
+        return new CommandResult(ResultCode.ACCEPT, deckInfo.getFaction().name());
     }
 
     public CommandResult selectFaction(String factionName) {
@@ -63,7 +63,7 @@ public class PreGameController {
         if(faction == null){
             return new CommandResult(ResultCode.NOT_FOUND, "faction not found");
         }
-        DeckInfo deckInfo = UserService.getInstance().getCurrentUser().getDeckInfo();
+        DeckInfo deckInfo = getDeck();
         deckInfo.setFaction(faction);
         deckInfo.clearStorage();
         return new CommandResult(ResultCode.ACCEPT, "faction selected successfully");
@@ -71,7 +71,7 @@ public class PreGameController {
 
 //    public CommandResult showCards() {
 //        HashMap<Card, Integer> map = new HashMap<>();
-//        DeckInfo deckInfo = UserService.getInstance().getCurrentUser().getDeckInfo();
+//        DeckInfo deckInfo = getDeck();
 //        for(CardTypes card: deckInfo.getStorage()){
 //            map.put(card, map.getOrDefault(card, 0) + 1);
 //        }
@@ -133,7 +133,7 @@ public class PreGameController {
     }
 
     public CommandResult showInfoCurrentUser() {
-        DeckInfo deckInfo = UserService.getInstance().getCurrentUser().getDeckInfo();
+        DeckInfo deckInfo = getDeck();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", UserService.getInstance().getCurrentUser().getUsername());
         jsonObject.put("faction", deckInfo.getFaction().name());
@@ -152,22 +152,26 @@ public class PreGameController {
     }
 
     public CommandResult saveDeck(String name) {
-        name += ".ser";
-        boolean result = FileSaver.saveObject(UserService.getInstance().getCurrentUser().getDeckInfo(), name);
+        name += ".deck";
+        boolean result = FileSaver.saveObject(getDeck(), name);
         if(!result)
             return new CommandResult(ResultCode.FAILED, "error in saving deck");
         return new CommandResult(ResultCode.ACCEPT, "deck saved successfully");
     }
 
     public CommandResult saveDeck(Path path) {
-        boolean result = FileSaver.saveObject(UserService.getInstance().getCurrentUser().getDeckInfo(), path);
+        CommandResult commandResult = validateDeck(getDeck());
+        if(commandResult.statusCode() == ResultCode.FAILED){
+            return commandResult;
+        }
+        boolean result = FileSaver.saveObject(getDeck(), path);
         if(!result)
             return new CommandResult(ResultCode.FAILED, "error in saving deck");
         return new CommandResult(ResultCode.ACCEPT, "deck saved successfully");
     }
 
     public CommandResult loadDeck(String name) {
-        name += ".ser";
+        name += ".deck";
         DeckInfo deckInfo;
         try{
             deckInfo = (DeckInfo) FileSaver.loadObject(name);
@@ -212,7 +216,7 @@ public class PreGameController {
 
 
     public CommandResult startGame() {
-        CommandResult result = validateDeck(UserService.getInstance().getCurrentUser().getDeckInfo());
+        CommandResult result = validateDeck(getDeck());
         if(result.statusCode() == ResultCode.FAILED){
             return result;
         }
