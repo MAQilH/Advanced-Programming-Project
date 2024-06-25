@@ -12,6 +12,8 @@ public class MatchTable {
     private final ArrayList<Card> weatherCards;
     int turn, roundNumber;
 
+    private boolean previousRoundPassed;
+
     public MatchTable(User user0, User user1) {
         turn = 0;
         roundNumber = 0;
@@ -26,7 +28,7 @@ public class MatchTable {
         users[1] = user1;
         lives[0] = lives[1] = 2;
         vetoesLeft[0] = vetoesLeft[1] = 2;
-
+        previousRoundPassed = false;
     }
 
     public int getTurn() {
@@ -89,4 +91,11 @@ public class MatchTable {
         return users[playerNumber];
     }
 
+    public boolean isPreviousRoundPassed() {
+        return previousRoundPassed;
+    }
+
+    public void setPreviousRoundPassed(boolean previousRoundPassed) {
+        this.previousRoundPassed = previousRoundPassed;
+    }
 }

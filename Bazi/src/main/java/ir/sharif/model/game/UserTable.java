@@ -4,18 +4,26 @@ import java.util.ArrayList;
 
 public class UserTable {
     private final Leader leader;
+    private final Faction faction;
     private final Row siege, ranged, closeCombat;
     private final ArrayList<Card> outOfPlays, hand, deck;
+    private int Score;
 
     public UserTable(DeckInfo deckInfo) {
         this.leader = deckInfo.getLeader().getInstance();
+        faction = deckInfo.getFaction();
         this.siege = new Row();
         this.ranged = new Row();
         this.closeCombat = new Row();
         this.outOfPlays = new ArrayList<>();
         this.hand = new ArrayList<>();
         this.deck = new ArrayList<>();
+        this.Score = 0;
         //TODO: add random cards to hand using deckInfo
+    }
+
+    public int getPower(){
+        return 0;
     }
 
     public Leader getLeader() {
@@ -138,4 +146,7 @@ public class UserTable {
         return deck.get(index);
     }
 
+    public Faction getFaction() {
+        return faction;
+    }
 }
