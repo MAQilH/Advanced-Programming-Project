@@ -95,7 +95,7 @@ public class Pregame {
 	private VBox createCardAdder(CardTypes type) {
 		VBox vBox = new VBox();
 		vBox.setSpacing(10);
-		vBox.getChildren().add(new CardGraphics(type.getInstance(), 1));
+		vBox.getChildren().add(new CardGraphics(type.getInstance(), 300));
 
 		HBox hBox = new HBox();
 		hBox.setAlignment(Pos.CENTER);
