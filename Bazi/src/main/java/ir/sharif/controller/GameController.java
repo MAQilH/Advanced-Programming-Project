@@ -6,6 +6,7 @@ import ir.sharif.model.User;
 import ir.sharif.model.game.*;
 import ir.sharif.model.game.abilities.Spy;
 import ir.sharif.model.game.abilities.Transformers;
+import ir.sharif.service.GameService;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -13,9 +14,9 @@ import java.util.Random;
 public class GameController {
     private MatchTable matchTable;
 
-    public GameController(MatchTable matchTable) {
+    public GameController() {
         // TODO: matchTable must read from game service
-        this.matchTable = matchTable;
+        this.matchTable = GameService.getInstance().getMatchTable();
     }
 
     public int getRandomNumber(int n) {
