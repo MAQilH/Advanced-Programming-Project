@@ -128,6 +128,7 @@ public class GameController {
     }
 
     public CommandResult placeSpellCard(Card card, int rowNumber) {
+        //TODO: execute what is does(maybe it is not needed)
         int player = matchTable.getTurn();
         matchTable.getUserTable(player).getRowByNumber(rowNumber).setSpell(card);
         return new CommandResult(ResultCode.ACCEPT, "Spell card placed successfully");
@@ -135,6 +136,7 @@ public class GameController {
     }
 
     public CommandResult placeSpyCard(Card card, int rowNumber) {
+        //TODO: I can do its action by executing the ability
         int player = 1 - matchTable.getTurn();
         matchTable.getUserTable(player).getRowByNumber(rowNumber).addCard(card);
         player = 1 - player;
@@ -149,6 +151,7 @@ public class GameController {
     }
 
     public CommandResult placeUnitCard(Card card, int rowNumber) {
+        //TODO: execute ability
         int player = matchTable.getTurn();
         Row row = matchTable.getUserTable(player).getRowByNumber(rowNumber);
         row.addCard(card);
