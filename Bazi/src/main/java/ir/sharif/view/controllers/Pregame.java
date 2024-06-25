@@ -1,5 +1,6 @@
 package ir.sharif.view.controllers;
 
+import eu.hansolo.tilesfx.Command;
 import ir.sharif.controller.PreGameController;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
@@ -9,10 +10,7 @@ import ir.sharif.view.game.CardGraphics;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -35,8 +33,11 @@ public class Pregame {
 	private Label errorLabel;
 	@FXML
 	private TextField deckName;
+	@FXML
+	private Button nextButton;
 
 	private PreGameController pregameController = new PreGameController();
+	private int turn = 0;
 
 	@FXML
 	public void initialize() {
@@ -144,6 +145,8 @@ public class Pregame {
 	}
 
 	DeckInfo getDeckInfo() {
+		if (factionList.getValue() == null || leaderList.getValue() == null)
+			return null;
 		DeckInfo deckInfo = new DeckInfo();
 		deckInfo.setFaction(Faction.findFaction(factionList.getValue().toString()));
 		deckInfo.setLeader(LeaderType.valueOf(leaderList.getValue().toString()));
@@ -231,6 +234,45 @@ public class Pregame {
 		if (file != null) {
 			pregameController.setDeck(getDeckInfo());
 			CommandResult result = pregameController.saveDeck(file.toPath());
+			errorLabel.setText(result.message());
+		}
+	}
+
+	public void next() {
+		if (turn == 0) {
+			CommandResult result = pregameController.setDeck(getDeckInfo());
+			if (result.statusCode() == ResultCode.ACCEPT) {
+				turn = 1;
+				errorLabel.setText("");
+			} else {
+				errorLabel.setText(result.message());
+				return;
+			}
+
+			result = pregameController.changeTurn();
+			if (result.statusCode() == ResultCode.ACCEPT) {
+				nextButton.setText("Start");
+				turn++;
+			} else {
+				errorLabel.setText(result.message());
+			}
+
+			return;
+		}
+
+		CommandResult result = pregameController.setDeck(getDeckInfo());
+		if (result.statusCode() == ResultCode.ACCEPT) {
+			errorLabel.setText("");
+		} else {
+			errorLabel.setText(result.message());
+			return;
+		}
+
+		result = pregameController.startGame();
+		if (result.statusCode() == ResultCode.ACCEPT) {
+			errorLabel.setText("game started successfully");
+			ViewLoader.newScene("game");
+		} else {
 			errorLabel.setText(result.message());
 		}
 	}
