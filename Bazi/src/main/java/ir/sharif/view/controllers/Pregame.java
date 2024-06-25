@@ -251,6 +251,7 @@ public class Pregame {
 				return;
 			}
 
+			System.err.println(getDeckInfo());
 			result = pregameController.changeTurn();
 			if (result.statusCode() == ResultCode.ACCEPT) {
 				nextButton.setText("Start");
