@@ -7,6 +7,7 @@ import ir.sharif.model.game.*;
 import ir.sharif.model.game.abilities.Spy;
 import ir.sharif.model.game.abilities.Transformers;
 import ir.sharif.service.GameService;
+import ir.sharif.utils.ConstantsLoader;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -16,6 +17,7 @@ public class GameController {
 
     public GameController() {
         this.matchTable = GameService.getInstance().getMatchTable();
+        startGame();
     }
 
     public int getRandomNumber(int n) {
@@ -294,6 +296,16 @@ public class GameController {
 
     private void startGame(){
         startRound(-1);
+
+        for (int playerIndex = 0; playerIndex < 2; playerIndex++) {
+            int startNumberOfCard = Integer.parseInt(ConstantsLoader.getInstance().getProperty("game.start_number_card"));
+            for(int cardIndex = 0; cardIndex < startNumberOfCard; cardIndex++){
+                int randomNumber = getRandomNumber(matchTable.getUserTable(playerIndex).getDeck().size());
+                Card randomCard = matchTable.getUserTable(playerIndex).getDeck().get(randomNumber);
+                matchTable.getUserTable(playerIndex).getDeck().remove(randomNumber);
+                matchTable.getUserTable(playerIndex).getHand().add(randomCard);
+            }
+        }
     }
 
     private void finishGame(){

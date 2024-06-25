@@ -7,7 +7,6 @@ public class UserTable {
     private final Faction faction;
     private final Row siege, ranged, closeCombat;
     private final ArrayList<Card> outOfPlays, hand, deck;
-    private int Score;
 
     public UserTable(DeckInfo deckInfo) {
         this.leader = deckInfo.getLeader().getInstance();
@@ -18,7 +17,10 @@ public class UserTable {
         this.outOfPlays = new ArrayList<>();
         this.hand = new ArrayList<>();
         this.deck = new ArrayList<>();
-        this.Score = 0;
+        for (CardTypes cardTypes : deckInfo.getStorage()) {
+            deck.add(cardTypes.getInstance());
+        }
+
         //TODO: add random cards to hand using deckInfo
     }
 
