@@ -10,4 +10,14 @@ public class Leader {
         this.faction = faction;
         this.ability = ability;
     }
+
+    public Ability getAbility() {
+        return ability;
+    }
+    public Faction getFaction() {
+        return faction;
+    }
+    public String getName() {
+        return name;
+    }
 }
