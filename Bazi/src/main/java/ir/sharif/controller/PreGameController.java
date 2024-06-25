@@ -205,6 +205,9 @@ public class PreGameController {
     public CommandResult changeTurn() {
         User temp = UserService.getInstance().getCurrentUser();
         DeckInfo deckInfo = getDeck();
+        if(deckInfo == null){
+            return new CommandResult(ResultCode.FAILED, "you should have a deck");
+        }
         if(numberOfSoldiers(deckInfo) < 22){
             return new CommandResult(ResultCode.FAILED, "you should have at least 22 soldiers in your deck");
         }
@@ -217,6 +220,9 @@ public class PreGameController {
     }
 
     public CommandResult validateDeck(DeckInfo deckInfo){
+        if(deckInfo == null){
+            return new CommandResult(ResultCode.FAILED, "you should have a deck");
+        }
         if(numberOfSoldiers(deckInfo) < 22){
             return new CommandResult(ResultCode.FAILED, "you should have at least 22 soldiers in your deck");
         }
@@ -229,6 +235,8 @@ public class PreGameController {
 
     public CommandResult startGame() {
         DeckInfo deckInfo = getDeck();
+        if(deckInfo == null)
+            return new CommandResult(ResultCode.FAILED, "you should have a deck");
         if(numberOfSoldiers(deckInfo) < 22){
             return new CommandResult(ResultCode.FAILED, "you should have at least 22 soldiers in your deck");
         }
@@ -236,6 +244,8 @@ public class PreGameController {
             return new CommandResult(ResultCode.FAILED, "you should have at most 10 special cards in your deck");
         }
         DeckInfo enemyDeck = enemy.getDeckInfo();
+        if(enemyDeck == null)
+            return new CommandResult(ResultCode.FAILED, "you should have a deck");
         if(numberOfSoldiers(enemyDeck) < 22){
             return new CommandResult(ResultCode.FAILED, "enemy should have at least 22 soldiers in your deck");
         }
