@@ -53,19 +53,22 @@ public class CardGraphics extends VBox {
 			icons.getChildren().add(loadIcon(card.getAbility().getClass().getSimpleName()));
 		}
 
-		setBackground();
-
 		nameLabel = new Label(card.getName());
 		nameLabel.getStyleClass().add("name"); // Add the style class to the Label
 
 		setAlignment(Pos.CENTER);
 
 		imageView = new ImageView();
-		InputStream imageStream = getClass().getResourceAsStream("/images/hero.png");
-		Image image = new Image(imageStream, width, height, false, true);
-		imageView.setImage(image);
-		imageView.setFitHeight(height * 2 / 3);
-		imageView.getStyleClass().add("image"); // Add the style class to the ImageView
+		String faction = (card.getFaction() == null ? "neutral" : card.getFaction().toString().toLowerCase());
+		if (faction.equals("nilfgaardian_empire")) faction = "nilfgaard";
+		String fileName = "/images/sm/" + faction + "_" + CardTypes.getCardType(card.getName()).toString().toLowerCase() + ".jpg";
+		try {
+			setBackground(fileName);
+		} catch (Exception e) {
+			System.err.println("Error loading image: " + fileName);
+			setBackground("/images/old_card.png");
+		}
+
 		this.getChildren().addAll(icons, imageView, nameLabel);
 	}
 
@@ -107,15 +110,15 @@ public class CardGraphics extends VBox {
 		}
 	}
 
-	private void setBackground() {
-		Image image = new Image(ViewLoader.class.getResource("/images/old_card.png").toExternalForm(),
-			ConstantsLoader.getInstance().getMenuWidth(), ConstantsLoader.getInstance().getMenuHeight(),
+	private void setBackground(String path) {
+		Image image = new Image(ViewLoader.class.getResource(path).toExternalForm(),
+			width, height,
 			false, false);
 
 		BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT,
 			BackgroundRepeat.NO_REPEAT,
 			BackgroundPosition.DEFAULT,
-			BackgroundSize.DEFAULT);;
+			BackgroundSize.DEFAULT);
 		Background background = new Background(backgroundImage);
 		this.setBackground(background);
 	}
