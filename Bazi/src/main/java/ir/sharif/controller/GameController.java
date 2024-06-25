@@ -5,13 +5,16 @@ import ir.sharif.model.CommandResult;
 import ir.sharif.model.User;
 import ir.sharif.model.game.*;
 import ir.sharif.model.game.abilities.Spy;
+import ir.sharif.model.game.abilities.Transformers;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class GameController {
     private MatchTable matchTable;
 
     public GameController(MatchTable matchTable) {
+        // TODO: matchTable must read from game service
         this.matchTable = matchTable;
     }
 
@@ -202,7 +205,7 @@ public class GameController {
 
 
     public CommandResult passTurn() {
-        // Implement the logic for passing the turn
+
         matchTable.changeTurn();
         if(matchTable.isPreviousRoundPassed()){
                 finishRound();
@@ -212,19 +215,94 @@ public class GameController {
         return new CommandResult(ResultCode.ACCEPT, "Turn passed successfully");
     }
 
-    private CommandResult startRound(){
-        int winner = getRoundWinner();
-
-        return null;
-    }
-
-    private CommandResult finishRound(){
+    private void finishRound(){
         int winner = getRoundWinner();
         if(winner != 0) matchTable.decreaseLife(0);
         if(winner != 1) matchTable.decreaseLife(1);
+        if(matchTable.getLife(0) == 0 || matchTable.getLife(1) == 0){
+            finishGame();
+            return;
+        }
+        matchTable.changeRound();
+        startRound(winner);
+    }
 
+    private void startRound(int winner){
+        // TODO: call graphical controller for this changes
+        if(matchTable.getRoundNumber() == 0){
+            ArrayList<Integer> scoiataelUsers = new ArrayList<>();
+            for (int userIndex = 0; userIndex < 2; userIndex++) {
+                if(matchTable.getUserTable(userIndex).getFaction() == Faction.SCOIATAEL) scoiataelUsers.add(userIndex);
+            }
+            if(scoiataelUsers.isEmpty() || scoiataelUsers.size() == 2){
+                matchTable.setTurn(getRandomNumber(2));
+            } else {
+                matchTable.setTurn(scoiataelUsers.get(0));
+            }
+        }
 
-        return null;
+        for (int userIndex = 0; userIndex < 2; userIndex++) {
+            UserTable userTable = matchTable.getUserTable(userIndex);
+            Card heroRemain = null;
+            if(userTable.getFaction() == Faction.MONSTERS) {
+                ArrayList<Card> heroCards = userTable.getHeroesCard();
+                heroRemain = heroCards.get(getRandomNumber(heroCards.size()));
+            }
+
+            for (int rowIndex = 0; rowIndex < 3; rowIndex++) {
+                Row row = userTable.getRowByNumber(rowIndex);
+                ArrayList<Card> rowCards = new ArrayList<>(row.getCards());
+                for (Card card : rowCards) {
+                    boolean canDelete = true;
+                    if(card == heroRemain) canDelete = false;
+                    if(card.getAbility() instanceof Transformers){
+                        Transformers transformers = (Transformers) card.getAbility();
+                        if(!transformers.isConverted()) {
+                            canDelete = false;
+                            transformers.execute();
+                        }
+                    }
+                    if(canDelete){
+                        userTable.addOutOfPlay(card);
+                        row.removeCard(card);
+                    }
+                }
+                if(row.getSpell() != null) {
+                    userTable.addOutOfPlay(row.getSpell());
+                    row.setSpell(null);
+                }
+            }
+            if(userTable.getFaction() == Faction.NORTHEN_REALMS && winner == userIndex){
+                Card newAddedCard = userTable.getDeck().get(getRandomNumber(userTable.getDeck().size()));
+                if(newAddedCard != null){
+                    userTable.getDeck().remove(newAddedCard);
+                    userTable.addHand(newAddedCard);
+                }
+            }
+
+            if(userTable.getFaction() == Faction.SKELLIGE && matchTable.getRoundNumber() == 2){
+                for (int addedCardIndex = 0; addedCardIndex < 2; addedCardIndex++) {
+                    Card newAddedCard = userTable.getOutOfPlays().get(getRandomNumber(userTable.getOutOfPlays().size()));
+                    if(newAddedCard != null){
+                        userTable.getOutOfPlays().remove(newAddedCard);
+                        userTable.addHand(newAddedCard);
+                    }
+                }
+            }
+        }
+    }
+
+    private void startGame(){
+        startRound(-1);
+    }
+
+    private void finishGame(){
+        int gameWinner;
+        if(matchTable.getLife(0) == matchTable.getLife(1)) gameWinner = -1;
+        else if(matchTable.getLife(0) > matchTable.getLife(1)) gameWinner = 0;
+        else gameWinner = 1;
+
+        // TODO: return winner to the graphical controller
     }
 
     private int getRoundWinner(){
@@ -238,5 +316,13 @@ public class GameController {
         if(firstUserFaction == Faction.NILFGAARDIAN_EMPIRE) return 0;
         if(secondUserFaction == Faction.NILFGAARDIAN_EMPIRE) return 1;
         return -1;
+    }
+
+    public UserTable getCurrentUserTable(boolean isCurrentPlayer) {
+        return matchTable.getUserTable(matchTable.getTurn() ^ (isCurrentPlayer ? 0 : 1));
+    }
+
+    public UserTable getUserUserTable(int playerNumber) {
+        return matchTable.getUserTable(playerNumber);
     }
 }

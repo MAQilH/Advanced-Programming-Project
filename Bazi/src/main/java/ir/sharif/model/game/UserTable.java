@@ -23,6 +23,15 @@ public class UserTable {
     }
 
     public int getPower(){
+        return getRowPower(closeCombat) + getRowPower(ranged) + getRowPower(siege);
+    }
+
+    public int getRowPower(Row row){
+//        for()
+        return 0;
+    }
+
+    public int getCardPower(Card card, Row row){
         return 0;
     }
 
@@ -148,5 +157,25 @@ public class UserTable {
 
     public Faction getFaction() {
         return faction;
+    }
+
+    public ArrayList<Card> getAllPlayedCard(){
+        ArrayList<Card> allPlayedCard = new ArrayList<>();
+        for (int rowIndex = 0; rowIndex < 3; rowIndex++) {
+            Row row = getRowByNumber(rowIndex);
+            allPlayedCard.addAll(row.getCards());
+            if (row.getSpell() != null)
+                allPlayedCard.add(row.getSpell());
+        }
+        return allPlayedCard;
+    }
+
+    public ArrayList<Card> getHeroesCard(){
+        ArrayList<Card> heroes = new ArrayList<>();
+        for (Card card : getAllPlayedCard()) {
+            if (card.isHero())
+                heroes.add(card);
+        }
+        return heroes;
     }
 }

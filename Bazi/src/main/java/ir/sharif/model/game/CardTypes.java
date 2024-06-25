@@ -152,7 +152,6 @@ public enum CardTypes {
     COMMANDERS_HORN("Commander’s horn", 0, 3, CardPosition.SPELL, null, null, false),
     DECOY("Decoy", 0, 3, CardPosition.SPELL, null, null, false),
     DANDELION("Dandelion", 2, 1, CardPosition.CLOSE_COMBAT_UNIT, new CommandersHorn(), null, false),
-    COW("Cow", 0, 1, CardPosition.RANGED_UNIT, new Transformers(), null, false),
     EMIEL_REGIS("Emiel Regis", 5, 1, CardPosition.CLOSE_COMBAT_UNIT, null, null, false),
     GAUNTER_ODIMM("Gaunter O’Dimm", 2, 1, CardPosition.SIEGE_UNIT, new Muster(), null, false),
     GAUNTER_ODIMM_DARKNESS("Gaunter O’DImm Darkness", 4, 3, CardPosition.RANGED_UNIT, new Muster(), null, false),
