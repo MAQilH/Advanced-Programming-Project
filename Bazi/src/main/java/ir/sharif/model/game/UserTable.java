@@ -36,28 +36,28 @@ public class UserTable {
         closeCombat.addCard(card);
     }
 
-    public void setSpecialSiege(Card card) {
-        siege.setSpecialCard(card);
+    public void setSpellSiege(Card card) {
+        siege.setSpell(card);
     }
 
-    public void setSpecialRanged(Card card) {
-        ranged.setSpecialCard(card);
+    public void setSpellRanged(Card card) {
+        ranged.setSpell(card);
     }
 
-    public void setSpecialCloseCombat(Card card) {
-        closeCombat.setSpecialCard(card);
+    public void setSpellCloseCombat(Card card) {
+        closeCombat.setSpell(card);
     }
 
-    public Card getSpecialSiege() {
-        return siege.getSpecialCard();
+    public Card getSpellSiege() {
+        return siege.getSpell();
     }
 
-    public Card getSpecialRanged() {
-        return ranged.getSpecialCard();
+    public Card getSpellRanged() {
+        return ranged.getSpell();
     }
 
-    public Card getSpecialCloseCombat() {
-        return closeCombat.getSpecialCard();
+    public Card getSpellCloseCombat() {
+        return closeCombat.getSpell();
     }
 
     public Row getSiege() {

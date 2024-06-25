@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class Row {
 
-    private Card specialCard;
+    private Card spell;
     private final ArrayList<Card> cards;
 
     public Row() {
         cards = new ArrayList<>();
-        specialCard = null;
+        spell = null;
     }
 
     public void addCard(Card card) {
@@ -24,12 +24,12 @@ public class Row {
         return cards;
     }
 
-    public void setSpecialCard(Card specialCard) {
-        this.specialCard = specialCard;
+    public void setSpell(Card spell) {
+        this.spell = spell;
     }
 
-    public Card getSpecialCard() {
-        return specialCard;
+    public Card getSpell() {
+        return spell;
     }
 
 }

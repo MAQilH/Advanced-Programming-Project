@@ -127,7 +127,7 @@ public class GameController {
 
     public CommandResult placeSpellCard(Card card, int rowNumber) {
         int player = matchTable.getTurn();
-        matchTable.getUserTable(player).getRowByNumber(rowNumber).setSpecialCard(card);
+        matchTable.getUserTable(player).getRowByNumber(rowNumber).setSpell(card);
         return new CommandResult(ResultCode.ACCEPT, "Spell card placed successfully");
         //done here
     }
