@@ -61,6 +61,7 @@ public class CardGraphics extends VBox {
 		imageView = new ImageView();
 		String faction = (card.getFaction() == null ? "neutral" : card.getFaction().toString().toLowerCase());
 		if (faction.equals("nilfgaardian_empire")) faction = "nilfgaard";
+		if (faction.equals("northen_realms")) faction = "realms";
 		String fileName = "/images/sm/" + faction + "_" + CardTypes.getCardType(card.getName()).toString().toLowerCase() + ".jpg";
 		try {
 			setBackground(fileName);
