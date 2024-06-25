@@ -17,7 +17,7 @@ import javafx.scene.text.Text;
 
 import java.io.InputStream;
 
-public class CardGraphics extends VBox {
+public class CardGraphics extends Pane {
 	private final Card card;
 	private final int width;
 	private final int height;
@@ -56,11 +56,11 @@ public class CardGraphics extends VBox {
 		nameLabel = new Label(card.getName());
 		nameLabel.getStyleClass().add("name"); // Add the style class to the Label
 
-		setAlignment(Pos.CENTER);
 
 		imageView = new ImageView();
 		String faction = (card.getFaction() == null ? "neutral" : card.getFaction().toString().toLowerCase());
 		if (faction.equals("nilfgaardian_empire")) faction = "nilfgaard";
+		if (faction.equals("northen_realms")) faction = "realms";
 		String fileName = "/images/sm/" + faction + "_" + CardTypes.getCardType(card.getName()).toString().toLowerCase() + ".jpg";
 		try {
 			setBackground(fileName);
@@ -75,20 +75,6 @@ public class CardGraphics extends VBox {
 	public void scale(Node node, double scale) {
 		this.setScaleX(scale);
 		this.setScaleY(scale);
-//		nameLabel.setScaleX(scale);
-//		nameLabel.setScaleY(scale);
-//		imageView.setScaleX(scale);
-//		imageView.setScaleY(scale);
-//		icons.setScaleX(scale);
-//		icons.setScaleY(scale);
-
-		for (Node icon : icons.getChildren()) {
-			if (icon instanceof ImageView) {
-				ImageView iconView = (ImageView) icon;
-				icon.setScaleX(scale);
-				icon.setScaleY(scale);
-			}
-		}
 	}
 
 	public void update() {

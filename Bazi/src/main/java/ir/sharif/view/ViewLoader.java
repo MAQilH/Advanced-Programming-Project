@@ -36,7 +36,8 @@ public class ViewLoader {
 			throw new RuntimeException(e);
 		}
 
-		scene.getStylesheets().add(ViewLoader.class.getResource("/CSS/menu.css").toExternalForm());
+		if (!menuName.equals("game"))
+			scene.getStylesheets().add(ViewLoader.class.getResource("/CSS/menu.css").toExternalForm());
 		System.out.println(scene.getStylesheets());
 		Pane pane = (Pane) scene.getRoot();
 
@@ -71,7 +72,12 @@ public class ViewLoader {
 		}
 
 		stage.show();
-		pane.setBackground(new Background(createBackgroundImage("background.jpg", width, height)));
+		if (!menuName.equals("game"))
+			pane.setBackground(new Background(createBackgroundImage("background.jpg", width, height)));
+		else {
+			pane.setBackground(new Background(createBackgroundImage("board.jpg", width, height)));
+			GameGraphics.getInstance().initialize(pane);
+		}
 	}
 
 	public static void centerStage() {

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane prefHeight="800" prefWidth="1400" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ir.sharif.view.controllers.Game">
+   <children>
+      <ImageView fitHeight="800" fitWidth="1400.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../../../gwent-classic/img/board.jpg" />
+         </image>
+      </ImageView>
+      <HBox fx:id="row0" layoutX="518.0" layoutY="-1.0" prefHeight="102.0" prefWidth="589.0" />
+      <HBox fx:id="row1" layoutX="517.0" layoutY="108.0" prefHeight="85.0" prefWidth="590.0" />
+      <HBox fx:id="row2" layoutX="519.0" layoutY="201.0" prefHeight="85.0" prefWidth="590.0" />
+      <HBox fx:id="row3" layoutX="519.0" layoutY="314.0" prefHeight="85.0" prefWidth="590.0" />
+      <HBox fx:id="row4" layoutX="517.0" layoutY="415.0" prefHeight="85.0" prefWidth="590.0" />
+      <HBox fx:id="row5" layoutX="519.0" layoutY="513.0" prefHeight="85.0" prefWidth="590.0" />
+      <HBox fx:id="deck" layoutX="419.0" layoutY="611.0" prefHeight="100.0" prefWidth="687.0" />
+   </children>
+</Pane>

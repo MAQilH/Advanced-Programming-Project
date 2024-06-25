@@ -48,6 +48,9 @@
           </HBox>
       </children>
 
+        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="1000.0" spacing="15.0">
+            <Button fx:id="nextButton" text="Next" onMouseClicked="#next" />
         <Label fx:id="errorLabel" styleClass="error-label" />
+        </HBox>
     </VBox>
 </Pane>

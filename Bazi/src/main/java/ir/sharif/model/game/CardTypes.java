@@ -112,7 +112,7 @@ public enum CardTypes {
     DRAUG("Draug", 10, 1, CardPosition.CLOSE_COMBAT_UNIT, null, Faction.MONSTERS, false),
     IMLERITH("Imlerith", 10, 1, CardPosition.CLOSE_COMBAT_UNIT, null, Faction.MONSTERS, false),
     LESHEN("Leshen", 10, 1, CardPosition.CLOSE_COMBAT_UNIT, null, Faction.MONSTERS, false),
-    KAYRAN("Kayran", 8, 1, CardPosition.AGILE_UNIT, new MoraleBoost(), Faction.MONSTERS, false),
+    KAYRAN("Kayran", 8, 1, CardPosition.AGILE_UNIT, new MoraleBoost(), Faction.MONSTERS, true),
     TOAD("Toad", 7, 1, CardPosition.RANGED_UNIT, new Scorch(), Faction.MONSTERS, false),
     ARACHAS_BEHEMOTH("Arachas Behemoth", 6, 1, CardPosition.SIEGE_UNIT, new Muster(), Faction.MONSTERS, false),
     CRONE_BREWESS("Crone: Brewess", 6, 1, CardPosition.CLOSE_COMBAT_UNIT, new Muster(), Faction.MONSTERS, false),

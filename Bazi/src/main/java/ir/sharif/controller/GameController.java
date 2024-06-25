@@ -209,8 +209,8 @@ public class GameController {
 
         matchTable.changeTurn();
         if(matchTable.isPreviousRoundPassed()){
-                finishRound();
-                return new CommandResult(ResultCode.ACCEPT, "Round finished successfully");
+            finishRound();
+            return new CommandResult(ResultCode.ACCEPT, "Round finished successfully");
         }
         matchTable.setPreviousRoundPassed(true);
         return new CommandResult(ResultCode.ACCEPT, "Turn passed successfully");
