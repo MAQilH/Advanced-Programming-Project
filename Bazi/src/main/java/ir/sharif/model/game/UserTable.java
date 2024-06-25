@@ -6,7 +6,7 @@ public class UserTable {
     private final Leader leader;
     private final Row siege, ranged, closeCombat;
     private final ArrayList<Card> outOfPlays, hand, deck;
-    private final int Score;
+    private int Score;
 
     public UserTable(DeckInfo deckInfo) {
         this.leader = deckInfo.getLeader().getInstance();
@@ -60,16 +60,25 @@ public class UserTable {
         return closeCombat.getSpecialCard();
     }
 
-    public ArrayList<Card> getSiege() {
-        return siege.getCards();
+    public Row getSiege() {
+        return siege;
     }
 
-    public ArrayList<Card> getRanged() {
-        return ranged.getCards();
+    public Row getRanged() {
+        return ranged;
     }
 
-    public ArrayList<Card> getCloseCombat() {
-        return closeCombat.getCards();
+    public Row getCloseCombat() {
+        return closeCombat;
+    }
+
+    public Row getRowByNumber(int rowNumber) {
+        return switch (rowNumber) {
+            case 0 -> closeCombat;
+            case 1 -> ranged;
+            case 2 -> siege;
+            default -> null;
+        };
     }
 
     public void removeSiege(Card card) {
@@ -107,10 +116,6 @@ public class UserTable {
         deck.remove(card);
     }
 
-    public int getScore() {
-        return Score;
-    }
-
     public ArrayList<Card> getOutOfPlays() {
         return outOfPlays;
     }
@@ -136,6 +141,10 @@ public class UserTable {
     }
 
     public void setScore(int score) {
+    }
+
+    public int getScore() {
+        return Score;
     }
 
 }

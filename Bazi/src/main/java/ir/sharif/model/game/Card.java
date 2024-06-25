@@ -1,12 +1,12 @@
 package ir.sharif.model.game;
 
 public class Card {
-    private String name;
-    private int power, noOfCards;
-    private CardPosition cardType;
-    private Ability ability;
-    private Faction faction;
-    private boolean isHero;
+    private final String name;
+    private final int power, noOfCards;
+    private final CardPosition cardType;
+    private final Ability ability;
+    private final Faction faction;
+    private final boolean isHero;
 
     public Card(String name, int power, int noOfCards, CardPosition cardType, Ability ability, Faction faction, boolean isHero) {
         this.name = name;
