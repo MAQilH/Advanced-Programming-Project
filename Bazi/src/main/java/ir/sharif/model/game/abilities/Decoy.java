@@ -7,7 +7,4 @@ public class Decoy implements Ability {
     @Override
     public void execute() {
     }
-    @Override
-    public void execute(int player, MatchTable matchTable) {
-    }
 }

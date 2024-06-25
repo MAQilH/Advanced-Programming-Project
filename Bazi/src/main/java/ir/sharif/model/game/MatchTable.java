@@ -67,6 +67,10 @@ public class MatchTable {
         turn = 1 - turn;
     }
 
+    public void setTurn(int turn) {
+        this.turn = turn;
+    }
+
     public void changeRound() {
         roundNumber++;
     }

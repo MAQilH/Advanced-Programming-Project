@@ -6,9 +6,6 @@ import ir.sharif.model.game.MatchTable;
 public class QueenOfDolBlathanna implements Ability {
 
     @Override
-    public void execute(int player, MatchTable matchTable) {
-    }
-    @Override
     public void execute() {
     }
 

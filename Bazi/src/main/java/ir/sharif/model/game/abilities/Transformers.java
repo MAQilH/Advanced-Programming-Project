@@ -1,13 +1,15 @@
 package ir.sharif.model.game.abilities;
 
 import ir.sharif.model.game.Ability;
-import ir.sharif.model.game.MatchTable;
 
 public class Transformers implements Ability {
+    boolean converted = false;
     @Override
     public void execute() {
+        converted = true;
     }
-    @Override
-    public void execute(int player, MatchTable matchTable) {
+
+    public boolean isConverted() {
+        return converted;
     }
 }
