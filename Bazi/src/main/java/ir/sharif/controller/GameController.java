@@ -12,10 +12,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class GameController {
-    private MatchTable matchTable;
+    private final MatchTable matchTable;
 
     public GameController() {
-        // TODO: matchTable must read from game service
         this.matchTable = GameService.getInstance().getMatchTable();
     }
 

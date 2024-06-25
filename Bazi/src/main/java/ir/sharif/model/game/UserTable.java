@@ -27,8 +27,11 @@ public class UserTable {
     }
 
     public int getRowPower(Row row){
-//        for()
-        return 0;
+        int rowPower = 0;
+        for(Card rowCard: row.getCards()){
+            rowPower += getCardPower(rowCard, row);
+        }
+        return rowPower;
     }
 
     public int getCardPower(Card card, Row row){
