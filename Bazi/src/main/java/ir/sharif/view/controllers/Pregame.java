@@ -263,6 +263,8 @@ public class Pregame {
 			return;
 		}
 
+		System.err.println(getDeckInfo());
+
 		CommandResult result = pregameController.setDeck(getDeckInfo());
 		if (result.statusCode() == ResultCode.ACCEPT) {
 			errorLabel.setText("");
