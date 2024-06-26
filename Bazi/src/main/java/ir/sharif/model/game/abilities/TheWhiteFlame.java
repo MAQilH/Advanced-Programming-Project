@@ -12,9 +12,9 @@ public class TheWhiteFlame implements Ability {
         for (Card card : userTable.getHand()) {
             if(CardTypes.getCardType(card.getName()) == CardTypes.TORRENTIAL_RAIN){
                 userTable.getHand().remove(card);
-//                GameService.getInstance().getController().placeWeatherCard(card, Row.ENEMY_MELEE, false);
+                GameService.getInstance().getController().placeCard(card, 12);
+                return;
             }
         }
     }
-
 }

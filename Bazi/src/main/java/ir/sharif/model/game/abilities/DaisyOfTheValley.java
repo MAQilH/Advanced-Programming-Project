@@ -7,6 +7,7 @@ import ir.sharif.model.game.Row;
 public class DaisyOfTheValley implements Ability {
     @Override
     public void execute(Object... objs) {
+        // handled in creating deck ...
     }
 
 }

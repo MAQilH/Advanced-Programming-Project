@@ -195,8 +195,6 @@ public class GameController {
         return power;
     }
 
-
-
     public int calculateNonHeroPower(int player, int rowNumber){
         Row row = getRowByPosition(player, getCardPositionByRowNumber(rowNumber));
         int power = 0;
@@ -482,6 +480,10 @@ public class GameController {
 
         for (int playerIndex = 0; playerIndex < 2; playerIndex++) {
             int startNumberOfCard = Integer.parseInt(ConstantsLoader.getInstance().getProperty("game.start_number_card"));
+            if(matchTable.getUserTable(playerIndex).getLeader().getAbility() instanceof DaisyOfTheValley) {
+                startNumberOfCard++;
+                matchTable.getUserTable(playerIndex).getLeader().setDisableRound(0);
+            }
             for(int cardIndex = 0; cardIndex < startNumberOfCard; cardIndex++){
                 if(matchTable.getUserTable(playerIndex).getDeck().isEmpty()) break;
                 int randomNumber = Random.getRandomInt(matchTable.getUserTable(playerIndex).getDeck().size());

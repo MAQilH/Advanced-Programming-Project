@@ -8,6 +8,7 @@ public class HisImperialMajesty implements Ability {
 
     @Override
     public void execute(Object... objs) {
+        // TODO: last
     }
 
 }

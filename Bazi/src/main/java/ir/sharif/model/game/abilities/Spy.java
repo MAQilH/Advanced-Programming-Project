@@ -11,7 +11,7 @@ public class Spy implements Ability {
     @Override
     public void execute(Object... objs) {
         UserTable userTable = GameService.getInstance().getMatchTable().getCurrentUserTable();
-        for(int i = 0; i < 2 && !userTable.getDeck().isEmpty(); i++) {
+        for(int cardIndex = 0; cardIndex < 2 && !userTable.getDeck().isEmpty(); cardIndex++) {
             Card randomCard = userTable.getDeck().get(Random.getRandomInt(userTable.getDeck().size()));
             userTable.getDeck().remove(randomCard);
             userTable.getHand().add(randomCard);
