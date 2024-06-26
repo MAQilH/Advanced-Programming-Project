@@ -70,6 +70,10 @@ public class GameController {
         return (int)(cofficient * card.getPower());
     }
 
+    public boolean isVetoeTurn() {
+        return matchTable.getTotalTurns() < 2 && matchTable.getRoundNumber() == 0;
+    }
+
     public CommandResult vetoCard(int cardNumber) {
         int player = matchTable.getTurn();
         if(matchTable.getUserTable(player).getVetoesLeft() == 0) {
@@ -254,6 +258,7 @@ public class GameController {
     public CommandResult passTurn() {
 
         matchTable.changeTurn();
+        matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
         if(matchTable.isPreviousRoundPassed()){
             finishRound();
             return new CommandResult(ResultCode.ACCEPT, "Round finished successfully");
@@ -271,6 +276,7 @@ public class GameController {
             return;
         }
         matchTable.changeRound();
+        matchTable.setTotalTurns(0);
         startRound(winner);
     }
 
