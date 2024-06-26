@@ -94,7 +94,6 @@ public class GameGraphics {
 			} else if (e.getCode().toString().equals("ENTER")) {
 				removeNodeWithAnimation(rows[0], rows[0].getChildren().get(Random.getRandomInt(rows[0].getChildren().size())));
 			} else if (e.getCode().toString().equals("H")) {
-
 				preTurnLoading();
 			}
 		});
@@ -231,7 +230,7 @@ public class GameGraphics {
 	public void preTurnLoading() {
 		for (int i = 0; i < 2; i++) {
 			LeaderType leaderType = LeaderType.getLeaderType(controller.getUserUserTable(i).getLeader().getName());
-			leaderGraphics[i].setImage(new Image(getClass().getResourceAsStream("/images/" + leaderType.toString() + ".jpg")));
+			leaderGraphics[i].setImage(new Image(getClass().getResourceAsStream("/images/leader/" + leaderType.toString() + ".jpg")));
 		}
 
 		loadModel();
