@@ -4,8 +4,7 @@ import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.User;
 import ir.sharif.model.game.*;
-import ir.sharif.model.game.abilities.Spy;
-import ir.sharif.model.game.abilities.Transformers;
+import ir.sharif.model.game.abilities.*;
 import ir.sharif.service.GameService;
 import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.utils.Random;
@@ -57,17 +56,83 @@ public class GameController {
 
     public int calculatePower(int player, int rowNumber, Card card) {
         double cofficient = 1;
-        int weather = weatherCardsOnTable();
+        int weather = weatherCardsOnTable(), counter2x = 0, constant = 0;
+        Row row = getRowByPosition(player, getCardPositionByRowNumber(rowNumber));
         if(card.isHero()) {
             return card.getPower();
         }
         if(((1 << rowNumber) & weather) != 0) {
             if(matchTable.getUserTable(player).getLeader().getName().equals("King Bran")) {
-                //TODO: complete it
+                cofficient *= 0.5;
+            }
+            else if(matchTable.getUserTable(player).getLeader().getName().equals("The Steel-Forged")) {
+                cofficient *= 1;
+            }
+            else {
+                return 1;
             }
         }
-
-        return (int)(cofficient * card.getPower());
+        if(row.getSpell().getAbility() instanceof CommandersHorn) {
+            counter2x++;
+        }
+        for(Card card1 : row.getCards()) {
+            if(card1.getAbility() instanceof CommandersHorn) {
+                counter2x++;
+            }
+        }
+        if(matchTable.getUserTable(player).getLeader().getName().equals("King of Temeria")) {
+            if(rowNumber == 2 && matchTable.getUserTable(player).getLeader().
+                    getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
+                counter2x++;
+            }
+        }
+        if(matchTable.getUserTable(player).getLeader().getName().equals("Bringer of Death")) {
+            if(rowNumber == 0 && matchTable.getUserTable(player).getLeader().
+                    getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
+                counter2x++;
+            }
+        }
+        if(matchTable.getUserTable(player).getLeader().getName().equals("The Beautiful")) {
+            if(rowNumber == 1 && matchTable.getUserTable(player).getLeader().
+                    getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
+                counter2x++;
+            }
+        }
+        if(matchTable.getUserTable(player).getLeader().getName().equals("The Treacherous")) {
+            if(card.getAbility() instanceof Spy && matchTable.getUserTable(player).getLeader().
+                    getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
+                counter2x++;
+            }
+        }
+        if(matchTable.getUserTable(1 - player).getLeader().getName().equals("The Treacherous")) {
+            if(card.getAbility() instanceof Spy && matchTable.getUserTable(1 - player).getLeader().
+                    getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
+                counter2x++;
+            }
+        }
+        if(counter2x > 0) {
+            cofficient *= 2;
+        }
+        if(card.getAbility() instanceof TightBond) {
+            int counter = 0;
+            for(Card card1 : row.getCards()) {
+                if(card1.getAbility() instanceof TightBond) {
+                    counter++;
+                }
+            }
+            if(counter > 1) {
+                cofficient *= counter;
+            }
+        }
+        for(Card card1 : row.getCards()) {
+            if(card1.getAbility() instanceof MoraleBoost) {
+                constant += 1;
+            }
+        }
+        if(card.getAbility() instanceof MoraleBoost) {
+            constant -= 1;
+        }
+        return (int)(cofficient * card.getPower()) + constant;
     }
 
     public boolean isVetoeTurn() {
