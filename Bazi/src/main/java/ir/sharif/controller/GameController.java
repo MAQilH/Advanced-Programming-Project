@@ -267,6 +267,7 @@ public class GameController {
 
     public CommandResult placeCard(int cardNumber, int pos) {
         //TODO: do the abilities when they are placed
+        if(isVetoeTurn()) return new CommandResult(ResultCode.FAILED, "You can't play cards in veto turn");
         int rowNumber = graphicRowToLogicRow(pos);
         if(matchTable.getUserTable(matchTable.getTurn()).getHand().size() <= cardNumber) {
             return new CommandResult(ResultCode.FAILED, "Invalid card number");
@@ -281,6 +282,7 @@ public class GameController {
     }
 
     public CommandResult placeCard(Card card, int pos) {
+        if(isVetoeTurn()) return new CommandResult(ResultCode.FAILED, "You can't play cards in veto turn");
         int rowNumber = graphicRowToLogicRow(pos);
         CardPosition cardPosition = getCardPositionByRowNumber(rowNumber);
         //TODO: do the abilities when they are placed
