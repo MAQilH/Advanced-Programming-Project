@@ -12,6 +12,6 @@ public class Decoy implements Ability {
         Card card = (Card) objs[1];
 
         row.removeCard(card);
-        GameService.getInstance().getMatchTable().getCurrentUserTable().addDeck(card);
+        GameService.getInstance().getMatchTable().getCurrentUserTable().addHand(card);
     }
 }
