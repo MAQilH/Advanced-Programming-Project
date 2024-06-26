@@ -144,6 +144,22 @@ public class GameController {
         return (int)(cofficient * card.getPower()) + constant;
     }
 
+    public int calculateRowPower(int player, int rowNumber) {
+        Row row = getRowByPosition(player, getCardPositionByRowNumber(rowNumber));
+        int power = 0;
+        for(Card card : row.getCards()) {
+            power += calculatePower(player, rowNumber, card);
+        }
+        return power;
+    }
+
+    public int calculateTotalPower(int player) {
+        int power = 0;
+        for(int i = 0; i < 3; i++) {
+            power += calculateRowPower(player, i);
+        }
+        return power;
+    }
     public boolean isVetoeTurn() {
         return matchTable.getTotalTurns() < 2 && matchTable.getRoundNumber() == 0;
     }
