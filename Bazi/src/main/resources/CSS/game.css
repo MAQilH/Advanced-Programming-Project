@@ -31,3 +31,10 @@
     -fx-text-fill: #B8860B !important; /* Brown text color */
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,2,3 ) !important;
 }
+
+.error-toast {
+    -fx-font-family: "KingsCross" !important;
+    -fx-font-size: 40px !important;
+    -fx-text-fill: #b91d47 !important; /* Brown text color */
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,2,3 ) !important;
+}

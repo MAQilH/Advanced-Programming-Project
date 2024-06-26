@@ -1,6 +1,8 @@
 package ir.sharif.view;
 
 import ir.sharif.controller.GameController;
+import ir.sharif.enums.ResultCode;
+import ir.sharif.model.CommandResult;
 import ir.sharif.model.game.Card;
 import ir.sharif.model.game.CardTypes;
 import ir.sharif.service.GameService;
@@ -70,6 +72,7 @@ public class GameGraphics {
 
 		passButton.setOnMouseClicked(event -> {
 			controller.passTurn();
+			preTurnLoading();
 		});
 
 		healths[0] = (HBox) getChildrenById("health1");
@@ -82,9 +85,7 @@ public class GameGraphics {
 			} else if (e.getCode().toString().equals("ENTER")) {
 				removeNodeWithAnimation(rows[0], rows[0].getChildren().get(Random.getRandomInt(rows[0].getChildren().size())));
 			} else if (e.getCode().toString().equals("H")) {
-				loadModel();
-			} else if (e.getCode().toString().equals("G")) {
-				showToast("Hello World!");
+				preTurnLoading();
 			}
 		});
 	}
@@ -112,15 +113,16 @@ public class GameGraphics {
 	public void showHealths() {
 		for (int i = 0; i < 2; i++) {
 			int healthCount = controller.getUserUserTable(i).getLife();
+			healths[i].getChildren().clear();
 			for (int j = 0; j < healthCount; j++) {
 				healths[i].getChildren().add(loadIcon("health", 40));
 			}
 		}
 	}
 
-	public void showToast(String text) {
+	public void showToastWithClass(String text, boolean isError) {
 		Label toastLabel = new Label(text);
-		toastLabel.getStyleClass().add("title-label");
+		toastLabel.getStyleClass().add(isError ? "error-toast" : "title-label");
 
 		toastLabel.layoutXProperty().bind(pane.widthProperty().subtract(toastLabel.widthProperty()).divide(2));
 		toastLabel.layoutYProperty().bind(pane.heightProperty().subtract(toastLabel.heightProperty()).divide(2));
@@ -139,6 +141,13 @@ public class GameGraphics {
 		});
 
 		fadeIn.play();
+	}
+	public void showToast(String text) {
+		showToastWithClass(text, false);
+	}
+
+	public void showErrorToast(String text) {
+		showToastWithClass(text, true);
 	}
 
 	public void loadModel() {
@@ -191,14 +200,15 @@ public class GameGraphics {
 
 	public void preTurnLoading() {
 		loadModel();
+		if (controller.isVetoeTurn()) {
+			showToast("Player " + (controller.getMatchTable().getTurn() + 1) + "'s turn for veto");
+		} else {
+			showToast("Player " + (controller.getMatchTable().getTurn() + 1) + "'s turn");
+		}
 	}
 
-	public void addCardToHBox(Card card, HBox hbox) {
-		CardGraphics cardGraphics = new CardGraphics(card, hbox.getHeight());
-		cardGraphics.setOnMouseClicked(event -> {
-			removeCardFromHBox(card, hbox);
-		});
-
+	public void setDragAndDropFunctionality(CardGraphics cardGraphics, HBox hbox) {
+		Card card = cardGraphics.getCard();
 		if (hbox == hand) {
 			cardGraphics.setOnDragDetected(event -> {
 				WritableImage snapshot = cardGraphics.snapshot(new SnapshotParameters(), null);
@@ -244,6 +254,29 @@ public class GameGraphics {
 				event.consume();
 			});
 		}
+	}
+
+	public void setOnMouseClickFunctionality(CardGraphics cardGraphics, HBox hbox) {
+		cardGraphics.setOnMouseClicked(event -> {
+				if (hbox == hand && controller.isVetoeTurn()) {
+					ArrayList<Card> hand = controller.getCurrentUserTable().getHand();
+					CommandResult result = controller.vetoCard(hand.indexOf(cardGraphics.getCard()));
+					if (result.statusCode() == ResultCode.ACCEPT) {
+						loadModel();
+						System.err.println(controller.getCurrentUserTable().getHand());
+					} else {
+						showErrorToast(result.message());
+					}
+				}
+			}
+		);
+	}
+
+	public void addCardToHBox(Card card, HBox hbox) {
+		CardGraphics cardGraphics = new CardGraphics(card, hbox.getHeight());
+		setDragAndDropFunctionality(cardGraphics, hbox);
+		setOnMouseClickFunctionality(cardGraphics, hbox);
+
 
 		hbox.getChildren().add(cardGraphics);
 	}

@@ -397,4 +397,8 @@ public class GameController {
     public UserTable getUserUserTable(int playerNumber) {
         return matchTable.getUserTable(playerNumber);
     }
+
+	public MatchTable getMatchTable() {
+		return matchTable;
+	}
 }
