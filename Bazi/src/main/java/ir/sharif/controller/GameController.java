@@ -2,7 +2,6 @@ package ir.sharif.controller;
 
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
-import ir.sharif.model.User;
 import ir.sharif.model.game.*;
 import ir.sharif.model.game.abilities.*;
 import ir.sharif.service.GameService;
@@ -62,6 +61,10 @@ public class GameController {
         if(6 <= pos && pos < 9) return 1;
         if(9 <= pos && pos < 12) return 0;
         return -1;
+    }
+
+    public Row getRowByPosition(CardPosition cardPosition) {
+        return getRowByPosition(matchTable.getTurn(), cardPosition);
     }
 
     public int weatherCardsOnTable() {
@@ -242,6 +245,12 @@ public class GameController {
         CardPosition cardPosition = getCardPositionByRowNumber(rowNumber);
         Card card = matchTable.getUserTable(player).getHand().get(cardNumber);
         matchTable.getUserTable(player).getHand().remove(cardNumber);
+        return placeCard(card, rowNumber);
+    }
+
+    public CommandResult placeCard(Card card, int rowNumber) {
+        CardPosition cardPosition = getCardPositionByRowNumber(rowNumber);
+        //TODO: do the abilities when they are placed
         if(cardPosition == CardPosition.WEATHER) {
             return placeWeatherCard(card);
         }
@@ -272,13 +281,7 @@ public class GameController {
         int player = 1 - matchTable.getTurn();
         int rowNumber = graphicRowToLogicRow(pos);
         matchTable.getUserTable(player).getRowByNumber(rowNumber).addCard(card);
-        player = 1 - player;
-        for(int i = 0; i < 2 && !matchTable.getUserTable(player).getDeck().isEmpty(); i++) {
-            int randomNumber = Random.getRandomInt(matchTable.getUserTable(player).getDeck().size());
-            Card randomCard = matchTable.getUserTable(player).getDeck().get(randomNumber);
-            matchTable.getUserTable(player).getDeck().remove(randomNumber);
-            matchTable.getUserTable(player).getHand().add(randomCard);
-        }
+        card.getAbility().execute();
         return new CommandResult(ResultCode.ACCEPT, "Spy card placed successfully");
         //done here
     }

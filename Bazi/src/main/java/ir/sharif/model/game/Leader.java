@@ -12,14 +12,14 @@ public class Leader {
         this.ability = ability;
     }
 
-    public Ability getAbility() {
-        return ability;
+    public String getName() {
+        return name;
     }
     public Faction getFaction() {
         return faction;
     }
-    public String getName() {
-        return name;
+    public Ability getAbility() {
+        return ability;
     }
 
     public void setRoundOfAbilityUsed(int roundOfAbilityUsed) {

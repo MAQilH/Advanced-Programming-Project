@@ -201,4 +201,12 @@ public class UserTable {
         vetoesLeft--;
     }
 
+
+    public ArrayList<Row> getRows(){
+        ArrayList<Row> rows = new ArrayList<>();
+        rows.add(closeCombat);
+        rows.add(ranged);
+        rows.add(siege);
+        return rows;
+    }
 }
