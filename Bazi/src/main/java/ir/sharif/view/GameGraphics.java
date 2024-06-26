@@ -43,6 +43,7 @@ public class GameGraphics {
 	private Label powerLabels[] = new Label[6];
 	private Label userPowerLabels[] = new Label[2];
 	private ImageView leaderGraphics[] = new ImageView[2];
+	private ArrayList<HBox> validRows;
 
 	private GameGraphics() {}
 
@@ -256,23 +257,27 @@ public class GameGraphics {
 	}
 
 	public void setDragAndDropFunctionality(CardGraphics cardGraphics, HBox hbox) {
-		Card card = cardGraphics.getCard();
 		if (hbox == hand) {
 			cardGraphics.setOnDragDetected(event -> {
-				WritableImage snapshot = cardGraphics.snapshot(new SnapshotParameters(), null);
+				Card card = cardGraphics.getCard();
+				if (validRows != null) {
+					for (HBox row : validRows) {
+						row.setBackground(Background.EMPTY);
+					}
+					validRows.clear();
+				}
 
-				// Create a new ImageView from the snapshot and set its opacity to 0.5
+				WritableImage snapshot = cardGraphics.snapshot(new SnapshotParameters(), null);
 				ImageView dragView = new ImageView(snapshot);
 				dragView.setOpacity(0.5);
 
-				// Start the drag and drop operation and set the drag view
 				Dragboard db = cardGraphics.startDragAndDrop(TransferMode.MOVE);
 				ClipboardContent content = new ClipboardContent();
 				content.putString(cardGraphics.getCard().toString());
 				db.setContent(content);
 				db.setDragView(dragView.getImage());
 
-				ArrayList<HBox> validRows = getValidRows(card);
+				validRows = getValidRows(card);
 
 				for (HBox row : validRows) {
 					row.setBackground(Background.fill(Color.rgb(1, 1, 0, 0.3)));
@@ -293,17 +298,23 @@ public class GameGraphics {
 						updatePowerLabels();
 					});
 				}
-
-				event.consume();
 			});
 
 			cardGraphics.setOnDragDone(event -> {
-				for (HBox row : getValidRows(card)) {
+				Card card = cardGraphics.getCard();
+				for (HBox row : validRows) {
 					row.setBackground(Background.EMPTY);
 				}
-
+				validRows.clear();
 				updatePowerLabels();
-				event.consume();
+
+				// remove on Drag over and drag dropped from all rows
+				for (int i = 0; i < 13; i++) {
+					HBox row = rows[i];
+					row.setOnDragExited(null);
+					row.setOnDragOver(null);
+					row.setOnDragDropped(null);
+				}
 			});
 		}
 	}
