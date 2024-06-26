@@ -94,6 +94,13 @@ public class GameGraphics {
 			} else if (e.getCode().toString().equals("ENTER")) {
 				removeNodeWithAnimation(rows[0], rows[0].getChildren().get(Random.getRandomInt(rows[0].getChildren().size())));
 			} else if (e.getCode().toString().equals("H")) {
+				for (int i = 0; i < 6; i++) {
+					powerLabels[i].setTextFill(Color.WHITE);
+				}
+
+				for (int i = 0; i < 2; i++) {
+					userPowerLabels[i].setTextFill(Color.WHITE);
+				}
 				preTurnLoading();
 			}
 		});
@@ -265,7 +272,8 @@ public class GameGraphics {
 				db.setContent(content);
 				db.setDragView(dragView.getImage());
 
-				ArrayList<HBox> validRows = validRows(card);
+				ArrayList<HBox> validRows = getValidRows(card);
+
 				for (HBox row : validRows) {
 					row.setBackground(Background.fill(Color.rgb(1, 1, 0, 0.3)));
 					row.setOnDragOver(e -> {
@@ -276,13 +284,13 @@ public class GameGraphics {
 					row.setOnDragExited(e -> row.setBackground(Background.fill(Color.rgb(1, 1, 0, 0.3))));
 
 					row.setOnDragDropped(e -> {
-						System.err.println(card);
 						addCardToHBox(card, row);
 						removeCardFromHBox(card, hand);
 						event.consume();
 
 						int rowNumber = Integer.parseInt(row.getId().substring(3));
 						controller.placeCard(card, rowNumber);
+						updatePowerLabels();
 					});
 				}
 
@@ -290,14 +298,28 @@ public class GameGraphics {
 			});
 
 			cardGraphics.setOnDragDone(event -> {
-				System.err.println("fuck");
-				for (HBox row : validRows(card)) {
+				for (HBox row : getValidRows(card)) {
 					row.setBackground(Background.EMPTY);
 				}
 
+				updatePowerLabels();
 				event.consume();
 			});
 		}
+	}
+
+	private ArrayList<HBox> getValidRows(Card card) {
+		ArrayList<Integer> validPositions = card.validPositions();
+		ArrayList<HBox> validRows = new ArrayList<>();
+		for (int pos : validPositions)
+			validRows.add(rows[pos]);
+
+		for (int e : validPositions) {
+			System.out.print(e + " ");
+		}
+
+		System.out.println();
+		return validRows;
 	}
 
 	public void setOnMouseClickFunctionality(CardGraphics cardGraphics, HBox hbox) {
@@ -338,11 +360,6 @@ public class GameGraphics {
 		updatePowerLabels();
 	}
 
-	public ArrayList<HBox> validRows(Card card) {
-		// TODO: complete this
-		return new ArrayList<>(List.of(new HBox[]{rows[0], rows[1], rows[4], rows[7], rows[12]}));
-	}
-
 	public void removeCardFromHBox(Card card, HBox hbox) {
 		for (Node node : hbox.getChildren()) {
 			if (((CardGraphics) node).getCard().equals(card)) {
@@ -350,7 +367,5 @@ public class GameGraphics {
 				break;
 			}
 		}
-
-		updatePowerLabels();
 	}
 }

@@ -94,7 +94,7 @@ public class ViewLoader {
 			if (event.getCode() == KeyCode.T) {
 				new TerminalGUI(null);
 			} else if (event.getCode() == KeyCode.C) {
-				ViewLoader.newScene("chat");
+				new ChatGUI();
 			}
 		});
 
