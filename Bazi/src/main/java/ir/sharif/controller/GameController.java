@@ -28,6 +28,15 @@ public class GameController {
         };
     }
 
+    public int getRowNumberByCardPosition(CardPosition cardPosition) {
+        return switch (cardPosition) {
+            case CLOSE_COMBAT_UNIT -> 0;
+            case RANGED_UNIT -> 1;
+            case SIEGE_UNIT -> 2;
+            default -> -1;
+        };
+    }
+
     public Row getRowByPosition(int player, CardPosition cardPosition) {
         return switch (cardPosition) {
             case CLOSE_COMBAT_UNIT -> matchTable.getUserTable(player).getCloseCombat();
@@ -61,6 +70,14 @@ public class GameController {
         if(6 <= pos && pos < 9) return 1;
         if(9 <= pos && pos < 12) return 0;
         return -1;
+    }
+
+    public int getRealRowNumber(int player, int row){
+        if(player == 0){
+            return 2 - row;
+        } else{
+            return row - 3;
+        }
     }
 
     public Row getRowByPosition(CardPosition cardPosition) {
@@ -177,6 +194,19 @@ public class GameController {
         return power;
     }
 
+
+
+    public int calculateNonHeroPower(int player, int rowNumber){
+        Row row = getRowByPosition(player, getCardPositionByRowNumber(rowNumber));
+        int power = 0;
+        for(Card card : row.getCards()) {
+            if(card.isHero()) continue;
+            power += card.getPower();
+        }
+        return power;
+		//TODO: fix it
+    }
+
     public int calculateTotalPower(int player) {
         int power = 0;
         for(int i = 0; i < 3; i++) {
@@ -249,7 +279,7 @@ public class GameController {
     }
 
     public CommandResult placeCard(Card card, int pos) {
-		int rowNumber = graphicRowToLogicRow(pos);
+        int rowNumber = graphicRowToLogicRow(pos);
         CardPosition cardPosition = getCardPositionByRowNumber(rowNumber);
         //TODO: do the abilities when they are placed
         if(cardPosition == CardPosition.WEATHER) {

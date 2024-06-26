@@ -14,7 +14,6 @@ public class Scorch implements Ability {
         UserTable opponentTable = GameService.getInstance().getMatchTable().getOpponentUserTable();
         GameController gameController = GameService.getInstance().getController();
         int opponentPlayer = GameService.getInstance().getMatchTable().getTurn() ^ 1;
-
         if(CardTypes.getCardType(card.getName()) == CardTypes.CLAN_DIMUN_PIRATE){
             int maxPower = 0;
             ArrayList<Row> opponentRows = opponentTable.getRows();
@@ -22,7 +21,7 @@ public class Scorch implements Ability {
                 Row row = opponentRows.get(rowIndex);
                 for(Card rowCard: row.getCards()){
                     if(rowCard.isHero()) continue;
-                    if(rowCard.getPower() > maxPower) maxPower = gameController.calculatePower(opponentPlayer, rowIndex, rowCard);
+                    if(rowCard.getPower() > maxPower) maxPower = rowCard.calculatePower();
                 }
             }
             for (int rowIndex = 0; rowIndex < opponentRows.size(); rowIndex++) {
@@ -37,7 +36,24 @@ public class Scorch implements Ability {
             }
         } else{
             Row row = gameController.getRowByPosition(opponentPlayer, card.getCardPosition());
-             // TODO: after kian finish his part
+             int rowNumber = gameController.getRowNumberByCardPosition(card.getCardPosition());
+             int rowPower = gameController.calculateNonHeroPower(opponentPlayer, rowNumber);
+             if(rowPower >= 10){
+                 int maxPower = 0;
+                 for(Card rowCard: row.getCards()){
+                     if(rowCard.isHero()) continue;
+                     if(maxPower < rowCard.calculatePower())
+                         maxPower = rowCard.calculatePower();
+                 }
+                 ArrayList<Card> rowClone = new ArrayList<>(row.getCards());
+                 for(Card rowCard: rowClone){
+                     if(rowCard.isHero()) continue;
+                     if(maxPower == rowCard.calculatePower()){
+                         row.removeCard(rowCard);
+                         opponentTable.addOutOfPlay(rowCard);
+                     }
+                 }
+             }
         }
     }
 }
