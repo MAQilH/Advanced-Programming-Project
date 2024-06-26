@@ -28,6 +28,15 @@ public class GameController {
         };
     }
 
+    public int getRowNumberByCardPosition(CardPosition cardPosition) {
+        return switch (cardPosition) {
+            case CLOSE_COMBAT_UNIT -> 0;
+            case RANGED_UNIT -> 1;
+            case SIEGE_UNIT -> 2;
+            default -> -1;
+        };
+    }
+
     public Row getRowByPosition(int player, CardPosition cardPosition) {
         return switch (cardPosition) {
             case CLOSE_COMBAT_UNIT -> matchTable.getUserTable(player).getCloseCombat();
@@ -151,6 +160,18 @@ public class GameController {
         Row row = getRowByPosition(player, getCardPositionByRowNumber(rowNumber));
         int power = 0;
         for(Card card : row.getCards()) {
+            power += calculatePower(player, rowNumber, card);
+        }
+        return power;
+    }
+
+
+
+    public int calculateNonHeroPower(int player, int rowNumber){
+        Row row = getRowByPosition(player, getCardPositionByRowNumber(rowNumber));
+        int power = 0;
+        for(Card card : row.getCards()) {
+            if(card.isHero()) continue;
             power += calculatePower(player, rowNumber, card);
         }
         return power;
