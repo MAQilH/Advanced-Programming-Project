@@ -38,6 +38,15 @@ public class GameController {
         };
     }
 
+    public int graphicRowToLogicRow(int rowNumber) {
+        return switch (rowNumber) {
+            case 0, 5, 6, 11 -> 2;
+            case 1, 4, 7, 10 -> 1;
+            case 2, 3, 8, 9 -> 0;
+            default -> -1;
+        };
+    }
+
     public int weatherCardsOnTable() {
         int answer = 0;
         for(Card card : matchTable.getWeatherCards()) {
