@@ -107,10 +107,17 @@ public class GameGraphics {
 
 	public void updatePowerLabels() {
 		for (int i = 0; i < 6; i++)
-			powerLabels[i].setText("0");
+			powerLabels[i].setText(String.valueOf(controller.calculateRowPower(i)));
 
 		for (int i = 0; i < 2; i++)
 			userPowerLabels[i].setText(String.valueOf(controller.calculateTotalPower(i)));
+
+		for (int i = 0; i < 6; i++) {
+			for (Node graphics : rows[i].getChildren()) {
+				CardGraphics cardGraphics = (CardGraphics) graphics;
+				cardGraphics.updatePower();
+			}
+		}
 	}
 
 	private ImageView loadIcon(String iconName, double size) {
@@ -325,6 +332,7 @@ public class GameGraphics {
 		setOnMouseHoverFunctionality(cardGraphics, hbox);
 
 		hbox.getChildren().add(cardGraphics);
+		updatePowerLabels();
 	}
 
 	public ArrayList<HBox> validRows(Card card) {
@@ -339,5 +347,7 @@ public class GameGraphics {
 				break;
 			}
 		}
+
+		updatePowerLabels();
 	}
 }

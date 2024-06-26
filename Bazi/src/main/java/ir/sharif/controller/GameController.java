@@ -210,7 +210,7 @@ public class GameController {
     public int calculateTotalPower(int player) {
         int power = 0;
         for(int i = 0; i < 3; i++) {
-            power += calculateRowPower(i + (player - 1) * 3);
+            power += calculateRowPower(3 * (1 - player) + i);
         }
         return power;
     }
