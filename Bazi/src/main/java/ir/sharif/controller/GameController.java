@@ -299,7 +299,7 @@ public class GameController {
     }
 
     public CommandResult placeWeatherCard(Card card) {
-        matchTable.addWeatherCard(card);
+        matchTable.addWeatherCard(card); //abilities done
         return new CommandResult(ResultCode.ACCEPT, "Weather card placed successfully");
     }
 
@@ -308,8 +308,9 @@ public class GameController {
         int rowNumber = graphicRowToLogicRow(pos);
         matchTable.getUserTable(player).getRowByNumber(rowNumber).setSpell(card);
         if (card.getAbility() instanceof Mardroeme) {
-            //TODO:complete this
-        }
+            Row row = matchTable.getUserTable(player).getRowByNumber(rowNumber);
+            card.getAbility().execute(row);
+        } //abilities done
         return new CommandResult(ResultCode.ACCEPT, "Spell card placed successfully");
     }
 
@@ -329,6 +330,12 @@ public class GameController {
         int rowNumber = graphicRowToLogicRow(pos);
         Row row = matchTable.getUserTable(player).getRowByNumber(rowNumber);
         row.addCard(card);
+        if(card.getAbility() instanceof Scorch || card.getAbility() instanceof Muster) {
+            card.getAbility().execute(card);
+        }
+        else {
+            card.getAbility().execute(row, card);
+        }
         return new CommandResult(ResultCode.ACCEPT, "Unit card placed successfully");
         //done here
     }
