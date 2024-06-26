@@ -36,6 +36,7 @@ public class GameController {
             default -> null;
         };
     }
+    
 
     public int graphicRowToLogicRow(int rowNumber) {
         return switch (rowNumber) {
