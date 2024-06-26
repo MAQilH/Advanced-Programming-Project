@@ -187,6 +187,7 @@ public class Pregame {
 
 	public void saveUsingName(MouseEvent mouseEvent) {
 		DeckInfo deckInfo = getDeckInfo();
+		System.err.println(deckInfo.getStorage().size());
 		pregameController.setDeck(deckInfo);
 		CommandResult result = pregameController.saveDeck(deckName.getText());
 		errorLabel.setText(result.message());

@@ -2,10 +2,13 @@ package ir.sharif.view;
 
 import com.almasb.fxgl.core.View;
 import ir.sharif.utils.ConstantsLoader;
+import ir.sharif.view.gui.terminal.TerminalGUI;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -55,6 +58,7 @@ public class ViewLoader {
 			ft.setOnFinished(event -> {
 				stage.setScene(newScene);
 				centerStage();
+				setGlobalShortcuts(newScene);
 				FadeTransition fadeIn = new FadeTransition(Duration.millis(1000), newScene.getRoot());
 				fadeIn.setFromValue(0.0);
 				fadeIn.setToValue(1.0);
@@ -81,6 +85,19 @@ public class ViewLoader {
 			pane.setBackground(new Background(createBackgroundImage("board.jpg", width, height)));
 			GameGraphics.getInstance().initialize(pane);
 		}
+	}
+
+	private static void setGlobalShortcuts(Scene newScene) {
+		Pane root = (Pane) newScene.getRoot();
+		root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+			KeyEvent keyEvent = (KeyEvent) event;
+			if (event.getCode() == KeyCode.T) {
+				new TerminalGUI(null);
+			} else if (event.getCode() == KeyCode.C) {
+				ViewLoader.newScene("chat");
+			}
+		});
+
 	}
 
 	public static void centerStage() {

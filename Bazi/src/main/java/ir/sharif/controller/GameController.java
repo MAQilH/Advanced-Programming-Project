@@ -248,7 +248,8 @@ public class GameController {
         return placeCard(card, rowNumber);
     }
 
-    public CommandResult placeCard(Card card, int rowNumber) {
+    public CommandResult placeCard(Card card, int pos) {
+		int rowNumber = graphicRowToLogicRow(pos);
         CardPosition cardPosition = getCardPositionByRowNumber(rowNumber);
         //TODO: do the abilities when they are placed
         if(cardPosition == CardPosition.WEATHER) {

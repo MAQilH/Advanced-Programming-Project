@@ -164,13 +164,13 @@
 }
 
 .combo-box:hover {
-    -fx-background-color: #ff6347; /* Tomato background */
+    -fx-background-color: #B8860B; /* Tomato background */
     -fx-text-fill: #ffffff; /* White text color */
 }
 
 .combo-box-base {
     -fx-text-fill: #ffffff; /* White text color */
-    -fx-background-color: #ff6347; /* Tomato background */
+    -fx-background-color: #B8860B; /* Tomato background */
     -fx-border-color: #4a4d50;
     -fx-border-radius: 20;
     -fx-background-radius: 20;
@@ -180,13 +180,13 @@
     -fx-pref-width: 150px;
     -fx-pref-height: 50px;
     -fx-transition: all 0.3s ease;
-    -fx-font-family: 'Comic Sans MS', cursive, sans-serif; /* Change the font family */
+    -fx-font-family: 'Ancient'; /* Change the font family */
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 ); /* Add a shadow effect */
 }
 
 .combo-box-popup {
     -fx-text-fill: #ffffff; /* White text color */
-    -fx-background-color: #ff6347; /* Tomato background */
+    -fx-background-color: #B8860B; /* Tomato background */
     -fx-border-color: #4a4d50;
     -fx-border-radius: 20;
     -fx-background-radius: 20;
@@ -196,23 +196,23 @@
     -fx-pref-width: 150px;
     -fx-pref-height: 50px;
     -fx-transition: all 0.3s ease;
-    -fx-font-family: 'Comic Sans MS', cursive, sans-serif; /* Change the font family */
+    -fx-font-family: 'Ancient'; /* Change the font family */
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 ); /* Add a shadow effect */
 }
 
 .combo-box-popup:hover {
-    -fx-background-color: #ff6347; /* Tomato background */
+    -fx-background-color: #B8860B; /* Tomato background */
     -fx-text-fill: #ffffff; /* White text color */
 }
 
 .combo-box-popup .list-cell:filled:selected, .combo-box-popup .list-cell:filled:selected:hover {
-    -fx-background-color: #ff6347; /* Tomato background */
+    -fx-background-color: #B8860B; /* Tomato background */
     -fx-text-fill: #ffffff; /* White text color */
 }
 
 .settings-text-field {
     -fx-text-fill: #ffffff; /* White text color */
-    -fx-background-color: #ff6347; /* Tomato background */
+    -fx-background-color: #B8860B; /* Tomato background */
     -fx-border-color: #4a4d50;
     -fx-border-radius: 20;
     -fx-background-radius: 20;
@@ -258,4 +258,9 @@
 
 .third-row {
     -fx-background-color: #cd7f32;
+}
+
+.label {
+    -fx-font: 20px 'Ancient';
+    -fx-text-fill: #B8860B;
 }
