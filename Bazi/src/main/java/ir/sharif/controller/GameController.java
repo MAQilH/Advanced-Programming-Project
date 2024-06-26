@@ -109,7 +109,8 @@ public class GameController {
         if(card.isHero()) {
             return card.getPower();
         }
-        if(((1 << rowNumber) & weather) != 0) {
+
+        if (((1 << rowNumber) & weather) != 0) {
             if(matchTable.getUserTable(player).getLeader().getName().equals("King Bran")) {
                 cofficient *= 0.5;
             }
@@ -120,10 +121,12 @@ public class GameController {
                 return 1;
             }
         }
-        if(row.getSpell().getAbility() instanceof CommandersHorn) {
+
+        if (row.getSpell() != null && row.getSpell().getAbility() instanceof CommandersHorn) {
             counter2x++;
         }
-        for(Card card1 : row.getCards()) {
+
+        for (Card card1 : row.getCards()) {
             if(card1.getAbility() instanceof CommandersHorn) {
                 counter2x++;
             }

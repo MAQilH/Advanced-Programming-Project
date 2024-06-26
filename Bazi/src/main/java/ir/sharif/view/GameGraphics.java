@@ -280,6 +280,9 @@ public class GameGraphics {
 						addCardToHBox(card, row);
 						removeCardFromHBox(card, hand);
 						event.consume();
+
+						int rowNumber = Integer.parseInt(row.getId().substring(3));
+						controller.placeCard(card, rowNumber);
 					});
 				}
 
