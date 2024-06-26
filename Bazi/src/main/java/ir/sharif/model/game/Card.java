@@ -4,6 +4,8 @@ import ir.sharif.controller.GameController;
 import ir.sharif.service.AppService;
 import ir.sharif.service.GameService;
 
+import java.util.ArrayList;
+
 public class Card {
     private final String name;
     private final int power, noOfCards;
@@ -85,4 +87,28 @@ public class Card {
 		return gameController.calculatePower(pos, this);
 	}
 
+	public ArrayList<Integer> validPositions() {
+		MatchTable matchTable = GameService.getInstance().getMatchTable();
+		ArrayList<Integer> validPositions = new ArrayList<>();
+		int player = matchTable.getTurn();
+		if (this.cardPosition == CardPosition.WEATHER) {
+			validPositions.add(12);
+			return validPositions;
+		}
+		if (this.cardPosition == CardPosition.SPELL) {
+			validPositions.add((1 - player) * 3 + 6);
+			validPositions.add((1 - player) * 3 + 7);
+			validPositions.add((1 - player) * 3 + 8);
+		}
+		if (this.cardPosition == CardPosition.RANGED_UNIT) {
+			validPositions.add((1 - player) * 3 + 1);
+		}
+		if (this.cardPosition == CardPosition.CLOSE_COMBAT_UNIT) {
+			validPositions.add(3 - player);
+		}
+		if (this.cardPosition == CardPosition.SIEGE_UNIT) {
+			validPositions.add(5 - 5 * player);
+		}
+		return validPositions;
+	}
 }
