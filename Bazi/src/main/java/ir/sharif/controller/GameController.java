@@ -2,10 +2,8 @@ package ir.sharif.controller;
 
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
-import ir.sharif.model.User;
 import ir.sharif.model.game.*;
-import ir.sharif.model.game.abilities.Spy;
-import ir.sharif.model.game.abilities.Transformers;
+import ir.sharif.model.game.abilities.*;
 import ir.sharif.service.GameService;
 import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.utils.Random;
@@ -37,6 +35,10 @@ public class GameController {
             case SIEGE_UNIT -> matchTable.getUserTable(player).getSiege();
             default -> null;
         };
+    }
+
+    public Row getRowByPosition(CardPosition cardPosition) {
+        return getRowByPosition(matchTable.getTurn(), cardPosition);
     }
 
     public int weatherCardsOnTable() {
@@ -107,9 +109,14 @@ public class GameController {
             return new CommandResult(ResultCode.FAILED, "Invalid row number");
         }
         int player = matchTable.getTurn();
-        CardPosition cardPosition = getCardPositionByRowNumber(rowNumber);
         Card card = matchTable.getUserTable(player).getHand().get(cardNumber);
         matchTable.getUserTable(player).getHand().remove(cardNumber);
+        return placeCard(card, rowNumber);
+    }
+
+    public CommandResult placeCard(Card card, int rowNumber) {
+        CardPosition cardPosition = getCardPositionByRowNumber(rowNumber);
+        //TODO: do the abilities when they are placed
         if(cardPosition == CardPosition.WEATHER) {
             return placeWeatherCard(card);
         }
@@ -121,6 +128,8 @@ public class GameController {
         }
         return placeUnitCard(card, rowNumber);
     }
+
+
 
     public CommandResult placeWeatherCard(Card card) {
         matchTable.addWeatherCard(card);
@@ -140,15 +149,8 @@ public class GameController {
         //TODO: I can do its action by executing the ability
         int player = 1 - matchTable.getTurn();
         matchTable.getUserTable(player).getRowByNumber(rowNumber).addCard(card);
-        player = 1 - player;
-        for(int i = 0; i < 2 && !matchTable.getUserTable(player).getDeck().isEmpty(); i++) {
-            int randomNumber = Random.getRandomInt(matchTable.getUserTable(player).getDeck().size());
-            Card randomCard = matchTable.getUserTable(player).getDeck().get(randomNumber);
-            matchTable.getUserTable(player).getDeck().remove(randomNumber);
-            matchTable.getUserTable(player).getHand().add(randomCard);
-        }
+        card.getAbility().execute();
         return new CommandResult(ResultCode.ACCEPT, "Spy card placed successfully");
-        //done here
     }
 
     public CommandResult placeUnitCard(Card card, int rowNumber) {
@@ -200,6 +202,86 @@ public class GameController {
         return null;
     }
 
+    public int calculatePower(int player, int rowNumber, Card card) {
+        double cofficient = 1;
+        int weather = weatherCardsOnTable(), counter2x = 0, constant = 0;
+        Row row = getRowByPosition(player, getCardPositionByRowNumber(rowNumber));
+        if(card.isHero()) {
+            return card.getPower();
+        }
+        if(((1 << rowNumber) & weather) != 0) {
+            if(matchTable.getUserTable(player).getLeader().getName().equals("King Bran")) {
+                cofficient *= 0.5;
+            }
+            else if(matchTable.getUserTable(player).getLeader().getName().equals("The Steel-Forged")) {
+                cofficient *= 1;
+            }
+            else {
+                return 1;
+            }
+        }
+        if(row.getSpell().getAbility() instanceof CommandersHorn) {
+            counter2x++;
+        }
+        for(Card card1 : row.getCards()) {
+            if(card1.getAbility() instanceof CommandersHorn) {
+                counter2x++;
+            }
+        }
+        if(matchTable.getUserTable(player).getLeader().getName().equals("King of Temeria")) {
+            if(rowNumber == 2 && matchTable.getUserTable(player).getLeader().
+                    getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
+                counter2x++;
+            }
+        }
+        if(matchTable.getUserTable(player).getLeader().getName().equals("Bringer of Death")) {
+            if(rowNumber == 0 && matchTable.getUserTable(player).getLeader().
+                    getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
+                counter2x++;
+            }
+        }
+        if(matchTable.getUserTable(player).getLeader().getName().equals("The Beautiful")) {
+            if(rowNumber == 1 && matchTable.getUserTable(player).getLeader().
+                    getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
+                counter2x++;
+            }
+        }
+        if(matchTable.getUserTable(player).getLeader().getName().equals("The Treacherous")) {
+            if(card.getAbility() instanceof Spy && matchTable.getUserTable(player).getLeader().
+                    getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
+                counter2x++;
+            }
+        }
+        if(matchTable.getUserTable(1 - player).getLeader().getName().equals("The Treacherous")) {
+            if(card.getAbility() instanceof Spy && matchTable.getUserTable(1 - player).getLeader().
+                    getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
+                counter2x++;
+            }
+        }
+        if(counter2x > 0) {
+            cofficient *= 2;
+        }
+        if(card.getAbility() instanceof TightBond) {
+            int counter = 0;
+            for(Card card1 : row.getCards()) {
+                if(card1.getAbility() instanceof TightBond) {
+                    counter++;
+                }
+            }
+            if(counter > 1) {
+                cofficient *= counter;
+            }
+        }
+        for(Card card1 : row.getCards()) {
+            if(card1.getAbility() instanceof MoraleBoost) {
+                constant += 1;
+            }
+        }
+        if(card.getAbility() instanceof MoraleBoost) {
+            constant -= 1;
+        }
+        return (int)(cofficient * card.getPower()) + constant;
+    }
 
 
     public CommandResult passTurn() {
@@ -257,7 +339,7 @@ public class GameController {
                         Transformers transformers = (Transformers) card.getAbility();
                         if(!transformers.isConverted()) {
                             canDelete = false;
-                            transformers.execute();
+                            transformers.execute(null, null);
                         }
                     }
                     if(canDelete){

@@ -39,6 +39,13 @@ public class MatchTable {
         return userTables[playerNumber];
     }
 
+    public UserTable getCurrentUserTable() {
+        return userTables[turn];
+    }
+    public UserTable getOpponentUserTable() {
+        return userTables[1 - turn];
+    }
+
     public ArrayList<Card> getWeatherCards() {
         return weatherCards;
     }
@@ -47,7 +54,7 @@ public class MatchTable {
         weatherCards.add(card);
     }
 
-    public void removeweatherCard(Card card) {
+    public void removeWeatherCard(Card card) {
         weatherCards.remove(card);
     }
 
