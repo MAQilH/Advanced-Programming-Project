@@ -59,7 +59,15 @@ public class GameController {
 
     public int calculatePower(int player, int rowNumber, Card card) {
         double cofficient = 1;
-        //TODO: complete this
+        int weather = weatherCardsOnTable();
+        if(card.isHero()) {
+            return card.getPower();
+        }
+        if(((1 << rowNumber) & weather) != 0) {
+            if(matchTable.getUserTable(player).getLeader().getName().equals("King Bran"))
+        }
+
+        return (int)(cofficient * card.getPower());
     }
 
     public CommandResult vetoCard(int cardNumber) {

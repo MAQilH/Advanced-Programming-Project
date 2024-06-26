@@ -23,7 +23,7 @@ public class Card {
 	}
 
 	public int getPower() {
-		return power;
+		return this.power;
 	}
 
 	public int getNoOfCards() {
