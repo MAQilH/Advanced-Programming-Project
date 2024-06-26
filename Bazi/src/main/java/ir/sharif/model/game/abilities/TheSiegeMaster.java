@@ -10,14 +10,14 @@ public class TheSiegeMaster implements Ability {
         for(Card card: userTable.getDeck()){
             if(CardTypes.getCardType(card.getName()) == CardTypes.IMPENETRABLE_FOG){
                 userTable.removeDeck(card);
-                GameService.getInstance().getController().placeCard(card, -1);
+                GameService.getInstance().getController().placeCard(card, 12);
                 return;
             }
         }
         for(Card card: userTable.getHand()){
             if(CardTypes.getCardType(card.getName()) == CardTypes.IMPENETRABLE_FOG){
                 userTable.removeHand(card);
-                GameService.getInstance().getController().placeCard(card, -1);
+                GameService.getInstance().getController().placeCard(card, 12);
                 return;
             }
         }

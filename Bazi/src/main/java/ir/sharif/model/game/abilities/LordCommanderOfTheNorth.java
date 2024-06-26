@@ -17,12 +17,12 @@ public class LordCommanderOfTheNorth implements Ability {
         int maxPower = 0;
         for(Card card: opponentTable.getSiege().getCards()){
             if(card.isHero()) continue;
-            maxPower = Math.max(maxPower, gameController.calculatePower(opponentPlayerNumber, 2, card));
+            maxPower = Math.max(maxPower, card.getPower());
         }
         if(maxPower > 10){
             for(Card card: opponentTable.getSiege().getCards()){
                 if(card.isHero()) continue;
-                if(gameController.calculatePower(opponentPlayerNumber, 2, card) == maxPower){
+                if(card.getPower() == maxPower){
                     opponentTable.getSiege().removeCard(card);
                     opponentTable.addOutOfPlay(card);
                     return;

@@ -11,7 +11,6 @@ public class Berserker implements Ability {
 
         UserTable userTable = GameService.getInstance().getMatchTable().getCurrentUserTable();
         row.removeCard(card);
-//        userTable.addOutOfPlay(card);
         Card newCard = CardTypes.VIDKAARL.getInstance();
         row.addCard(newCard);
         newCard.getAbility().execute(row, newCard);

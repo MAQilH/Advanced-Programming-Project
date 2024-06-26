@@ -73,6 +73,14 @@ public class GameController {
         return -1;
     }
 
+    public int getRealRowNumber(int player, int row){
+        if(player == 0){
+            return 2 - row;
+        } else{
+            return row - 3;
+        }
+    }
+
     public Row getRowByPosition(CardPosition cardPosition) {
         return getRowByPosition(matchTable.getTurn(), cardPosition);
     }
@@ -194,7 +202,7 @@ public class GameController {
         int power = 0;
         for(Card card : row.getCards()) {
             if(card.isHero()) continue;
-            power += calculatePower(player, rowNumber, card);
+            power += card.getPower();
         }
         return power;
     }
@@ -270,7 +278,8 @@ public class GameController {
         return placeCard(card, rowNumber);
     }
 
-    public CommandResult placeCard(Card card, int rowNumber) {
+    public CommandResult placeCard(Card card, int pos) {
+        int rowNumber = graphicRowToLogicRow(pos);
         CardPosition cardPosition = getCardPositionByRowNumber(rowNumber);
         //TODO: do the abilities when they are placed
         if(cardPosition == CardPosition.WEATHER) {
