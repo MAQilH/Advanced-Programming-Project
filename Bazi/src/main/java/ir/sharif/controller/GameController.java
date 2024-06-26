@@ -275,7 +275,6 @@ public class GameController {
             return new CommandResult(ResultCode.FAILED, "Invalid row number");
         }
         int player = matchTable.getTurn();
-        CardPosition cardPosition = getCardPositionByRowNumber(rowNumber);
         Card card = matchTable.getUserTable(player).getHand().get(cardNumber);
         matchTable.getUserTable(player).getHand().remove(cardNumber);
         return placeCard(card, rowNumber);
@@ -303,10 +302,12 @@ public class GameController {
     }
 
     public CommandResult placeSpellCard(Card card, int pos) {
-        //TODO: execute what is does(maybe it is not needed)
         int player = matchTable.getTurn();
         int rowNumber = graphicRowToLogicRow(pos);
         matchTable.getUserTable(player).getRowByNumber(rowNumber).setSpell(card);
+        if (card.getAbility() instanceof Mardroeme) {
+            //TODO:complete this
+        }
         return new CommandResult(ResultCode.ACCEPT, "Spell card placed successfully");
     }
 
