@@ -38,6 +38,9 @@ public class ViewLoader {
 
 		if (!menuName.equals("game"))
 			scene.getStylesheets().add(ViewLoader.class.getResource("/CSS/menu.css").toExternalForm());
+		else
+			scene.getStylesheets().add(ViewLoader.class.getResource("/CSS/game.css").toExternalForm());
+
 		System.out.println(scene.getStylesheets());
 		Pane pane = (Pane) scene.getRoot();
 

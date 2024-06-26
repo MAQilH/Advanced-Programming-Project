@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
@@ -12,12 +13,15 @@
             <Image url="@../../../../../../gwent-classic/img/board.jpg" />
          </image>
       </ImageView>
-       <HBox fx:id="row0" layoutX="518.0" layoutY="-1.0" minHeight="85.0" maxHeight="85.0" minWidth="589.0" maxWidth="589.0" spacing="5" alignment="CENTER" />
-       <HBox fx:id="row1" layoutX="517.0" layoutY="108.0" minHeight="85.0" maxHeight="85.0" minWidth="590.0" maxWidth="590.0" spacing="5" alignment="CENTER" />
-       <HBox fx:id="row2" layoutX="519.0" layoutY="201.0" minHeight="85.0" maxHeight="85.0" minWidth="590.0" maxWidth="590.0" spacing="5" alignment="CENTER" />
-       <HBox fx:id="row3" layoutX="519.0" layoutY="314.0" minHeight="85.0" maxHeight="85.0" minWidth="590.0" maxWidth="590.0" spacing="5" alignment="CENTER" />
-       <HBox fx:id="row4" layoutX="517.0" layoutY="415.0" minHeight="85.0" maxHeight="85.0" minWidth="590.0" maxWidth="590.0" spacing="5" alignment="CENTER" />
-       <HBox fx:id="row5" layoutX="519.0" layoutY="513.0" minHeight="85.0" maxHeight="85.0" minWidth="590.0" maxWidth="590.0" spacing="5" alignment="CENTER" />
-       <HBox fx:id="hand" layoutX="419.0" layoutY="611.0" minHeight="100.0" maxHeight="100.0" minWidth="687.0" maxWidth="687.0" spacing="5" alignment="CENTER" />
+       <HBox fx:id="row0" alignment="CENTER" layoutX="518.0" layoutY="-1.0" maxHeight="85.0" maxWidth="589.0" minHeight="85.0" minWidth="589.0" spacing="5" />
+       <HBox fx:id="row1" alignment="CENTER" layoutX="517.0" layoutY="108.0" maxHeight="85.0" maxWidth="590.0" minHeight="85.0" minWidth="590.0" spacing="5" />
+       <HBox fx:id="row2" alignment="CENTER" layoutX="519.0" layoutY="201.0" maxHeight="85.0" maxWidth="590.0" minHeight="85.0" minWidth="590.0" spacing="5" />
+       <HBox fx:id="row3" alignment="CENTER" layoutX="519.0" layoutY="314.0" maxHeight="85.0" maxWidth="590.0" minHeight="85.0" minWidth="590.0" spacing="5" />
+       <HBox fx:id="row4" alignment="CENTER" layoutX="517.0" layoutY="415.0" maxHeight="85.0" maxWidth="590.0" minHeight="85.0" minWidth="590.0" spacing="5" />
+       <HBox fx:id="row5" alignment="CENTER" layoutX="519.0" layoutY="513.0" maxHeight="85.0" maxWidth="590.0" minHeight="85.0" minWidth="590.0" spacing="5" />
+       <HBox fx:id="hand" alignment="CENTER" layoutX="419.0" layoutY="611.0" maxHeight="100.0" maxWidth="687.0" minHeight="100.0" minWidth="687.0" spacing="5" />
+      <Button fx:id="passButton" layoutX="1162.0" layoutY="339.0" mnemonicParsing="false" text="Pass" />
+      <HBox fx:id="health1" layoutX="109.0" layoutY="493.0" prefHeight="71.0" prefWidth="157.0" />
+      <HBox fx:id="health2" layoutX="105.0" layoutY="185.0" prefHeight="71.0" prefWidth="157.0" />
    </children>
 </Pane>
