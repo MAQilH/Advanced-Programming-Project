@@ -263,7 +263,7 @@ public class GameGraphics {
 					CommandResult result = controller.vetoCard(hand.indexOf(cardGraphics.getCard()));
 					if (result.statusCode() == ResultCode.ACCEPT) {
 						loadModel();
-						System.err.println(controller.getCurrentUserTable().getHand());
+						System.err.println(controller.getOpponentUserTable().getHand());
 					} else {
 						showErrorToast(result.message());
 					}

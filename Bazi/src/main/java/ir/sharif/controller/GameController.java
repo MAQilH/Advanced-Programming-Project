@@ -79,8 +79,9 @@ public class GameController {
         if(matchTable.getUserTable(player).getVetoesLeft() == 0) {
             return new CommandResult(ResultCode.FAILED, "You don't have any vetoes left");
         }
-        if(matchTable.getUserTable(player).getDeck().isEmpty())
-            return new CommandResult(ResultCode.FAILED, "deck is empty");
+        if(matchTable.getUserTable(player).getDeck().isEmpty()) {
+	        return new CommandResult(ResultCode.FAILED, "deck is empty");
+        }
         Card card = matchTable.getUserTable(player).getHand().get(cardNumber);
         matchTable.getUserTable(player).getHand().remove(cardNumber);
         matchTable.getUserTable(player).getDeck().add(card);
@@ -387,11 +388,11 @@ public class GameController {
     }
 
     public UserTable getCurrentUserTable() {
-        return matchTable.getUserTable(matchTable.getTurn() ^ 1);
+        return matchTable.getUserTable(matchTable.getTurn());
     }
 
 	public UserTable getOpponentUserTable() {
-		return matchTable.getUserTable(matchTable.getTurn());
+		return matchTable.getUserTable(matchTable.getTurn() ^ 1);
 	}
 
     public UserTable getUserUserTable(int playerNumber) {
