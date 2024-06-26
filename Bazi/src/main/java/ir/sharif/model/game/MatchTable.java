@@ -8,13 +8,14 @@ public class MatchTable {
     private final UserTable[] userTables;
     private final User[] users;
     private final ArrayList<Card> weatherCards;
-    int turn, roundNumber;
+    int turn, roundNumber, totalTurns;
 
     private boolean previousRoundPassed;
 
     public MatchTable(User user0, User user1) {
         turn = 0;
         roundNumber = 0;
+        totalTurns = 0;
         userTables = new UserTable[2];
         users = new User[2];
         weatherCards = new ArrayList<>();
@@ -67,6 +68,14 @@ public class MatchTable {
 
     public void changeRound() {
         roundNumber++;
+    }
+
+    public void setTotalTurns(int totalTurns) {
+        this.totalTurns = totalTurns;
+    }
+
+    public int getTotalTurns() {
+        return totalTurns;
     }
 
     public User getUser(int playerNumber) {

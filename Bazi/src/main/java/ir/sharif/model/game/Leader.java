@@ -4,7 +4,7 @@ public class Leader {
     private final String name;
     private final Faction faction;
     private final Ability ability;
-    private boolean isUsed = false;
+    private int roundOfAbilityUsed = -1;
 
     public Leader(String name, Faction faction, Ability ability) {
         this.name = name;
@@ -12,20 +12,21 @@ public class Leader {
         this.ability = ability;
     }
 
-    public String getName() {
-        return name;
+    public Ability getAbility() {
+        return ability;
     }
     public Faction getFaction() {
         return faction;
     }
-    public Ability getAbility() {
-        return ability;
-    }
-    public boolean isUsed() {
-        return isUsed;
-    }
-    public void setUsed(boolean used) {
-        isUsed = used;
+    public String getName() {
+        return name;
     }
 
+    public void setRoundOfAbilityUsed(int roundOfAbilityUsed) {
+        this.roundOfAbilityUsed = roundOfAbilityUsed;
+    }
+
+    public int getRoundOfAbilityUsed() {
+        return roundOfAbilityUsed;
+    }
 }

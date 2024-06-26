@@ -9,7 +9,7 @@ import ir.sharif.model.game.abilities.Transformers;
 import ir.sharif.service.GameService;
 import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.utils.Random;
-
+import javafx.beans.binding.StringBinding;
 import java.util.ArrayList;
 
 public class GameController {
@@ -43,7 +43,7 @@ public class GameController {
         int answer = 0;
         for(Card card : matchTable.getWeatherCards()) {
             if(card.getName().equals("Torrential rain")) {
-                answer |= 4;//4 = 2^2 -> bit 2vom 1hast, dar natije male radife 2vom(siege)
+                answer |= 4;
             }
             if(card.getName().equals("Impenetrable fog")) {
                 answer |= 2;
@@ -53,6 +53,25 @@ public class GameController {
             }
         }
         return answer;
+    }
+
+    public int calculatePower(int player, int rowNumber, Card card) {
+        double cofficient = 1;
+        int weather = weatherCardsOnTable();
+        if(card.isHero()) {
+            return card.getPower();
+        }
+        if(((1 << rowNumber) & weather) != 0) {
+            if(matchTable.getUserTable(player).getLeader().getName().equals("King Bran")) {
+                //TODO: complete it
+            }
+        }
+
+        return (int)(cofficient * card.getPower());
+    }
+
+    public boolean isVetoeTurn() {
+        return matchTable.getTotalTurns() < 2 && matchTable.getRoundNumber() == 0;
     }
 
     public CommandResult vetoCard(int cardNumber) {
@@ -171,40 +190,75 @@ public class GameController {
     }
 
     public CommandResult showPlayersInfo() {
-        // Implement the logic for showing players' info
-        return null;
+        String playersInfo = matchTable.getUser(0).getUsername() +
+                " ~ Fraction: " +
+                matchTable.getUserTable(0).getLeader().getFaction().name() +
+                "\n" +
+                matchTable.getUser(1).getUsername() +
+                " ~ Fraction: " +
+                matchTable.getUserTable(1).getLeader().getFaction().name();
+        return new CommandResult(ResultCode.ACCEPT, playersInfo);
     }
 
     public CommandResult showPlayersLives() {
         // Implement the logic for showing players' lives
+        String playersLives = matchTable.getUser(0).getUsername() +
+                " ~ Lives: " +
+                matchTable.getUserTable(0).getLife() +
+                "\n" +
+                matchTable.getUser(1).getUsername() +
+                " ~ Lives: " +
+                matchTable.getUserTable(1).getLife();
         return null;
     }
 
     public CommandResult showNumberOfCardsInHand() {
         // Implement the logic for showing the number of cards in hand
-        return null;
+        int numberOfCardsInHand = matchTable.getUserTable(matchTable.getTurn()).getHand().size();
+        int numberofCardsInOpponentHand = matchTable.getUserTable(1 - matchTable.getTurn()).getHand().size();
+        return new CommandResult(ResultCode.ACCEPT, "Number of cards in hand: "
+                + numberOfCardsInHand + "\nNumber of cards in opponent's hand: " + numberofCardsInOpponentHand);
     }
 
     public CommandResult showTurnInfo() {
         // Implement the logic for showing turn info
-        return null;
+        String response = "It's " + matchTable.getUser(matchTable.getTurn()).getUsername() + "'s turn";
+        return new CommandResult(ResultCode.ACCEPT, response);
+    }
+
+    public int getScoreOfRow(int player, int rowNumber) {
+        Row row = getRowByPosition(player, getCardPositionByRowNumber(rowNumber));
+        int score = 0;
+        for(Card card : row.getCards()) {
+            score += calculatePower(player, rowNumber, card);
+        }
+        return score;
     }
 
     public CommandResult showTotalScore() {
-        // Implement the logic for showing total score
-        return null;
+        String response = "Total score of " + matchTable.getUser(0).getUsername() + ": " +
+                (getScoreOfRow(0, 0) + getScoreOfRow(0, 1) +
+                        getScoreOfRow(0, 2)) +
+                "\n" +
+                "Total score of " + matchTable.getUser(1).getUsername() + ": " +
+                (getScoreOfRow(1, 0) + getScoreOfRow(1, 1) +
+                        getScoreOfRow(1, 2));
+        return new CommandResult(ResultCode.ACCEPT, response);
     }
 
     public CommandResult showTotalScoreOfRow(int rowNumber) {
-        // Implement the logic for showing total score of a specific row
-        return null;
+        String response = "Total score of row " + rowNumber + " of " + matchTable.getUser(0).getUsername() + ": " +
+                getScoreOfRow(0, rowNumber) +
+                "\n" +
+                "Total score of row " + rowNumber + " of " + matchTable.getUser(1).getUsername() + ": " +
+                getScoreOfRow(1, rowNumber);
+        return new CommandResult(ResultCode.ACCEPT, response);
     }
-
-
 
     public CommandResult passTurn() {
 
         matchTable.changeTurn();
+        matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
         if(matchTable.isPreviousRoundPassed()){
             finishRound();
             return new CommandResult(ResultCode.ACCEPT, "Round finished successfully");
@@ -222,6 +276,7 @@ public class GameController {
             return;
         }
         matchTable.changeRound();
+        matchTable.setTotalTurns(0);
         startRound(winner);
     }
 
