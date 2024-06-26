@@ -37,7 +37,24 @@ public class Scorch implements Ability {
             }
         } else{
             Row row = gameController.getRowByPosition(opponentPlayer, card.getCardPosition());
-             // TODO: after kian finish his part
+             int rowNumber = gameController.getRowNumberByCardPosition(card.getCardPosition());
+             int rowPower = gameController.calculateNonHeroPower(opponentPlayer, rowNumber);
+             if(rowPower >= 10){
+                 int maxPower = 0;
+                 for(Card rowCard: row.getCards()){
+                     if(rowCard.isHero()) continue;
+                     if(maxPower < gameController.calculatePower(opponentPlayer, rowNumber, rowCard))
+                         maxPower = gameController.calculatePower(opponentPlayer, rowNumber, rowCard);
+                 }
+                 ArrayList<Card> rowClone = new ArrayList<>(row.getCards());
+                 for(Card rowCard: row.getCards()){
+                     if(rowCard.isHero()) continue;
+                     if(maxPower == gameController.calculatePower(opponentPlayer, rowNumber, rowCard)){
+                         row.removeCard(rowCard);
+                         opponentTable.addOutOfPlay(rowCard);
+                     }
+                 }
+             }
         }
     }
 }
