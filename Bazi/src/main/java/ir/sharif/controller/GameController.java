@@ -43,8 +43,25 @@ public class GameController {
             case 0, 5, 6, 11 -> 2;
             case 1, 4, 7, 10 -> 1;
             case 2, 3, 8, 9 -> 0;
-            default -> -1;
+            case 12 -> -1;
+            default -> -100;
         };
+    }
+    //    p1
+    // 6|   0
+    // 7|   1
+    // 8|   2
+    // 9|   3
+    //10|   4
+    //11|   5
+    //   p0
+
+    public int getPlayerByPos(int pos) {
+        if(0 <= pos && pos < 3) return 1;
+        if(3 <= pos && pos < 6) return 0;
+        if(6 <= pos && pos < 9) return 1;
+        if(9 <= pos && pos < 12) return 0;
+        return -1;
     }
 
     public int weatherCardsOnTable() {
@@ -63,7 +80,9 @@ public class GameController {
         return answer;
     }
 
-    public int calculatePower(int player, int rowNumber, Card card) {
+    public int calculatePower(int pos, Card card) {
+        int player = getPlayerByPos(pos);//pos: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+        int rowNumber = graphicRowToLogicRow(pos);//rowNum: 0, 1, 2, -1
         double cofficient = 1;
         int weather = weatherCardsOnTable(), counter2x = 0, constant = 0;
         Row row = getRowByPosition(player, getCardPositionByRowNumber(rowNumber));
@@ -90,19 +109,19 @@ public class GameController {
             }
         }
         if(matchTable.getUserTable(player).getLeader().getName().equals("King of Temeria")) {
-            if(rowNumber == 2 && matchTable.getUserTable(player).getLeader().
+            if(pos == 2 && matchTable.getUserTable(player).getLeader().
                     getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
                 counter2x++;
             }
         }
         if(matchTable.getUserTable(player).getLeader().getName().equals("Bringer of Death")) {
-            if(rowNumber == 0 && matchTable.getUserTable(player).getLeader().
+            if(pos == 0 && matchTable.getUserTable(player).getLeader().
                     getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
                 counter2x++;
             }
         }
         if(matchTable.getUserTable(player).getLeader().getName().equals("The Beautiful")) {
-            if(rowNumber == 1 && matchTable.getUserTable(player).getLeader().
+            if(pos == 1 && matchTable.getUserTable(player).getLeader().
                     getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
                 counter2x++;
             }
@@ -144,11 +163,13 @@ public class GameController {
         return (int)(cofficient * card.getPower()) + constant;
     }
 
-    public int calculateRowPower(int player, int rowNumber) {
+    public int calculateRowPower(int pos) {
+        int player = getPlayerByPos(pos);
+        int rowNumber = graphicRowToLogicRow(pos);
         Row row = getRowByPosition(player, getCardPositionByRowNumber(rowNumber));
         int power = 0;
         for(Card card : row.getCards()) {
-            power += calculatePower(player, rowNumber, card);
+            power += calculatePower(pos, card);
         }
         return power;
     }
@@ -156,7 +177,7 @@ public class GameController {
     public int calculateTotalPower(int player) {
         int power = 0;
         for(int i = 0; i < 3; i++) {
-            power += calculateRowPower(player, i);
+            power += calculateRowPower(i + (player - 1) * 3);
         }
         return power;
     }
@@ -178,7 +199,7 @@ public class GameController {
         int randomNumber = Random.getRandomInt(matchTable.getUserTable(player).getDeck().size());
         Card randomCard = matchTable.getUserTable(player).getDeck().get(randomNumber);
         matchTable.getUserTable(player).getDeck().remove(randomNumber);
-        matchTable.getUserTable(player).getHand().add(randomCard);
+        matchTable.getUserTable(player).getHand().add(cardNumber, randomCard);
         matchTable.getUserTable(player).decreaseVetoesLeft();
         return new CommandResult(ResultCode.ACCEPT, "Card vetoed successfully");
     }
@@ -208,8 +229,9 @@ public class GameController {
         return null;
     }
 
-    public CommandResult placeCard(int cardNumber, int rowNumber) {
+    public CommandResult placeCard(int cardNumber, int pos) {
         //TODO: do the abilities when they are placed
+        int rowNumber = graphicRowToLogicRow(pos);
         if(matchTable.getUserTable(matchTable.getTurn()).getHand().size() <= cardNumber) {
             return new CommandResult(ResultCode.FAILED, "Invalid card number");
         }
@@ -224,31 +246,31 @@ public class GameController {
             return placeWeatherCard(card);
         }
         if(cardPosition == CardPosition.SPELL) {
-            return placeSpellCard(card, rowNumber);
+            return placeSpellCard(card, pos);
         }
         if(card.getAbility() instanceof Spy) {
-            return placeSpyCard(card, rowNumber);
+            return placeSpyCard(card, pos);
         }
-        return placeUnitCard(card, rowNumber);
+        return placeUnitCard(card, pos);
     }
 
     public CommandResult placeWeatherCard(Card card) {
         matchTable.addWeatherCard(card);
         return new CommandResult(ResultCode.ACCEPT, "Weather card placed successfully");
-        //done here
     }
 
-    public CommandResult placeSpellCard(Card card, int rowNumber) {
+    public CommandResult placeSpellCard(Card card, int pos) {
         //TODO: execute what is does(maybe it is not needed)
         int player = matchTable.getTurn();
+        int rowNumber = graphicRowToLogicRow(pos);
         matchTable.getUserTable(player).getRowByNumber(rowNumber).setSpell(card);
         return new CommandResult(ResultCode.ACCEPT, "Spell card placed successfully");
-        //done here
     }
 
-    public CommandResult placeSpyCard(Card card, int rowNumber) {
+    public CommandResult placeSpyCard(Card card, int pos) {
         //TODO: I can do its action by executing the ability
         int player = 1 - matchTable.getTurn();
+        int rowNumber = graphicRowToLogicRow(pos);
         matchTable.getUserTable(player).getRowByNumber(rowNumber).addCard(card);
         player = 1 - player;
         for(int i = 0; i < 2 && !matchTable.getUserTable(player).getDeck().isEmpty(); i++) {
@@ -261,9 +283,10 @@ public class GameController {
         //done here
     }
 
-    public CommandResult placeUnitCard(Card card, int rowNumber) {
+    public CommandResult placeUnitCard(Card card, int pos) {
         //TODO: execute ability
         int player = matchTable.getTurn();
+        int rowNumber = graphicRowToLogicRow(pos);
         Row row = matchTable.getUserTable(player).getRowByNumber(rowNumber);
         row.addCard(card);
         return new CommandResult(ResultCode.ACCEPT, "Unit card placed successfully");
@@ -317,32 +340,12 @@ public class GameController {
         return new CommandResult(ResultCode.ACCEPT, response);
     }
 
-    public int getScoreOfRow(int player, int rowNumber) {
-        Row row = getRowByPosition(player, getCardPositionByRowNumber(rowNumber));
-        int score = 0;
-        for(Card card : row.getCards()) {
-            score += calculatePower(player, rowNumber, card);
-        }
-        return score;
-    }
-
-    public CommandResult showTotalScore() {
-        String response = "Total score of " + matchTable.getUser(0).getUsername() + ": " +
-                (getScoreOfRow(0, 0) + getScoreOfRow(0, 1) +
-                        getScoreOfRow(0, 2)) +
+    public CommandResult showTotalScoreOfRow(int pos) {
+        String response = "Total score of row " + pos + " of " + matchTable.getUser(0).getUsername() + ": " +
+                calculateRowPower(pos) +
                 "\n" +
-                "Total score of " + matchTable.getUser(1).getUsername() + ": " +
-                (getScoreOfRow(1, 0) + getScoreOfRow(1, 1) +
-                        getScoreOfRow(1, 2));
-        return new CommandResult(ResultCode.ACCEPT, response);
-    }
-
-    public CommandResult showTotalScoreOfRow(int rowNumber) {
-        String response = "Total score of row " + rowNumber + " of " + matchTable.getUser(0).getUsername() + ": " +
-                getScoreOfRow(0, rowNumber) +
-                "\n" +
-                "Total score of row " + rowNumber + " of " + matchTable.getUser(1).getUsername() + ": " +
-                getScoreOfRow(1, rowNumber);
+                "Total score of row " + pos + " of " + matchTable.getUser(1).getUsername() + ": " +
+                calculateRowPower(pos);
         return new CommandResult(ResultCode.ACCEPT, response);
     }
 
