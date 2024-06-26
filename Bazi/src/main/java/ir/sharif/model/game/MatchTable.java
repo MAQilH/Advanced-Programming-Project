@@ -7,8 +7,6 @@ import java.util.ArrayList;
 public class MatchTable {
     private final UserTable[] userTables;
     private final User[] users;
-    private int[] lives;
-    private int[] vetoesLeft;
     private final ArrayList<Card> weatherCards;
     int turn, roundNumber;
 
@@ -19,15 +17,11 @@ public class MatchTable {
         roundNumber = 0;
         userTables = new UserTable[2];
         users = new User[2];
-        lives = new int[2];
-        vetoesLeft = new int[2];
         weatherCards = new ArrayList<>();
         userTables[0] = new UserTable(user0.getDeckInfo());
         userTables[1] = new UserTable(user1.getDeckInfo());
         users[0] = user0;
         users[1] = user1;
-        lives[0] = lives[1] = 2;
-        vetoesLeft[0] = vetoesLeft[1] = 2;
         previousRoundPassed = false;
     }
 
@@ -73,22 +67,6 @@ public class MatchTable {
 
     public void changeRound() {
         roundNumber++;
-    }
-
-    public void decreaseLife(int playerNumber) {
-        lives[playerNumber]--;
-    }
-
-    public int getLife(int playerNumber) {
-        return lives[playerNumber];
-    }
-
-    public void decreaseVetoesLeft(int playerNumber) {
-        vetoesLeft[playerNumber]--;
-    }
-
-    public int getVetoesLeft(int playerNumber) {
-        return vetoesLeft[playerNumber];
     }
 
     public User getUser(int playerNumber) {

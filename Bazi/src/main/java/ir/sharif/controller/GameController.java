@@ -57,7 +57,7 @@ public class GameController {
 
     public CommandResult vetoCard(int cardNumber) {
         int player = matchTable.getTurn();
-        if(matchTable.getVetoesLeft(player) == 0) {
+        if(matchTable.getUserTable(player).getVetoesLeft() == 0) {
             return new CommandResult(ResultCode.FAILED, "You don't have any vetoes left");
         }
         if(matchTable.getUserTable(player).getDeck().isEmpty())
@@ -69,7 +69,7 @@ public class GameController {
         Card randomCard = matchTable.getUserTable(player).getDeck().get(randomNumber);
         matchTable.getUserTable(player).getDeck().remove(randomNumber);
         matchTable.getUserTable(player).getHand().add(randomCard);
-        matchTable.decreaseVetoesLeft(player);
+        matchTable.getUserTable(player).decreaseVetoesLeft();
         return new CommandResult(ResultCode.ACCEPT, "Card vetoed successfully");
     }
 
@@ -215,9 +215,9 @@ public class GameController {
 
     private void finishRound(){
         int winner = getRoundWinner();
-        if(winner != 0) matchTable.decreaseLife(0);
-        if(winner != 1) matchTable.decreaseLife(1);
-        if(matchTable.getLife(0) == 0 || matchTable.getLife(1) == 0){
+        if(winner != 0) matchTable.getUserTable(0).decreaseLife();
+        if(winner != 1) matchTable.getUserTable(1).decreaseLife();
+        if(matchTable.getUserTable(0).getLife() == 0 || matchTable.getUserTable(1).getLife() == 0){
             finishGame();
             return;
         }
@@ -311,8 +311,8 @@ public class GameController {
 
     private void finishGame(){
         int gameWinner;
-        if(matchTable.getLife(0) == matchTable.getLife(1)) gameWinner = -1;
-        else if(matchTable.getLife(0) > matchTable.getLife(1)) gameWinner = 0;
+        if(matchTable.getUserTable(0).getLife() == matchTable.getUserTable(1).getLife()) gameWinner = -1;
+        else if(matchTable.getUserTable(0).getLife() > matchTable.getUserTable(1).getLife()) gameWinner = 0;
         else gameWinner = 1;
 
         // TODO: return winner to the graphical controller

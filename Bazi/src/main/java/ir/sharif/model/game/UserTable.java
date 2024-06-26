@@ -7,6 +7,7 @@ public class UserTable {
     private final Faction faction;
     private final Row siege, ranged, closeCombat;
     private final ArrayList<Card> outOfPlays, hand, deck;
+    private int life = 2, vetoesLeft = 2;
 
     public UserTable(DeckInfo deckInfo) {
         this.leader = deckInfo.getLeader().getInstance();
@@ -183,4 +184,21 @@ public class UserTable {
         }
         return heroes;
     }
+
+    public int getLife() {
+        return life;
+    }
+
+    public void decreaseLife() {
+        life--;
+    }
+
+    public int getVetoesLeft() {
+        return vetoesLeft;
+    }
+
+    public void decreaseVetoesLeft() {
+        vetoesLeft--;
+    }
+
 }
