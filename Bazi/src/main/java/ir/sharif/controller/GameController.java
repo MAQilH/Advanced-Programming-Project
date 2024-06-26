@@ -334,7 +334,8 @@ public class GameController {
             card.getAbility().execute(card);
         }
         else {
-            card.getAbility().execute(row, card);
+			if (card.getAbility() != null)
+				card.getAbility().execute(row, card);
         }
         return new CommandResult(ResultCode.ACCEPT, "Unit card placed successfully");
         //done here

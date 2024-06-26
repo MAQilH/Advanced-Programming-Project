@@ -289,13 +289,15 @@ public class GameGraphics {
 					row.setOnDragExited(e -> row.setBackground(Background.fill(Color.rgb(1, 1, 0, 0.3))));
 
 					row.setOnDragDropped(e -> {
-						addCardToHBox(card, row);
-						removeCardFromHBox(card, hand);
-						event.consume();
-
 						int rowNumber = Integer.parseInt(row.getId().substring(3));
-						controller.placeCard(card, rowNumber);
-						updatePowerLabels();
+						CommandResult result = controller.placeCard(card, rowNumber);
+						if (result.statusCode() == ResultCode.ACCEPT) {
+							addCardToHBox(card, row);
+							removeCardFromHBox(card, hand);
+							updatePowerLabels();
+						} else {
+							showErrorToast(result.message());
+						}
 					});
 				}
 			});
