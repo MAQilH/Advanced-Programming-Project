@@ -82,7 +82,6 @@ public class GameGraphics {
 
 		passButton.setOnMouseClicked(event -> {
 			controller.passTurn();
-			preTurnLoading();
 		});
 
 		leaderGraphics[0] = (ImageView) getChildrenById("leader0");
