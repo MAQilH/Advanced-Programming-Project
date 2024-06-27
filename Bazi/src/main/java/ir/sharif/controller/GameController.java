@@ -7,6 +7,7 @@ import ir.sharif.model.game.abilities.*;
 import ir.sharif.service.GameService;
 import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.utils.Random;
+import ir.sharif.view.GameGraphics;
 
 import java.util.ArrayList;
 
@@ -407,6 +408,7 @@ public class GameController {
     public void finishTurn(){
         if(!matchTable.isPreviousRoundPassed()){
             matchTable.changeTurn();
+            GameGraphics.getInstance().preTurnLoading();
         }
         matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
         // TODO: call graphic
@@ -414,6 +416,7 @@ public class GameController {
 
     public CommandResult passTurn() {
         matchTable.changeTurn();
+        GameGraphics.getInstance().preTurnLoading();
         matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
         if(matchTable.isPreviousRoundPassed()){
             finishRound();
