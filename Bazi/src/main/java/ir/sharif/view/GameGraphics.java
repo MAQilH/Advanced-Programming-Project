@@ -108,7 +108,12 @@ public class GameGraphics {
 		for (int i = 0; i < 2; i++) {
 			LeaderType leaderType = LeaderType.getLeaderType(controller.getUserUserTable(i).getLeader().getName());
 			leaderGraphics[i].setImage(new Image(getClass().getResourceAsStream("/images/leader/" + leaderType.toString() + ".jpg")));
+			int finalI = i;
 			leaderGraphics[i].setOnMouseClicked(event -> {
+				if (controller.getMatchTable().getTurn() != finalI) {
+					showErrorToast("It's not your turn");
+					return;
+				}
 				CommandResult result = controller.commanderPowerPlay();
 				if (result.statusCode() == ResultCode.ACCEPT) {
 					showToast("Commander power played");
