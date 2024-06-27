@@ -40,7 +40,7 @@ public class GUIApplication extends Application {
 		System.err.println(preGameController.changeTurn().statusCode());
 		System.err.println(preGameController.loadDeck("test").statusCode());
 		System.err.println(preGameController.startGame().statusCode());
-
+//
 		GameService.getInstance().createController();
 		ViewLoader.newScene("game");
 	}

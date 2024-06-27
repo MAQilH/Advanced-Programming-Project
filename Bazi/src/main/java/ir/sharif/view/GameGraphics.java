@@ -1,5 +1,6 @@
 package ir.sharif.view;
 
+import eu.hansolo.tilesfx.Command;
 import ir.sharif.controller.GameController;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
@@ -11,6 +12,7 @@ import ir.sharif.service.GameService;
 import ir.sharif.utils.Random;
 import ir.sharif.view.game.CardGraphics;
 import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
@@ -105,6 +107,19 @@ public class GameGraphics {
 				preTurnLoading();
 			}
 		});
+
+		for (int i = 0; i < 2; i++) {
+			LeaderType leaderType = LeaderType.getLeaderType(controller.getUserUserTable(i).getLeader().getName());
+			leaderGraphics[i].setImage(new Image(getClass().getResourceAsStream("/images/leader/" + leaderType.toString() + ".jpg")));
+			leaderGraphics[i].setOnMouseClicked(event -> {
+				CommandResult result = controller.commanderPowerPlay();
+				if (result.statusCode() == ResultCode.ACCEPT) {
+					showToast("Commander power played");
+				} else {
+					showErrorToast(result.message());
+				}
+			});
+		}
 	}
 
 	public void showCurrentUserHand() {
@@ -126,6 +141,14 @@ public class GameGraphics {
 				cardGraphics.updatePower();
 			}
 		}
+	}
+
+	public void showWinner(int winner) {
+		showToast("Player " + (winner + 1) + " won the game");
+		// go to the main menu after 3 second
+		PauseTransition pause = new PauseTransition(Duration.seconds(3));
+		pause.setOnFinished(event -> ViewLoader.newScene("main"));
+		pause.play();
 	}
 
 	private ImageView loadIcon(String iconName, double size) {
@@ -191,12 +214,25 @@ public class GameGraphics {
 	}
 
 	private void updateCardsInRows() {
-//		for (int i = 0; i < 13; i++) {
-//			rows[i].getChildren().clear();
-//			for (Card card : controller.getMatchTable().getGraphicRow(i)) {
-//				addCardToHBox(card, rows[i]);
-//			}
-//		}
+		for (int i = 0; i < 13; i++) {
+			ArrayList<Card> cardsInRow = controller.getMatchTable().getCardsByPosition(i);
+			ArrayList<Card> cardsInRowGraphics = new ArrayList<>();
+			for (Node node : rows[i].getChildren()) {
+				cardsInRowGraphics.add(((CardGraphics) node).getCard());
+			}
+
+			for (Card card : cardsInRow) {
+				if (!cardsInRowGraphics.contains(card)) {
+					addCardToHBox(card, rows[i]);
+				}
+			}
+
+			for (Card card : cardsInRowGraphics) {
+				if (!cardsInRow.contains(card)) {
+					removeCardFromHBox(card, rows[i]);
+				}
+			}
+		}
 	}
 
 	public void addNodeWithAnimation(HBox hbox, Node node) {
@@ -243,11 +279,6 @@ public class GameGraphics {
 	}
 
 	public void preTurnLoading() {
-		for (int i = 0; i < 2; i++) {
-			LeaderType leaderType = LeaderType.getLeaderType(controller.getUserUserTable(i).getLeader().getName());
-			leaderGraphics[i].setImage(new Image(getClass().getResourceAsStream("/images/leader/" + leaderType.toString() + ".jpg")));
-		}
-
 		loadModel();
 		if (controller.isVetoeTurn()) {
 			showToast("Player " + (controller.getMatchTable().getTurn() + 1) + "'s turn for veto");

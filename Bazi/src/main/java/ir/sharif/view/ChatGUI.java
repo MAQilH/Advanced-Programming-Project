@@ -1,10 +1,8 @@
 package ir.sharif.view;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import ir.sharif.model.CommandResult;
+import com.google.gson.reflect.TypeToken;
 import ir.sharif.model.Message;
-import ir.sharif.service.UserService;
 import ir.sharif.utils.ConstantsLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -26,9 +24,12 @@ import java.util.function.Function;
 public class ChatGUI {
 	private Stage stage;
 	private TextArea outputArea;
-	public static InputStream inputStream;
-	private OutputStream outputStream;
-	private Socket socket;
+	private InputStream messageInputStream;
+	private OutputStream messageOutputStream;
+	private InputStream getInputStream;
+	private OutputStream getOutputStream;
+	private Socket messageSocket;
+	private Socket getSocket;
 	private final Gson gson = new Gson();
 
 	public ChatGUI() {
@@ -47,38 +48,44 @@ public class ChatGUI {
 		stage.sizeToScene();
 
 		try {
-			socket = new Socket("localhost", Integer.parseInt(ConstantsLoader.getInstance().getProperty("chat.port")));
-			inputStream = socket.getInputStream();
-			outputStream = socket.getOutputStream();
+			messageSocket = new Socket("localhost", Integer.parseInt(ConstantsLoader.getInstance().getProperty("message.port")));
+			getSocket = new Socket("localhost", Integer.parseInt(ConstantsLoader.getInstance().getProperty("get.port")));
+			messageInputStream = messageSocket.getInputStream();
+			messageOutputStream = messageSocket.getOutputStream();
+			getInputStream = getSocket.getInputStream();
+			getOutputStream = getSocket.getOutputStream();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		Thread thread = new Thread(() -> {
+		Thread getThread = new Thread(() -> {
 			while (true) {
 				try {
-					outputStream.write("get".getBytes());
-					outputStream.flush();
-					String allMessages = new String(ChatGUI.inputStream.readAllBytes());
-					ArrayList<Message> messages = gson.fromJson(allMessages, ArrayList.class);
-					StringBuilder text = new StringBuilder();
-					for (Message message : messages) {
-						text.append(message.getSenderUsername()).append(": ").append(message.getMessage()).append("\n");
+					getOutputStream.write("get".getBytes());
+					getOutputStream.flush();
+					Thread.sleep(1000); // Add a delay to wait for the response
+
+					if (getInputStream.available() > 0) {
+						String allMessages = new String(getInputStream.readAllBytes());
+						ArrayList<Message> messages = gson.fromJson(allMessages, new TypeToken<ArrayList<Message>>(){}.getType());
+						StringBuilder text = new StringBuilder();
+						for (Message message : messages) {
+							text.append(message.getSenderUsername()).append(": ").append(message.getMessage()).append("\n");
+						}
+
+						outputArea.setText(text.toString());
 					}
-
-					outputArea.setText(text.toString());
 				} catch (IOException e) {
+					System.out.println("Error reading from server: " + e.getMessage());
 					throw new RuntimeException(e);
-				}
-
-				try {
-					Thread.sleep(1000);
 				} catch (InterruptedException e) {
+					System.out.println("Thread interrupted: " + e.getMessage());
 					throw new RuntimeException(e);
 				}
 			}
-
 		});
+
+		getThread.start();
 	}
 
 	@NotNull
@@ -89,11 +96,11 @@ public class ChatGUI {
 		inputField.setOnKeyPressed(event -> {
 			if (event.getCode() != KeyCode.ENTER) return;
 			String input = inputField.getText();
-			Message message = new Message(UserService.getInstance().getCurrentUser().getUsername(), input);
+			Message message = new Message(ConstantsLoader.getInstance().getProperty("username"), input);
 			String json = gson.toJson(message);
 			try {
-				outputStream.write(json.getBytes());
-				outputStream.flush();
+				messageOutputStream.write(json.getBytes());
+				messageOutputStream.flush();
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
