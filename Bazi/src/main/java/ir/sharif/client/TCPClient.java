@@ -1,15 +1,19 @@
 package ir.sharif.client;
 
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
+import ir.sharif.messages.ChatAllMessage;
 import ir.sharif.messages.ChatSendMessage;
 import ir.sharif.messages.ServerMessage;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.Message;
+import ir.sharif.server.ChatService;
 import ir.sharif.utils.ConstantsLoader;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -87,11 +91,30 @@ public class TCPClient {
 	}
 
 	public boolean sendChatMessage(String message, String senderUsername) {
-		ChatSendMessage chatSendMessage = new ChatSendMessage(message, senderUsername);
+		ChatSendMessage chatSendMessage = new ChatSendMessage(senderUsername, message);
 		establishConnection();
 		sendMessage(gsonAgent.toJson(chatSendMessage));
 		lastServerMessage = gsonAgent.fromJson(recieveResponse(), ServerMessage.class);
 		endConnection();
 		return lastServerMessage.wasSuccessfull();
+	}
+
+	public ArrayList<Message> getMessages() {
+		ChatAllMessage chatAllMessage = new ChatAllMessage();
+		try {
+			establishConnection();
+			sendMessage(gsonAgent.toJson(chatAllMessage));
+			lastServerMessage = gsonAgent.fromJson(recieveResponse(), ServerMessage.class);
+			ArrayList<Message> result = null;
+			if (lastServerMessage.wasSuccessfull()) {
+				Type token = new TypeToken<ArrayList<Message>>() {}.getType();
+				result =  gsonAgent.fromJson(lastServerMessage.getAdditionalInfo(), token);
+			}
+
+			endConnection();
+			return result;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

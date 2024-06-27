@@ -2,9 +2,11 @@ package ir.sharif.server;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import ir.sharif.messages.ChatAllMessage;
 import ir.sharif.messages.ChatSendMessage;
 import ir.sharif.messages.ClientMessage;
 import ir.sharif.messages.ServerMessage;
+import ir.sharif.model.Message;
 import ir.sharif.utils.ConstantsLoader;
 
 import java.io.*;
@@ -90,11 +92,15 @@ public class TCPServerWorker extends Thread {
 	}
 
 	private ClientMessage extractClientMessage(String clientStr) {
+		System.err.println(clientStr);
 		try {
 			ClientMessage clientMessage = gsonAgent.fromJson(clientStr, ClientMessage.class);
 			switch (clientMessage.getType()) {
 				case CHAT_SEND_MESSAGE:
 					return gsonAgent.fromJson(clientStr, ChatSendMessage.class);
+				case CHAT_ALL_MESSAGES:
+					System.err.println("kheilie fuck");
+					return gsonAgent.fromJson(clientStr, ChatAllMessage.class);
 				default:
 					return null;
 			}
@@ -144,8 +150,11 @@ public class TCPServerWorker extends Thread {
 
 			if (msg instanceof ChatSendMessage) {
 				ChatSendMessage chatSendMessage = (ChatSendMessage) msg;
-				System.out.println("Message from " + chatSendMessage.getSenderUsername() + ": " + chatSendMessage.getMessage());
+				Message message = new Message(chatSendMessage.getSenderUsername(), chatSendMessage.getMessage());
+				ChatService.getInstance().addMessage(message);
 				sendSuccess("Message received");
+			} else if (msg instanceof ChatAllMessage) {
+				sendSuccess(gsonAgent.toJson(ChatService.getInstance().getMessages()));
 			} else {
 				sendFailure("Invalid message type");
 			}
@@ -157,6 +166,7 @@ public class TCPServerWorker extends Thread {
 			e.printStackTrace();
 		}
 	}
+
 
 	public static void main(String[] args) {
 		try {

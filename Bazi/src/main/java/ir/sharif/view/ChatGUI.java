@@ -42,6 +42,28 @@ public class ChatGUI {
 		stage.setScene(scene);
 		stage.show();
 		stage.sizeToScene();
+
+		Thread updateChatThread = new Thread(() -> {
+			while (true) {
+				ArrayList<Message> messages = tcpClient.getMessages();
+				System.err.println(messages);
+				if (messages != null) {
+					outputArea.clear();
+					for (Message message : messages) {
+						outputArea.appendText(message.getSenderUsername() + ":  " +
+							message.getMessage() + "\n");
+					}
+				}
+
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		});
+
+		updateChatThread.start();
 	}
 
 	@NotNull
