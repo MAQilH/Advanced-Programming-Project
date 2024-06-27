@@ -17,7 +17,7 @@ public class Muster implements Ability {
         ArrayList<Card> handClone = new ArrayList<>(userTable.getHand());
 
         for(Card handCard: handClone){
-            if(handCard.getFaction() == card.getFaction() && handCard.getAbility() instanceof MoraleBoost){
+            if(handCard.getFaction() == card.getFaction() && handCard.getAbility() instanceof Muster){
                 userTable.getHand().remove(handCard);
 
                 Row insertedRow;
@@ -33,7 +33,7 @@ public class Muster implements Ability {
 
         ArrayList<Card> deckClone = new ArrayList<>(userTable.getDeck());
         for(Card deckCard: deckClone){
-            if(deckCard.getFaction() == card.getFaction() && deckCard.getAbility() instanceof MoraleBoost){
+            if(deckCard.getFaction() == card.getFaction() && deckCard.getAbility() instanceof Muster){
                 userTable.getDeck().remove(deckCard);
 
                 Row insertedRow;
