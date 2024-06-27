@@ -105,6 +105,9 @@ public class GameController {
         if(card.getCardPosition() == CardPosition.SPELL || card.getCardPosition() == CardPosition.WEATHER) {
             return 0;
         }
+        if(pos < 0 || pos > 12) {
+            return card.getPower();
+        }
         int player = getPlayerByPos(pos);//pos: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
         int rowNumber = graphicRowToLogicRow(pos);//rowNum: 0, 1, 2, -1
         double cofficient = 1;
