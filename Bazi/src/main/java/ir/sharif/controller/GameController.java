@@ -275,7 +275,7 @@ public class GameController {
 
     public CommandResult forcePlaceCard(Card card, int pos){
         int rowNumber = graphicRowToLogicRow(pos);
-        CardPosition cardPosition = getCardPositionByRowNumber(rowNumber);
+        CardPosition cardPosition = card.getCardPosition();
         if(cardPosition == null) return new CommandResult(ResultCode.FAILED, "Invalid position");
         CommandResult result;
         if(cardPosition == CardPosition.WEATHER) {
@@ -415,16 +415,19 @@ public class GameController {
     }
 
     public void finishTurn(){
+        System.out.println("TotalTurn :" + matchTable.getTotalTurns() + " RoundNumber: " + matchTable.getRoundNumber() +
+                " Turn: " + matchTable.getTurn() + " PreviousRoundPassed: " + matchTable.isPreviousRoundPassed() + " isFinishTurn");
         if(!matchTable.isPreviousRoundPassed()){
             matchTable.changeTurn();
             GameGraphics.getInstance().preTurnLoading();
         }
-
         matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
         // TODO: call graphic
     }
 
     public CommandResult passTurn() {
+        System.out.println("TotalTurn :" + matchTable.getTotalTurns() + " RoundNumber: " + matchTable.getRoundNumber() +
+                " Turn: " + matchTable.getTurn() + " PreviousRoundPassed: " + matchTable.isPreviousRoundPassed() + " isPassTurn");
         matchTable.changeTurn();
         GameGraphics.getInstance().preTurnLoading();
         matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
@@ -436,7 +439,7 @@ public class GameController {
         return new CommandResult(ResultCode.ACCEPT, "Turn passed successfully");
     }
 
-    private void finishRound(){
+    private void finishRound() {
         int winner = getRoundWinner();
         if(winner != 0) matchTable.getUserTable(0).decreaseLife();
         if(winner != 1) matchTable.getUserTable(1).decreaseLife();
@@ -451,7 +454,7 @@ public class GameController {
 
     private void startRound(int winner){
         // TODO: call graphical controller for this changes
-        if(matchTable.getRoundNumber() == 0){
+        if(matchTable.getRoundNumber() == 0) {
             ArrayList<Integer> scoiataelUsers = new ArrayList<>();
             for (int userIndex = 0; userIndex < 2; userIndex++) {
                 if(matchTable.getUserTable(userIndex).getFaction() == Faction.SCOIATAEL) scoiataelUsers.add(userIndex);
@@ -462,6 +465,7 @@ public class GameController {
                 matchTable.setTurn(scoiataelUsers.get(0));
             }
         }
+        //Here above, we determine who should start the round
 
         for (int userIndex = 0; userIndex < 2; userIndex++) {
             UserTable userTable = matchTable.getUserTable(userIndex);
@@ -474,7 +478,8 @@ public class GameController {
             for (int rowIndex = 0; rowIndex < 3; rowIndex++) {
                 Row row = userTable.getRowByNumber(rowIndex);
                 ArrayList<Card> rowCards = new ArrayList<>(row.getCards());
-                for (Card card : rowCards) {
+                for (int i = rowCards.size() - 1; i > -1; i--) {
+                    Card card = rowCards.get(i);
                     boolean canDelete = true;
                     if(card == heroRemain) canDelete = false;
                     if(card.getAbility() instanceof Transformers){
@@ -485,7 +490,7 @@ public class GameController {
                     }
                     if(canDelete){
                         userTable.addOutOfPlay(card);
-                        row.removeCard(card);
+                        row.getCards().remove(i);
                     }
                 }
                 if(row.getSpell() != null) {
@@ -493,6 +498,7 @@ public class GameController {
                     row.setSpell(null);
                 }
             }
+            //deletes cards from the round before
             if(userTable.getFaction() == Faction.NORTHEN_REALMS && winner == userIndex){
                 Card newAddedCard = null;
                 if(!userTable.getDeck().isEmpty())
@@ -502,6 +508,7 @@ public class GameController {
                     userTable.addHand(newAddedCard);
                 }
             }
+            //add cards if the Faction is NorthernRealms
 
             if(userTable.getFaction() == Faction.SKELLIGE && matchTable.getRoundNumber() == 2){
                 for (int addedCardIndex = 0; addedCardIndex < 2; addedCardIndex++) {
@@ -514,6 +521,7 @@ public class GameController {
                     }
                 }
             }
+            //add cards to hand if it's the final round
         }
     }
 
@@ -541,7 +549,7 @@ public class GameController {
         if(matchTable.getUserTable(0).getLife() == matchTable.getUserTable(1).getLife()) gameWinner = -1;
         else if(matchTable.getUserTable(0).getLife() > matchTable.getUserTable(1).getLife()) gameWinner = 0;
         else gameWinner = 1;
-
+        GameGraphics.getInstance().showWinner(gameWinner);
         // TODO: return winner to the graphical controller
     }
 
