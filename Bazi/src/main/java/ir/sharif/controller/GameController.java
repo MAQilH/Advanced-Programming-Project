@@ -276,7 +276,10 @@ public class GameController {
         int player = matchTable.getTurn();
         Card card = matchTable.getUserTable(player).getHand().get(cardNumber);
         matchTable.getUserTable(player).getHand().remove(cardNumber);
-        return placeCard(card, rowNumber);
+        CommandResult result = placeCard(card, rowNumber);
+        if(result.statusCode() == ResultCode.ACCEPT)
+            finishTurn();
+        return result;
     }
 
     public CommandResult placeCard(Card card, int pos) {
@@ -305,6 +308,7 @@ public class GameController {
             return new CommandResult(ResultCode.FAILED, "Leader ability is before used");
         matchTable.getCurrentUserTable().getLeader().getAbility().execute();
         leader.setRoundOfAbilityUsed(matchTable.getRoundNumber());
+        finishTurn();
         return new CommandResult(ResultCode.ACCEPT, "Leader ability executed successfully");
     }
 
@@ -406,6 +410,14 @@ public class GameController {
                 "Total score of row " + pos + " of " + matchTable.getUser(1).getUsername() + ": " +
                 calculateRowPower(pos);
         return new CommandResult(ResultCode.ACCEPT, response);
+    }
+
+    public void finishTurn(){
+        matchTable.changeTurn();
+        matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
+        matchTable.setPreviousRoundPassed(false);
+        // TODO: call graphic
+        new CommandResult(ResultCode.ACCEPT, "Turn finished successfully");
     }
 
     public CommandResult passTurn() {
@@ -519,8 +531,6 @@ public class GameController {
             }
         }
     }
-
-
 
     private void finishGame(){
         int gameWinner;
