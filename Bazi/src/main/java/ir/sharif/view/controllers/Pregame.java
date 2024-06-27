@@ -5,6 +5,7 @@ import ir.sharif.controller.PreGameController;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.game.*;
+import ir.sharif.service.GameService;
 import ir.sharif.view.ViewLoader;
 import ir.sharif.view.game.CardGraphics;
 import javafx.fxml.FXML;
@@ -277,6 +278,7 @@ public class Pregame {
 		result = pregameController.startGame();
 		if (result.statusCode() == ResultCode.ACCEPT) {
 			errorLabel.setText("game started successfully");
+			GameService.getInstance().createController();
 			ViewLoader.newScene("game");
 		} else {
 			errorLabel.setText(result.message());

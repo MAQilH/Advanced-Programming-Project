@@ -10,9 +10,10 @@
 <?import javafx.scene.text.Font?>
 
 <?import javafx.scene.layout.Pane?>
-<Pane prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ir.sharif.view.controllers.Signup">
+<?import javafx.scene.control.ComboBox?>
+<Pane prefHeight="800" prefWidth="900" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ir.sharif.view.controllers.Signup">
 
-    <VBox alignment="CENTER" prefHeight="600" prefWidth="800.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+    <VBox alignment="CENTER" prefHeight="800" prefWidth="900.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
         <children>
             <Label text="Sign Up" styleClass="title-label">
             </Label>
@@ -21,6 +22,8 @@
             <TextField fx:id="nicknameTextField" maxWidth="250.0" promptText="Nickname:" />
             <PasswordField fx:id="passwordTextField" maxWidth="250.0" promptText="Password:" />
             <PasswordField fx:id="passwordConfirmTextField" maxWidth="250.0" promptText="Password Confirmation:" />
+            <ComboBox fx:id="securityQuestionComboBox" maxWidth="250.0" promptText="Security Question:" />
+            <TextField fx:id="securityAnswerTextField" maxWidth="250.0" promptText="Security Answer:" />
 
             <HBox alignment="CENTER" prefHeight="96.0" prefWidth="300.0" spacing="10.0">
                 <children>
@@ -40,6 +43,7 @@
                     <Insets />
                 </VBox.margin>
             </HBox>
+
             <Label fx:id="errorLabel" styleClass="error-label" />
         </children>
     </VBox>

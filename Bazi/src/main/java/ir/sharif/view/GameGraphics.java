@@ -118,6 +118,8 @@ public class GameGraphics {
 				} else {
 					showErrorToast(result.message());
 				}
+
+				loadModel();
 			});
 		}
 	}
@@ -144,8 +146,7 @@ public class GameGraphics {
 	}
 
 	public void showWinner(int winner) {
-		showToast("Player " + (winner + 1) + " won the game");
-		// go to the main menu after 3 second
+		showToast((winner == -1 ? "draw" : "Player " + (winner + 1) + " won the game"));
 		PauseTransition pause = new PauseTransition(Duration.seconds(3));
 		pause.setOnFinished(event -> ViewLoader.newScene("main"));
 		pause.play();

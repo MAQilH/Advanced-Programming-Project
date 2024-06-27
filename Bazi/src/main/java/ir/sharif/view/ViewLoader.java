@@ -89,11 +89,11 @@ public class ViewLoader {
 
 	private static void setGlobalShortcuts(Scene newScene) {
 		Pane root = (Pane) newScene.getRoot();
-		root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			KeyEvent keyEvent = (KeyEvent) event;
-			if (event.getCode() == KeyCode.T) {
+		// if ctrl t pressed, open terminal
+		newScene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+			if (event.getCode() == KeyCode.T && event.isShiftDown()) {
 				new TerminalGUI(null);
-			} else if (event.getCode() == KeyCode.C) {
+			} if (event.getCode() == KeyCode.C && event.isShiftDown()) {
 				new ChatGUI();
 			}
 		});

@@ -3,6 +3,7 @@ package ir.sharif.controller;
 import ir.sharif.enums.Menus;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
+import ir.sharif.model.SecurityQuestion;
 import ir.sharif.model.User;
 import ir.sharif.service.AppService;
 import ir.sharif.service.UserService;
@@ -29,7 +30,7 @@ public class RegisterController {
     }
 
     public CommandResult register(String username, String password, String passwordConfirm,
-                                  String nickname, String email) {
+                                  SecurityQuestion question, String nickname, String email) {
         if(!Regex.USERNAME.matches(username)){
             return new CommandResult(ResultCode.FAILED, "username is invalid");
         }
@@ -51,8 +52,16 @@ public class RegisterController {
         }
         // TODO: email validation
 
-        // TODO: show security question
-        User user = new User(username, password, nickname, email, null);
+		if (question == null) {
+			return new CommandResult(ResultCode.FAILED, "question is invalid");
+		}
+
+		if (question.getQuestion() == null || question.getAnswer() == null
+			|| question.getQuestion().isEmpty() || question.getAnswer().isEmpty()) {
+			return new CommandResult(ResultCode.FAILED, "question or answer is invalid");
+		}
+
+        User user = new User(username, password, nickname, email, question);
         UserService.getInstance().addUser(user);
         return new CommandResult(ResultCode.ACCEPT, "user created successfully");
     }

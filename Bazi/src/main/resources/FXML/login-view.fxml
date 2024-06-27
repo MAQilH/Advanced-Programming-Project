@@ -25,6 +25,11 @@
                   <Insets />
                </HBox.margin>
             </Button>
+             <Button styleClass="ancient" mnemonicParsing="false" onMouseClicked="#resetPassword" text="Reset">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+             </Button>
             <Button styleClass="ancient" mnemonicParsing="false" onMouseClicked="#backButtonPress" text="Back" />
          </children>
          <VBox.margin>

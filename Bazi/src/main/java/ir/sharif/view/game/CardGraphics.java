@@ -148,6 +148,6 @@ public class CardGraphics extends Pane {
 	}
 
 	public void updatePower() {
-		powerLabel.setText(String.valueOf(card.getPower()));
+		powerLabel.setText(String.valueOf(card.calculatePower()));
 	}
 }

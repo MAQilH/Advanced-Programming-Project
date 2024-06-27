@@ -23,4 +23,6 @@ module Bazi {
 	opens ir.sharif.view to javafx.fxml, com.google.gson;
 	opens ir.sharif.view.controllers to javafx.fxml;
 	opens ir.sharif.model to com.google.gson;
+	exports ir.sharif.controller to javafx.fxml;
+	opens ir.sharif.controller to javafx.fxml;
 }

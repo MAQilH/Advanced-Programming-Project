@@ -1,6 +1,7 @@
 package ir.sharif.view.controllers;
 
 import ir.sharif.controller.LoginController;
+import ir.sharif.controller.ResetPasswordController;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.User;
@@ -35,5 +36,15 @@ public class Login {
 
 	public void backButtonPress(MouseEvent mouseEvent) {
 		ViewLoader.newScene("start");
+	}
+
+	public void resetPassword(MouseEvent mouseEvent) {
+		CommandResult result = ResetPasswordController.getInstance().setUser(usernameTextField.getText());
+		if (result.statusCode() == ResultCode.FAILED) {
+			errorLabel.setText(result.message());
+			return;
+		}
+
+		ViewLoader.newScene("reset-password");
 	}
 }
