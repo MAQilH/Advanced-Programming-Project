@@ -355,7 +355,11 @@ public class GameController {
 
     public CommandResult commanderPowerPlay() {
         // Implement the logic for playing the commander's power
-        return null;
+        //TODO: HisImperialMajesty, KingOfWildHunt
+        int player = matchTable.getTurn();
+        Leader leader = matchTable.getUserTable(player).getLeader();
+        leader.getAbility().execute();
+        return new CommandResult(ResultCode.ACCEPT, "Commander power played successfully");
     }
 
     public CommandResult showPlayersInfo() {
