@@ -4,6 +4,7 @@ import ir.sharif.controller.GameController;
 import ir.sharif.controller.LoginController;
 import ir.sharif.controller.PreGameController;
 import ir.sharif.controller.RegisterController;
+import ir.sharif.model.SecurityQuestion;
 import ir.sharif.model.game.CardTypes;
 import ir.sharif.service.BackgroundMusicService;
 import ir.sharif.service.GameService;
@@ -31,18 +32,18 @@ public class GUIApplication extends Application {
 		pane.getChildren().add(new CardGraphics(CardTypes.KAYRAN.getInstance(), 0.5));
 		//new TerminalGUI(null);
 		// BackgroundMusicService.getInstance().playMusic();
-//		new RegisterController().register("sohsoh", "Soheil@84", "Soheil@84", "sohsoh", "sohsoh84@gmail.com");
-//		new RegisterController().register("guest", "Soheil@84", "Soheil@84", "guest", "aqil@gmail.com");
-//		new LoginController().login("sohsoh", "Soheil@84", true);
-//		PreGameController preGameController = new PreGameController();
-//		System.err.println(preGameController.createGame("guest").statusCode());
-//		System.err.println(preGameController.loadDeck("test").statusCode());
-//		System.err.println(preGameController.changeTurn().statusCode());
-//		System.err.println(preGameController.loadDeck("test").statusCode());
-//		System.err.println(preGameController.startGame().statusCode());
-//
-		//GameService.getInstance().createController();
-		//ViewLoader.newScene("game");
+		new RegisterController().register("sohsoh", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "sohsoh", "sohsoh84@gmail.com");
+		new RegisterController().register("guest", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "guest", "aqil@gmail.com");
+		new LoginController().login("sohsoh", "Soheil@84", true);
+		PreGameController preGameController = new PreGameController();
+		System.err.println(preGameController.createGame("guest").statusCode());
+		System.err.println(preGameController.loadDeck("test").statusCode());
+		System.err.println(preGameController.changeTurn().statusCode());
+		System.err.println(preGameController.loadDeck("test").statusCode());
+		System.err.println(preGameController.startGame().statusCode());
+
+		GameService.getInstance().createController();
+		ViewLoader.newScene("game");
 	}
 
 	public static void main(String[] args) {
