@@ -9,6 +9,8 @@ public class Transformers implements Ability {
     @Override
     public void execute(Object... objs) {
         converted = true;
+        Card card = (Card) objs[0];
+        card.setPower(8);
     }
 
     public boolean isConverted() {

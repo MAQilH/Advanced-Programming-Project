@@ -101,6 +101,9 @@ public class GameController {
     }
 
     public int calculatePower(int pos, Card card) {
+        if(card.getCardPosition() == CardPosition.SPELL || card.getCardPosition() == CardPosition.WEATHER) {
+            return 0;
+        }
         int player = getPlayerByPos(pos);//pos: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
         int rowNumber = graphicRowToLogicRow(pos);//rowNum: 0, 1, 2, -1
         double cofficient = 1;
@@ -187,6 +190,9 @@ public class GameController {
     }
 
     public int calculateRowPower(int pos) {
+        if(pos > 5) {
+            return 0;
+        }
         int player = getPlayerByPos(pos);
         int rowNumber = graphicRowToLogicRow(pos);
         Row row = getRowByPositionCurrentPlayer(player, getCardPositionByRowNumber(rowNumber));
@@ -202,7 +208,7 @@ public class GameController {
         int power = 0;
         for(Card card : row.getCards()) {
             if(card.isHero()) continue;
-            power += card.getPower();
+            power += card.calculatePower();
         }
         return power;
 		//TODO: fix it
@@ -283,19 +289,10 @@ public class GameController {
     public CommandResult placeCard(Card card, int pos) {
         if(isVetoeTurn()) return new CommandResult(ResultCode.FAILED, "You can't play cards in veto turn");
         CommandResult result = forcePlaceCard(card, pos);
-        if(result.statusCode() == ResultCode.ACCEPT && !matchTable.isPreviousRoundPassed()){
+        if(result.statusCode() == ResultCode.ACCEPT){
             finishTurn();
         }
         return result;
-    }
-
-    public void printPowers() {
-        int player = matchTable.getTurn();
-        for(int i = (1 - player) * 3; i < (2 - player) * 3; i++) {
-            for(Card card : matchTable.getUserTable(player).getRowByNumber(graphicRowToLogicRow(i)).getCards()) {
-                System.out.println(card.getName() + " " + card.calculatePower());
-            }
-        }
     }
 
     public CommandResult leaderExecute(){
@@ -306,8 +303,7 @@ public class GameController {
             return new CommandResult(ResultCode.FAILED, "Leader ability is before used");
         matchTable.getCurrentUserTable().getLeader().getAbility().execute();
         leader.setRoundOfAbilityUsed(matchTable.getRoundNumber());
-        if(!matchTable.isPreviousRoundPassed())
-            finishTurn();
+        finishTurn();
         return new CommandResult(ResultCode.ACCEPT, "Leader ability executed successfully");
     }
 
@@ -409,9 +405,10 @@ public class GameController {
     }
 
     public void finishTurn(){
-        matchTable.changeTurn();
+        if(!matchTable.isPreviousRoundPassed()){
+            matchTable.changeTurn();
+        }
         matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
-        matchTable.setPreviousRoundPassed(false);
         // TODO: call graphic
     }
 
@@ -434,8 +431,8 @@ public class GameController {
             finishGame();
             return;
         }
+        matchTable.setPreviousRoundPassed(false);
         matchTable.changeRound();
-        matchTable.setTotalTurns(0);
         startRound(winner);
     }
 
@@ -468,10 +465,9 @@ public class GameController {
                     boolean canDelete = true;
                     if(card == heroRemain) canDelete = false;
                     if(card.getAbility() instanceof Transformers){
-                        Transformers transformers = (Transformers) card.getAbility();
-                        if(!transformers.isConverted()) {
+                        if(!((Transformers)card.getAbility()).isConverted()) {
                             canDelete = false;
-                            transformers.execute();
+                            card.getAbility().execute(card);
                         }
                     }
                     if(canDelete){

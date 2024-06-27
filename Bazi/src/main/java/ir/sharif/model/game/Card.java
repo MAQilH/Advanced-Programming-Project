@@ -9,7 +9,8 @@ import java.util.ArrayList;
 
 public class Card {
     private final String name;
-    private final int power, noOfCards;
+    private int power;
+	private final int noOfCards;
     private final CardPosition cardPosition;
     private final Ability ability;
     private final Faction faction;
@@ -31,6 +32,10 @@ public class Card {
 
 	public int getPower() {
 		return this.power;
+	}
+
+	public void setPower(int power) {
+		this.power = power;
 	}
 
 	public int getNoOfCards() {

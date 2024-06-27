@@ -16,10 +16,10 @@ public class HopeOfTheAenSeidhe implements Ability {
                 if(card.getCardPosition() == CardPosition.AGILE_UNIT){
                     row.removeCard(card);
                     userTable.getRanged().addCard(card);
-                    int rangePower = card.getPower();
+                    int rangePower = card.calculatePower();
                     userTable.getRanged().removeCard(card);
                     userTable.getCloseCombat().addCard(card);
-                    int closeCombatPower = card.getPower();
+                    int closeCombatPower = card.calculatePower();
                     userTable.getCloseCombat().removeCard(card);
                     if(rangePower > closeCombatPower)
                         userTable.getRanged().addCard(card);
