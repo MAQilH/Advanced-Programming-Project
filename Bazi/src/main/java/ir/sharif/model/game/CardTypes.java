@@ -148,7 +148,7 @@ public enum CardTypes {
     TORRENTIAL_RAIN("Torrential Rain", 0, 3, CardPosition.WEATHER, null, null, false),
     CLEAR_WEATHER("Clear Weather", 0, 3, CardPosition.WEATHER, null, null, false),
     SCORCH("Scorch", 0, 3, CardPosition.SPELL, null, null, false),
-    COMMANDERS_HORN("Commander’s horn", 0, 3, CardPosition.SPELL, null, null, false),
+    COMMANDERS_HORN("Commander’s horn", 0, 3, CardPosition.SPELL, new CommandersHorn(), null, false),
     DECOY("Decoy", 0, 3, CardPosition.SPELL, null, null, false),
     DANDELION("Dandelion", 2, 1, CardPosition.CLOSE_COMBAT_UNIT, new CommandersHorn(), null, false),
     EMIEL_REGIS("Emiel Regis", 5, 1, CardPosition.CLOSE_COMBAT_UNIT, null, null, false),
