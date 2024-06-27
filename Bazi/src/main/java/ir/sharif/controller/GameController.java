@@ -266,6 +266,7 @@ public class GameController {
     public CommandResult forcePlaceCard(Card card, int pos){
         int rowNumber = graphicRowToLogicRow(pos);
         CardPosition cardPosition = getCardPositionByRowNumber(rowNumber);
+        if(cardPosition == null) return new CommandResult(ResultCode.FAILED, "Invalid position");
         CommandResult result;
         if(cardPosition == CardPosition.WEATHER) {
             result = placeWeatherCard(card);
