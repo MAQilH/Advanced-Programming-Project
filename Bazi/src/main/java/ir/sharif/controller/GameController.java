@@ -432,12 +432,13 @@ public class GameController {
         System.out.println("TotalTurn :" + matchTable.getTotalTurns() + " RoundNumber: " + matchTable.getRoundNumber() +
                 " Turn: " + matchTable.getTurn() + " PreviousRoundPassed: " + matchTable.isPreviousRoundPassed() + " isPassTurn");
         matchTable.changeTurn();
-        GameGraphics.getInstance().preTurnLoading();
         matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
         if(matchTable.isPreviousRoundPassed()){
             finishRound();
+            GameGraphics.getInstance().preTurnLoading();
             return new CommandResult(ResultCode.ACCEPT, "Round finished successfully");
         }
+        GameGraphics.getInstance().preTurnLoading();
         if(matchTable.getTotalTurns() > 2) matchTable.setPreviousRoundPassed(true);
         return new CommandResult(ResultCode.ACCEPT, "Turn passed successfully");
     }
