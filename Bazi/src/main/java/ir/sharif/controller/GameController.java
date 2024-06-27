@@ -287,6 +287,8 @@ public class GameController {
         } else {
             result = placeUnitCard(card, pos);
         }
+        matchTable.getUserTable(0).getHand().remove(card);
+        matchTable.getUserTable(1).getHand().remove(card);
         return result;
     }
 
