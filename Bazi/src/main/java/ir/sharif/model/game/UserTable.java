@@ -32,13 +32,9 @@ public class UserTable {
     public int getRowPower(Row row){
         int rowPower = 0;
         for(Card rowCard: row.getCards()){
-            rowPower += getCardPower(rowCard, row);
+            rowPower += rowCard.calculatePower();
         }
         return rowPower;
-    }
-
-    public int getCardPower(Card card, Row row){
-        return 0;
     }
 
     public Leader getLeader() {
