@@ -21,7 +21,7 @@ public class CommanderOfRedRiders implements Ability {
         }
         if(!weathers.isEmpty()){
             Card card = weathers.get(Random.getRandomInt(weathers.size()));
-            GameService.getInstance().getController().placeCard(card, 12);
+            GameService.getInstance().getController().forcePlaceCard(card, 12);
             userTable.removeDeck(card);
         }
     }

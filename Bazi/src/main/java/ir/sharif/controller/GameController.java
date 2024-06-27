@@ -263,41 +263,30 @@ public class GameController {
         return null;
     }
 
-    public CommandResult placeCard(int cardNumber, int pos) {
-        //TODO: do the abilities when they are placed
-        if(isVetoeTurn()) return new CommandResult(ResultCode.FAILED, "You can't play cards in veto turn");
+    public CommandResult forcePlaceCard(Card card, int pos){
         int rowNumber = graphicRowToLogicRow(pos);
-        if(matchTable.getUserTable(matchTable.getTurn()).getHand().size() <= cardNumber) {
-            return new CommandResult(ResultCode.FAILED, "Invalid card number");
+        CardPosition cardPosition = getCardPositionByRowNumber(rowNumber);
+        if(cardPosition == null) return new CommandResult(ResultCode.FAILED, "Invalid position");
+        CommandResult result;
+        if(cardPosition == CardPosition.WEATHER) {
+            result = placeWeatherCard(card);
+        } else if(cardPosition == CardPosition.SPELL) {
+            result = placeSpellCard(card, pos);
+        } else if(card.getAbility() instanceof Spy) {
+            result = placeSpyCard(card, pos);
+        } else {
+            result = placeUnitCard(card, pos);
         }
-        if(getCardPositionByRowNumber(rowNumber) == null) {
-            return new CommandResult(ResultCode.FAILED, "Invalid row number");
-        }
-        int player = matchTable.getTurn();
-        Card card = matchTable.getUserTable(player).getHand().get(cardNumber);
-        matchTable.getUserTable(player).getHand().remove(cardNumber);
-        CommandResult result = placeCard(card, rowNumber);
-        if(result.statusCode() == ResultCode.ACCEPT)
-            finishTurn();
         return result;
     }
 
     public CommandResult placeCard(Card card, int pos) {
         if(isVetoeTurn()) return new CommandResult(ResultCode.FAILED, "You can't play cards in veto turn");
-
-        int rowNumber = graphicRowToLogicRow(pos);
-        CardPosition cardPosition = getCardPositionByRowNumber(rowNumber);
-        //TODO: do the abilities when they are placed
-        if(cardPosition == CardPosition.WEATHER) {
-            return placeWeatherCard(card);
+        CommandResult result = forcePlaceCard(card, pos);
+        if(result.statusCode() == ResultCode.ACCEPT && !matchTable.isPreviousRoundPassed()){
+            finishTurn();
         }
-        if(cardPosition == CardPosition.SPELL) {
-            return placeSpellCard(card, pos);
-        }
-        if(card.getAbility() instanceof Spy) {
-            return placeSpyCard(card, pos);
-        }
-        return placeUnitCard(card, pos);
+        return result;
     }
 
     public void printPowers() {
@@ -317,7 +306,8 @@ public class GameController {
             return new CommandResult(ResultCode.FAILED, "Leader ability is before used");
         matchTable.getCurrentUserTable().getLeader().getAbility().execute();
         leader.setRoundOfAbilityUsed(matchTable.getRoundNumber());
-        finishTurn();
+        if(!matchTable.isPreviousRoundPassed())
+            finishTurn();
         return new CommandResult(ResultCode.ACCEPT, "Leader ability executed successfully");
     }
 

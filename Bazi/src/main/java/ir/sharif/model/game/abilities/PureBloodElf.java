@@ -11,7 +11,7 @@ public class PureBloodElf implements Ability {
         for (Card card : userTable.getHand()) {
             if(CardTypes.getCardType(card.getName()) == CardTypes.BITING_FROST){
                 userTable.getHand().remove(card);
-                GameService.getInstance().getController().placeCard(card, 12);
+                GameService.getInstance().getController().forcePlaceCard(card, 12);
                 return;
             }
         }
