@@ -12,6 +12,7 @@ public class ChatSendMessage extends ClientMessage {
 		this.senderUsername = senderUsername;
 		this.date = new Date();
 		date.setTime(System.currentTimeMillis());
+		this.type = ClientMessageType.CHAT_SEND_MESSAGE;
 	}
 
 	public String getSenderUsername() {

@@ -4,12 +4,14 @@ import com.google.gson.*;
 import ir.sharif.messages.ChatSendMessage;
 import ir.sharif.messages.ServerMessage;
 import ir.sharif.model.CommandResult;
+import ir.sharif.model.Message;
 import ir.sharif.utils.ConstantsLoader;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 
 
 public class TCPClient {
@@ -27,7 +29,7 @@ public class TCPClient {
 
 	private ServerMessage lastServerMessage;
 
-	public TCPClient(String serverIP, int serverPort) {
+	public TCPClient() {
 		GsonBuilder builder = new GsonBuilder();
 		this.gsonAgent = builder.create();
 		this.serverIP = ConstantsLoader.getInstance().getProperty("server.ip");
@@ -84,7 +86,7 @@ public class TCPClient {
 		return lastServerMessage;
 	}
 
-	public boolean sendMessage(String message, String senderUsername) {
+	public boolean sendChatMessage(String message, String senderUsername) {
 		ChatSendMessage chatSendMessage = new ChatSendMessage(message, senderUsername);
 		establishConnection();
 		sendMessage(gsonAgent.toJson(chatSendMessage));

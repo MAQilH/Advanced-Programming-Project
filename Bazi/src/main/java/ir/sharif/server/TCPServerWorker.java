@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import ir.sharif.messages.ChatSendMessage;
 import ir.sharif.messages.ClientMessage;
 import ir.sharif.messages.ServerMessage;
+import ir.sharif.utils.ConstantsLoader;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -99,8 +100,10 @@ public class TCPServerWorker extends Thread {
 			}
 		}
 		catch (Exception e) {
-			return null;
+			e.printStackTrace();
 		}
+
+		return null;
 	}
 
 
@@ -157,7 +160,7 @@ public class TCPServerWorker extends Thread {
 
 	public static void main(String[] args) {
 		try {
-			TCPServerWorker.setupServer(5000, 10);
+			TCPServerWorker.setupServer(Integer.parseInt(ConstantsLoader.getInstance().getProperty("server.port")), 10);
 			for (int i = 0; i < WORKERS; i++) {
 				new TCPServerWorker().start();
 			}
