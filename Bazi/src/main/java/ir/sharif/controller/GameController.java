@@ -365,6 +365,9 @@ public class GameController {
     public CommandResult commanderPowerPlay() {
         // Implement the logic for playing the commander's power
         //TODO: HisImperialMajesty, KingOfWildHunt
+        if(isVetoeTurn()) {
+            return new CommandResult(ResultCode.FAILED, "Can't play in vetoe round");
+        }
         return leaderExecute();
     }
 
