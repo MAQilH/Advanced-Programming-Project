@@ -24,7 +24,7 @@ public class Muster implements Ability {
                 if(handCard.getCardPosition() == CardPosition.AGILE_UNIT){
                     if(Random.getRandomInt(2) == 0) insertedRow = userTable.getRanged();
                     else insertedRow = userTable.getCloseCombat();
-                } else insertedRow = gameController.getRowByPosition(handCard.getCardPosition());
+                } else insertedRow = gameController.getRowByPositionCurrentPlayer(handCard.getCardPosition());
 
                 insertedRow.addCard(handCard);
             }
@@ -40,7 +40,7 @@ public class Muster implements Ability {
                 if(deckCard.getCardPosition() == CardPosition.AGILE_UNIT){
                     if(Random.getRandomInt(2) == 0) insertedRow = userTable.getRanged();
                     else insertedRow = userTable.getCloseCombat();
-                } else insertedRow = gameController.getRowByPosition(deckCard.getCardPosition());
+                } else insertedRow = gameController.getRowByPositionCurrentPlayer(deckCard.getCardPosition());
 
                 insertedRow.addCard(deckCard);
             }

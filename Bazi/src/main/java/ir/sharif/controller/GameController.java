@@ -7,7 +7,7 @@ import ir.sharif.model.game.abilities.*;
 import ir.sharif.service.GameService;
 import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.utils.Random;
-import javafx.beans.binding.StringBinding;
+
 import java.util.ArrayList;
 
 public class GameController {
@@ -37,7 +37,7 @@ public class GameController {
         };
     }
 
-    public Row getRowByPosition(int player, CardPosition cardPosition) {
+    public Row getRowByPositionCurrentPlayer(int player, CardPosition cardPosition) {
         return switch (cardPosition) {
             case CLOSE_COMBAT_UNIT -> matchTable.getUserTable(player).getCloseCombat();
             case RANGED_UNIT -> matchTable.getUserTable(player).getRanged();
@@ -80,8 +80,8 @@ public class GameController {
         }
     }
 
-    public Row getRowByPosition(CardPosition cardPosition) {
-        return getRowByPosition(matchTable.getTurn(), cardPosition);
+    public Row getRowByPositionCurrentPlayer(CardPosition cardPosition) {
+        return getRowByPositionCurrentPlayer(matchTable.getTurn(), cardPosition);
     }
 
     public int weatherCardsOnTable() {
@@ -105,7 +105,7 @@ public class GameController {
         int rowNumber = graphicRowToLogicRow(pos);//rowNum: 0, 1, 2, -1
         double cofficient = 1;
         int weather = weatherCardsOnTable(), counter2x = 0, constant = 0;
-        Row row = getRowByPosition(player, getCardPositionByRowNumber(rowNumber));
+        Row row = getRowByPositionCurrentPlayer(player, getCardPositionByRowNumber(rowNumber));
         if(card.isHero()) {
             return card.getPower();
         }
@@ -189,7 +189,7 @@ public class GameController {
     public int calculateRowPower(int pos) {
         int player = getPlayerByPos(pos);
         int rowNumber = graphicRowToLogicRow(pos);
-        Row row = getRowByPosition(player, getCardPositionByRowNumber(rowNumber));
+        Row row = getRowByPositionCurrentPlayer(player, getCardPositionByRowNumber(rowNumber));
         int power = 0;
         for(Card card : row.getCards()) {
             power += calculatePower(pos, card);
@@ -198,7 +198,7 @@ public class GameController {
     }
 
     public int calculateNonHeroPower(int player, int rowNumber){
-        Row row = getRowByPosition(player, getCardPositionByRowNumber(rowNumber));
+        Row row = getRowByPositionCurrentPlayer(player, getCardPositionByRowNumber(rowNumber));
         int power = 0;
         for(Card card : row.getCards()) {
             if(card.isHero()) continue;
@@ -281,6 +281,7 @@ public class GameController {
 
     public CommandResult placeCard(Card card, int pos) {
         if(isVetoeTurn()) return new CommandResult(ResultCode.FAILED, "You can't play cards in veto turn");
+
         int rowNumber = graphicRowToLogicRow(pos);
         CardPosition cardPosition = getCardPositionByRowNumber(rowNumber);
         //TODO: do the abilities when they are placed
@@ -296,8 +297,21 @@ public class GameController {
         return placeUnitCard(card, pos);
     }
 
+    public CommandResult leaderExecute(){
+        Leader leader = matchTable.getCurrentUserTable().getLeader();
+        if(leader.getDisableRound() == matchTable.getRoundNumber())
+            return new CommandResult(ResultCode.FAILED, "Leader ability is disabled for this round");
+        if(leader.getRoundOfAbilityUsed() != -1)
+            return new CommandResult(ResultCode.FAILED, "Leader ability is before used");
+        matchTable.getCurrentUserTable().getLeader().getAbility().execute();
+        leader.setRoundOfAbilityUsed(matchTable.getRoundNumber());
+        return new CommandResult(ResultCode.ACCEPT, "Leader ability executed successfully");
+    }
+
     public CommandResult placeWeatherCard(Card card) {
         matchTable.addWeatherCard(card); //abilities done
+        Ability ability = card.getAbility();
+        if(ability != null) ability.execute();
         return new CommandResult(ResultCode.ACCEPT, "Weather card placed successfully");
     }
 
@@ -328,13 +342,8 @@ public class GameController {
         int rowNumber = graphicRowToLogicRow(pos);
         Row row = matchTable.getUserTable(player).getRowByNumber(rowNumber);
         row.addCard(card);
-        if(card.getAbility() instanceof Scorch || card.getAbility() instanceof Muster) {
-            card.getAbility().execute(card);
-        }
-        else {
-			if (card.getAbility() != null)
-				card.getAbility().execute(row, card);
-        }
+        Ability ability = card.getAbility();
+        if(ability != null && !(ability instanceof Berserker)) ability.execute();
         return new CommandResult(ResultCode.ACCEPT, "Unit card placed successfully");
         //done here
     }
@@ -506,6 +515,8 @@ public class GameController {
             }
         }
     }
+
+
 
     private void finishGame(){
         int gameWinner;

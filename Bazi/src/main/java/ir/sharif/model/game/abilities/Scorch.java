@@ -3,7 +3,6 @@ package ir.sharif.model.game.abilities;
 import ir.sharif.controller.GameController;
 import ir.sharif.model.game.*;
 import ir.sharif.service.GameService;
-import ir.sharif.view.controllers.Game;
 
 import java.util.ArrayList;
 
@@ -35,7 +34,7 @@ public class Scorch implements Ability {
                 }
             }
         } else{
-            Row row = gameController.getRowByPosition(opponentPlayer, card.getCardPosition());
+            Row row = gameController.getRowByPositionCurrentPlayer(opponentPlayer, card.getCardPosition());
              int rowNumber = gameController.getRowNumberByCardPosition(card.getCardPosition());
              int rowPower = gameController.calculateNonHeroPower(opponentPlayer, rowNumber);
              if(rowPower >= 10){

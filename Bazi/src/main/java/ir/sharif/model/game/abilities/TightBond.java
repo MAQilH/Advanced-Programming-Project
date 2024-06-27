@@ -7,5 +7,6 @@ import ir.sharif.model.game.Row;
 public class TightBond implements Ability {
     @Override
     public void execute(Object... objs) {
+
     }
 }
