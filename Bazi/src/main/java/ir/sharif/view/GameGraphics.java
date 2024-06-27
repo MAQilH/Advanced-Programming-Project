@@ -218,15 +218,19 @@ public class GameGraphics {
 			for (Node node : rows[i].getChildren())
 				cardsInRowGraphics.add(((CardGraphics) node).getCard());
 
-			for (Card card : cardsInRow) {
-				if (!cardsInRowGraphics.contains(card)) {
-					addCardToHBox(card, rows[i]);
+			if(cardsInRow != null && !cardsInRow.isEmpty()) {
+				for (Card card : cardsInRow) {
+					if (!cardsInRowGraphics.contains(card)) {
+						addCardToHBox(card, rows[i]);
+					}
 				}
 			}
 
-			for (Card card : cardsInRowGraphics) {
-				if (!cardsInRow.contains(card)) {
-					removeCardFromHBox(card, rows[i]);
+			if(cardsInRowGraphics != null && !cardsInRowGraphics.isEmpty()) {
+				for (Card card : cardsInRowGraphics) {
+					if (!cardsInRow.contains(card)) {
+						removeCardFromHBox(card, rows[i]);
+					}
 				}
 			}
 		}
