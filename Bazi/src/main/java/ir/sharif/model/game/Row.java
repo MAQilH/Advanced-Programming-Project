@@ -3,7 +3,6 @@ package ir.sharif.model.game;
 import java.util.ArrayList;
 
 public class Row {
-
     private Card spell;
     private final ArrayList<Card> cards;
 

@@ -300,6 +300,15 @@ public class GameController {
         return placeUnitCard(card, pos);
     }
 
+    public void printPowers() {
+        int player = matchTable.getTurn();
+        for(int i = (1 - player) * 3; i < (2 - player) * 3; i++) {
+            for(Card card : matchTable.getUserTable(player).getRowByNumber(graphicRowToLogicRow(i)).getCards()) {
+                System.out.println(card.getName() + " " + card.calculatePower());
+            }
+        }
+    }
+
     public CommandResult leaderExecute(){
         Leader leader = matchTable.getCurrentUserTable().getLeader();
         if(leader.getDisableRound() == matchTable.getRoundNumber())
@@ -360,10 +369,7 @@ public class GameController {
     public CommandResult commanderPowerPlay() {
         // Implement the logic for playing the commander's power
         //TODO: HisImperialMajesty, KingOfWildHunt
-        int player = matchTable.getTurn();
-        Leader leader = matchTable.getUserTable(player).getLeader();
-        leader.getAbility().execute();
-        return new CommandResult(ResultCode.ACCEPT, "Commander power played successfully");
+        return leaderExecute();
     }
 
     public CommandResult showPlayersInfo() {
@@ -543,8 +549,8 @@ public class GameController {
     private int getRoundWinner(){
         int firstUserPower = matchTable.getUserTable(0).getPower();
         int secondUserPower = matchTable.getUserTable(1).getPower();
-        if(firstUserPower > secondUserPower) return firstUserPower;
-        if(secondUserPower > firstUserPower) return secondUserPower;
+        if(firstUserPower > secondUserPower) return 0;
+        if(secondUserPower > firstUserPower) return 1;
         Faction firstUserFaction = matchTable.getUserTable(0).getFaction();
         Faction secondUserFaction = matchTable.getUserTable(1).getFaction();
         if(firstUserFaction == secondUserFaction) return -1;
