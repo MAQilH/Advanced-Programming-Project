@@ -147,7 +147,7 @@ public class GameGraphics {
 
 	public void showWinner(int winner) {
 		showToast((winner == -1 ? "draw" : "Player " + (winner + 1) + " won the game"));
-		PauseTransition pause = new PauseTransition(Duration.seconds(3));
+		PauseTransition pause = new PauseTransition(Duration.seconds(5));
 		pause.setOnFinished(event -> ViewLoader.newScene("main"));
 		pause.play();
 	}
