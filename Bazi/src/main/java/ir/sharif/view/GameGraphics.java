@@ -332,6 +332,7 @@ public class GameGraphics {
 							removeCardFromHBox(card, hand);
 							updatePowerLabels();
 							updateCardsInRows();
+							showCurrentUserHand();
 						} else {
 							showErrorToast(result.message());
 						}
