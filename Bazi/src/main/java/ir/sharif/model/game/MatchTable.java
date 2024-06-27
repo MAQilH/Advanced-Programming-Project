@@ -96,4 +96,29 @@ public class MatchTable {
     public void setPreviousRoundPassed(boolean previousRoundPassed) {
         this.previousRoundPassed = previousRoundPassed;
     }
+
+    public ArrayList<Card> getCardsByPosition(int pos) {
+        ArrayList<Card> cards = new ArrayList<>();
+        switch (pos) {
+            case 0, 1, 2:
+                cards.addAll(userTables[1].getRowByNumber(2 - pos).getCards());
+                break;
+            case 3, 4, 5:
+                cards.addAll(userTables[0].getRowByNumber(pos - 3).getCards());
+                break;
+            case 6, 7, 8:
+                if (userTables[1].getRowByNumber(8 - pos).getSpell() != null)
+                    cards.add(userTables[1].getRowByNumber(8 - pos).getSpell());
+                break;
+            case 9, 10, 11:
+                if (userTables[0].getRowByNumber(pos - 9).getSpell() != null)
+                    cards.add(userTables[0].getRowByNumber(0).getSpell());
+                break;
+            case 12:
+                cards.addAll(weatherCards);
+                break;
+        }
+        return cards;
+    }
+
 }

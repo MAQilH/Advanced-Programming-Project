@@ -5,15 +5,14 @@ import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.game.Card;
 import ir.sharif.model.game.CardTypes;
+import ir.sharif.model.game.Leader;
+import ir.sharif.model.game.LeaderType;
 import ir.sharif.service.GameService;
 import ir.sharif.utils.Random;
 import ir.sharif.view.game.CardGraphics;
 import javafx.animation.FadeTransition;
-import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.event.Event;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -35,12 +34,16 @@ import java.util.List;
 
 public class GameGraphics {
 	private Pane pane;
-	private HBox rows[] = new HBox[6];
+	private HBox rows[] = new HBox[13];
 	private HBox hand;
 	private static GameGraphics instance;
 	private GameController controller;
 	private Button passButton;
 	private HBox healths[] = new HBox[2];
+	private Label powerLabels[] = new Label[6];
+	private Label userPowerLabels[] = new Label[2];
+	private ImageView leaderGraphics[] = new ImageView[2];
+	private ArrayList<HBox> validRows;
 
 	private GameGraphics() {}
 
@@ -63,9 +66,14 @@ public class GameGraphics {
 	public void initialize(Pane pane) {
 		this.pane = pane;
 		controller = GameService.getInstance().getController();
-		for (int i = 0; i < 6; i++) {
+
+		for (int i = 0; i < 13; i++)
 			rows[i] = (HBox) getChildrenById("row" + i);
-		}
+
+		userPowerLabels[0] = (Label) getChildrenById("userPower0");
+		userPowerLabels[1] = (Label) getChildrenById("userPower1");
+		for (int i = 0; i < 6; i++)
+			powerLabels[i] = (Label) getChildrenById("power" + i);
 
 		hand = (HBox) getChildrenById("hand");
 		passButton = (Button) getChildrenById("passButton");
@@ -75,6 +83,8 @@ public class GameGraphics {
 			preTurnLoading();
 		});
 
+		leaderGraphics[0] = (ImageView) getChildrenById("leader0");
+		leaderGraphics[1] = (ImageView) getChildrenById("leader1");
 		healths[0] = (HBox) getChildrenById("health1");
 		healths[1] = (HBox) getChildrenById("health2");
 
@@ -85,6 +95,13 @@ public class GameGraphics {
 			} else if (e.getCode().toString().equals("ENTER")) {
 				removeNodeWithAnimation(rows[0], rows[0].getChildren().get(Random.getRandomInt(rows[0].getChildren().size())));
 			} else if (e.getCode().toString().equals("H")) {
+				for (int i = 0; i < 6; i++) {
+					powerLabels[i].setTextFill(Color.WHITE);
+				}
+
+				for (int i = 0; i < 2; i++) {
+					userPowerLabels[i].setTextFill(Color.WHITE);
+				}
 				preTurnLoading();
 			}
 		});
@@ -95,6 +112,22 @@ public class GameGraphics {
 		for (Card card : controller.getCurrentUserTable().getHand())
 			addCardToHBox(card, hand);
 	}
+
+	public void updatePowerLabels() {
+		for (int i = 0; i < 6; i++)
+			powerLabels[i].setText(String.valueOf(controller.calculateRowPower(i)));
+
+		for (int i = 0; i < 2; i++)
+			userPowerLabels[i].setText(String.valueOf(controller.calculateTotalPower(i)));
+
+		for (int i = 0; i < 6; i++) {
+			for (Node graphics : rows[i].getChildren()) {
+				CardGraphics cardGraphics = (CardGraphics) graphics;
+				cardGraphics.updatePower();
+			}
+		}
+	}
+
 	private ImageView loadIcon(String iconName, double size) {
 		try {
 			InputStream iconStream = getClass().getResourceAsStream("/icons/" + iconName + ".png");
@@ -153,6 +186,17 @@ public class GameGraphics {
 	public void loadModel() {
 		showHealths();
 		showCurrentUserHand();
+		updateCardsInRows();
+		updatePowerLabels();
+	}
+
+	private void updateCardsInRows() {
+//		for (int i = 0; i < 13; i++) {
+//			rows[i].getChildren().clear();
+//			for (Card card : controller.getMatchTable().getGraphicRow(i)) {
+//				addCardToHBox(card, rows[i]);
+//			}
+//		}
 	}
 
 	public void addNodeWithAnimation(HBox hbox, Node node) {
@@ -199,6 +243,11 @@ public class GameGraphics {
 	}
 
 	public void preTurnLoading() {
+		for (int i = 0; i < 2; i++) {
+			LeaderType leaderType = LeaderType.getLeaderType(controller.getUserUserTable(i).getLeader().getName());
+			leaderGraphics[i].setImage(new Image(getClass().getResourceAsStream("/images/leader/" + leaderType.toString() + ".jpg")));
+		}
+
 		loadModel();
 		if (controller.isVetoeTurn()) {
 			showToast("Player " + (controller.getMatchTable().getTurn() + 1) + "'s turn for veto");
@@ -208,23 +257,28 @@ public class GameGraphics {
 	}
 
 	public void setDragAndDropFunctionality(CardGraphics cardGraphics, HBox hbox) {
-		Card card = cardGraphics.getCard();
 		if (hbox == hand) {
 			cardGraphics.setOnDragDetected(event -> {
-				WritableImage snapshot = cardGraphics.snapshot(new SnapshotParameters(), null);
+				Card card = cardGraphics.getCard();
+				if (validRows != null) {
+					for (HBox row : validRows) {
+						row.setBackground(Background.EMPTY);
+					}
+					validRows.clear();
+				}
 
-				// Create a new ImageView from the snapshot and set its opacity to 0.5
+				WritableImage snapshot = cardGraphics.snapshot(new SnapshotParameters(), null);
 				ImageView dragView = new ImageView(snapshot);
 				dragView.setOpacity(0.5);
 
-				// Start the drag and drop operation and set the drag view
 				Dragboard db = cardGraphics.startDragAndDrop(TransferMode.MOVE);
 				ClipboardContent content = new ClipboardContent();
 				content.putString(cardGraphics.getCard().toString());
 				db.setContent(content);
 				db.setDragView(dragView.getImage());
 
-				ArrayList<HBox> validRows = validRows(card);
+				validRows = getValidRows(card);
+
 				for (HBox row : validRows) {
 					row.setBackground(Background.fill(Color.rgb(1, 1, 0, 0.3)));
 					row.setOnDragOver(e -> {
@@ -235,25 +289,50 @@ public class GameGraphics {
 					row.setOnDragExited(e -> row.setBackground(Background.fill(Color.rgb(1, 1, 0, 0.3))));
 
 					row.setOnDragDropped(e -> {
-						System.err.println(card);
-						addCardToHBox(card, row);
-						removeCardFromHBox(card, hand);
-						event.consume();
+						int rowNumber = Integer.parseInt(row.getId().substring(3));
+						CommandResult result = controller.placeCard(card, rowNumber);
+						if (result.statusCode() == ResultCode.ACCEPT) {
+							addCardToHBox(card, row);
+							removeCardFromHBox(card, hand);
+							updatePowerLabels();
+						} else {
+							showErrorToast(result.message());
+						}
 					});
 				}
-
-				event.consume();
 			});
 
 			cardGraphics.setOnDragDone(event -> {
-				System.err.println("fuck");
-				for (HBox row : validRows(card)) {
+				Card card = cardGraphics.getCard();
+				for (HBox row : validRows) {
 					row.setBackground(Background.EMPTY);
 				}
+				validRows.clear();
+				updatePowerLabels();
 
-				event.consume();
+				// remove on Drag over and drag dropped from all rows
+				for (int i = 0; i < 13; i++) {
+					HBox row = rows[i];
+					row.setOnDragExited(null);
+					row.setOnDragOver(null);
+					row.setOnDragDropped(null);
+				}
 			});
 		}
+	}
+
+	private ArrayList<HBox> getValidRows(Card card) {
+		ArrayList<Integer> validPositions = card.validPositions();
+		ArrayList<HBox> validRows = new ArrayList<>();
+		for (int pos : validPositions)
+			validRows.add(rows[pos]);
+
+		for (int e : validPositions) {
+			System.out.print(e + " ");
+		}
+
+		System.out.println();
+		return validRows;
 	}
 
 	public void setOnMouseClickFunctionality(CardGraphics cardGraphics, HBox hbox) {
@@ -272,18 +351,26 @@ public class GameGraphics {
 		);
 	}
 
+	public void setOnMouseHoverFunctionality(CardGraphics cardGraphics, HBox hBox) {
+		cardGraphics.setOnMouseEntered(event -> {
+			cardGraphics.setScaleX(1.2);
+			cardGraphics.setScaleY(1.2);
+		});
+
+		cardGraphics.setOnMouseExited(event -> {
+			cardGraphics.setScaleX(1);
+			cardGraphics.setScaleY(1);
+		});
+	}
+
 	public void addCardToHBox(Card card, HBox hbox) {
 		CardGraphics cardGraphics = new CardGraphics(card, hbox.getHeight());
 		setDragAndDropFunctionality(cardGraphics, hbox);
 		setOnMouseClickFunctionality(cardGraphics, hbox);
-
+		setOnMouseHoverFunctionality(cardGraphics, hbox);
 
 		hbox.getChildren().add(cardGraphics);
-	}
-
-	public ArrayList<HBox> validRows(Card card) {
-		// TODO: complete this
-		return new ArrayList<>(List.of(new HBox[]{rows[0], rows[1]}));
+		updatePowerLabels();
 	}
 
 	public void removeCardFromHBox(Card card, HBox hbox) {

@@ -98,6 +98,8 @@ public class PreGameController {
                 count++;
             }
         }
+
+	    System.err.println(count);
         return count;
     }
 
@@ -223,6 +225,7 @@ public class PreGameController {
         if(deckInfo == null){
             return new CommandResult(ResultCode.FAILED, "you should have a deck");
         }
+
         if(numberOfSoldiers(deckInfo) < 22){
             return new CommandResult(ResultCode.FAILED, "you should have at least 22 soldiers in your deck");
         }

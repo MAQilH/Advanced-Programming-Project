@@ -13,7 +13,7 @@ public enum LeaderType {
     EMPEROR_OF_NILFGAARD("Emperor of Nilfgaard", Faction.NILFGAARDIAN_EMPIRE, new EmperorOfNilfGaard()),
     THE_RELENTLESS("The Relentless", Faction.NILFGAARDIAN_EMPIRE, new TheRelentless()),
     INVADER_OF_THE_NORTH("Invader of the North", Faction.NILFGAARDIAN_EMPIRE, new InvaderOfTheNorth()),
-    BRINGER_OF_DEATH("Bringer of Death", Faction.MONSTERS, new BringerOfDeath()),
+	BRINGER_OF_DEATH("Bringer of Death", Faction.MONSTERS, new BringerOfDeath()),
     KING_OF_THE_WILD_HUNT("King of the wild Hunt", Faction.MONSTERS, new KingOfWildHunt()),
     DESTROYER_OF_WORLDS("Destroyer of Worlds", Faction.MONSTERS, new DestroyerOfWorlds()),
     COMMANDER_OF_THE_RED_RIDERS("Commander of the Red Riders", Faction.MONSTERS, new CommanderOfRedRiders()),
@@ -41,7 +41,16 @@ public enum LeaderType {
         this.ability = ability;
     }
 
-    public Leader getInstance() {
+	public static LeaderType getLeaderType(String name) {
+		for (LeaderType type : LeaderType.values()) {
+			if (type.getName().equals(name))
+				return type;
+		}
+
+		return LeaderType.BRINGER_OF_DEATH;
+	}
+
+	public Leader getInstance() {
         return new Leader(this.name(), this.faction, this.ability);
     }
 

@@ -38,3 +38,8 @@
     -fx-text-fill: #b91d47 !important; /* Brown text color */
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,2,3 ) !important;
 }
+
+.label {
+    -fx-font: 20px 'Ancient';
+    -fx-text-fill: #B8860B;
+}

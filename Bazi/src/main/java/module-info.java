@@ -13,11 +13,14 @@ module Bazi {
 	requires javafx.media;
 	requires annotations;
 	requires java.desktop;
+	requires com.google.gson;
 	requires org.json;
 
-	exports ir.sharif.view to javafx.graphics;
+	exports ir.sharif.view to javafx.graphics, com.google.gson;
 	exports ir.sharif.view.controllers to javafx.fxml;
+	exports ir.sharif.model to com.google.gson;
 
-	opens ir.sharif.view to javafx.fxml;
+	opens ir.sharif.view to javafx.fxml, com.google.gson;
 	opens ir.sharif.view.controllers to javafx.fxml;
+	opens ir.sharif.model to com.google.gson;
 }

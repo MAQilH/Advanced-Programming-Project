@@ -45,7 +45,6 @@ public class GameController {
             default -> null;
         };
     }
-    
 
     public int graphicRowToLogicRow(int rowNumber) {
         return switch (rowNumber) {
@@ -110,7 +109,8 @@ public class GameController {
         if(card.isHero()) {
             return card.getPower();
         }
-        if(((1 << rowNumber) & weather) != 0) {
+
+        if (((1 << rowNumber) & weather) != 0) {
             if(matchTable.getUserTable(player).getLeader().getName().equals("King Bran")) {
                 cofficient *= 0.5;
             }
@@ -121,10 +121,12 @@ public class GameController {
                 return 1;
             }
         }
-        if(row.getSpell().getAbility() instanceof CommandersHorn) {
+
+        if (row.getSpell() != null && row.getSpell().getAbility() instanceof CommandersHorn) {
             counter2x++;
         }
-        for(Card card1 : row.getCards()) {
+
+        for (Card card1 : row.getCards()) {
             if(card1.getAbility() instanceof CommandersHorn) {
                 counter2x++;
             }
@@ -203,12 +205,13 @@ public class GameController {
             power += card.getPower();
         }
         return power;
+		//TODO: fix it
     }
 
     public int calculateTotalPower(int player) {
         int power = 0;
         for(int i = 0; i < 3; i++) {
-            power += calculateRowPower(i + (player - 1) * 3);
+            power += calculateRowPower(3 * (1 - player) + i);
         }
         return power;
     }
@@ -262,6 +265,7 @@ public class GameController {
 
     public CommandResult placeCard(int cardNumber, int pos) {
         //TODO: do the abilities when they are placed
+        if(isVetoeTurn()) return new CommandResult(ResultCode.FAILED, "You can't play cards in veto turn");
         int rowNumber = graphicRowToLogicRow(pos);
         if(matchTable.getUserTable(matchTable.getTurn()).getHand().size() <= cardNumber) {
             return new CommandResult(ResultCode.FAILED, "Invalid card number");
@@ -270,13 +274,13 @@ public class GameController {
             return new CommandResult(ResultCode.FAILED, "Invalid row number");
         }
         int player = matchTable.getTurn();
-        CardPosition cardPosition = getCardPositionByRowNumber(rowNumber);
         Card card = matchTable.getUserTable(player).getHand().get(cardNumber);
         matchTable.getUserTable(player).getHand().remove(cardNumber);
         return placeCard(card, rowNumber);
     }
 
     public CommandResult placeCard(Card card, int pos) {
+        if(isVetoeTurn()) return new CommandResult(ResultCode.FAILED, "You can't play cards in veto turn");
         int rowNumber = graphicRowToLogicRow(pos);
         CardPosition cardPosition = getCardPositionByRowNumber(rowNumber);
         //TODO: do the abilities when they are placed
@@ -293,15 +297,18 @@ public class GameController {
     }
 
     public CommandResult placeWeatherCard(Card card) {
-        matchTable.addWeatherCard(card);
+        matchTable.addWeatherCard(card); //abilities done
         return new CommandResult(ResultCode.ACCEPT, "Weather card placed successfully");
     }
 
     public CommandResult placeSpellCard(Card card, int pos) {
-        //TODO: execute what is does(maybe it is not needed)
         int player = matchTable.getTurn();
         int rowNumber = graphicRowToLogicRow(pos);
         matchTable.getUserTable(player).getRowByNumber(rowNumber).setSpell(card);
+        if (card.getAbility() instanceof Mardroeme) {
+            Row row = matchTable.getUserTable(player).getRowByNumber(rowNumber);
+            card.getAbility().execute(row);
+        } //abilities done
         return new CommandResult(ResultCode.ACCEPT, "Spell card placed successfully");
     }
 
@@ -321,6 +328,13 @@ public class GameController {
         int rowNumber = graphicRowToLogicRow(pos);
         Row row = matchTable.getUserTable(player).getRowByNumber(rowNumber);
         row.addCard(card);
+        if(card.getAbility() instanceof Scorch || card.getAbility() instanceof Muster) {
+            card.getAbility().execute(card);
+        }
+        else {
+			if (card.getAbility() != null)
+				card.getAbility().execute(row, card);
+        }
         return new CommandResult(ResultCode.ACCEPT, "Unit card placed successfully");
         //done here
     }
