@@ -22,7 +22,7 @@ public class LordCommanderOfTheNorth implements Ability {
         if(maxPower <= 10) return;
         for(Card card: opponentTable.getSiege().getCards()){
             if(card.isHero()) continue;
-            if(card.getPower() == maxPower){
+            if(card.calculatePower() == maxPower){
                 opponentTable.getSiege().removeCard(card);
                 opponentTable.addOutOfPlay(card);
                 return;

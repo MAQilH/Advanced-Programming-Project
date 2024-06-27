@@ -18,7 +18,7 @@ public class QueenOfDolBlathanna implements Ability {
         int maxPowerNonHeroCloseCombatCard = 0;
         for (Card card : opponentTable.getCloseCombat().getCards()) {
             if(card.isHero()) continue;
-            maxPowerNonHeroCloseCombatCard = Math.max(maxPowerNonHeroCloseCombatCard, card.getPower());
+            maxPowerNonHeroCloseCombatCard = Math.max(maxPowerNonHeroCloseCombatCard, card.calculatePower());
         }
 
         if(maxPowerNonHeroCloseCombatCard <= 10) return;
@@ -26,13 +26,13 @@ public class QueenOfDolBlathanna implements Ability {
         int maxPowerNonHeroRangeCard = 0;
         for (Card card : opponentTable.getRanged().getCards()) {
             if(card.isHero()) continue;
-            maxPowerNonHeroRangeCard = Math.max(maxPowerNonHeroRangeCard, card.getPower());
+            maxPowerNonHeroRangeCard = Math.max(maxPowerNonHeroRangeCard, card.calculatePower());
         }
 
         ArrayList<Card> removedCandidate = new ArrayList<>();
         for (Card card : opponentTable.getRanged().getCards()) {
             if(card.isHero()) continue;
-            if(card.getPower() == maxPowerNonHeroRangeCard)
+            if(card.calculatePower() == maxPowerNonHeroRangeCard)
                 removedCandidate.add(card);
         }
 

@@ -20,14 +20,14 @@ public class Scorch implements Ability {
                 Row row = opponentRows.get(rowIndex);
                 for(Card rowCard: row.getCards()){
                     if(rowCard.isHero()) continue;
-                    if(rowCard.getPower() > maxPower) maxPower = rowCard.calculatePower();
+                    if(rowCard.calculatePower() > maxPower) maxPower = rowCard.calculatePower();
                 }
             }
             for (int rowIndex = 0; rowIndex < opponentRows.size(); rowIndex++) {
                 Row row = opponentRows.get(rowIndex);
                 for(Card rowCard: row.getCards()){
                     if(rowCard.isHero()) continue;
-                    if(rowCard.getPower() == maxPower) {
+                    if(rowCard.calculatePower() == maxPower) {
                         row.removeCard(rowCard);
                         opponentTable.addOutOfPlay(rowCard);
                     }

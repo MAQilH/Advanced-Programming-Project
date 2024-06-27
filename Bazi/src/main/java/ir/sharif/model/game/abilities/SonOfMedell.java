@@ -17,12 +17,12 @@ public class SonOfMedell implements Ability {
         int maxPower = 0;
         for(Card card: opponentTable.getRanged().getCards()){
             if(card.isHero()) continue;
-            maxPower = Math.max(maxPower, card.getPower());
+            maxPower = Math.max(maxPower, card.calculatePower());
         }
         if(maxPower > 10){
             for(Card card: opponentTable.getRanged().getCards()){
                 if(card.isHero()) continue;
-                if(card.getPower() == maxPower){
+                if(card.calculatePower() == maxPower){
                     opponentTable.getRanged().removeCard(card);
                     opponentTable.addOutOfPlay(card);
                     return;

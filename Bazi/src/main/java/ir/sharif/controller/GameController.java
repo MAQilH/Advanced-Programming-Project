@@ -7,6 +7,7 @@ import ir.sharif.model.game.abilities.*;
 import ir.sharif.service.GameService;
 import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.utils.Random;
+import ir.sharif.view.GameGraphics;
 
 import java.util.ArrayList;
 
@@ -101,6 +102,12 @@ public class GameController {
     }
 
     public int calculatePower(int pos, Card card) {
+        if(card.getCardPosition() == CardPosition.SPELL || card.getCardPosition() == CardPosition.WEATHER) {
+            return 0;
+        }
+        if(pos < 0 || pos > 12) {
+            return card.getPower();
+        }
         int player = getPlayerByPos(pos);//pos: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
         int rowNumber = graphicRowToLogicRow(pos);//rowNum: 0, 1, 2, -1
         double cofficient = 1;
@@ -187,6 +194,9 @@ public class GameController {
     }
 
     public int calculateRowPower(int pos) {
+        if(pos > 5) {
+            return 0;
+        }
         int player = getPlayerByPos(pos);
         int rowNumber = graphicRowToLogicRow(pos);
         Row row = getRowByPositionCurrentPlayer(player, getCardPositionByRowNumber(rowNumber));
@@ -202,7 +212,7 @@ public class GameController {
         int power = 0;
         for(Card card : row.getCards()) {
             if(card.isHero()) continue;
-            power += card.getPower();
+            power += card.calculatePower();
         }
         return power;
 		//TODO: fix it
@@ -265,7 +275,7 @@ public class GameController {
 
     public CommandResult forcePlaceCard(Card card, int pos){
         int rowNumber = graphicRowToLogicRow(pos);
-        CardPosition cardPosition = getCardPositionByRowNumber(rowNumber);
+        CardPosition cardPosition = card.getCardPosition();
         if(cardPosition == null) return new CommandResult(ResultCode.FAILED, "Invalid position");
         CommandResult result;
         if(cardPosition == CardPosition.WEATHER) {
@@ -277,25 +287,18 @@ public class GameController {
         } else {
             result = placeUnitCard(card, pos);
         }
+        matchTable.getUserTable(0).getHand().remove(card);
+        matchTable.getUserTable(1).getHand().remove(card);
         return result;
     }
 
     public CommandResult placeCard(Card card, int pos) {
         if(isVetoeTurn()) return new CommandResult(ResultCode.FAILED, "You can't play cards in veto turn");
         CommandResult result = forcePlaceCard(card, pos);
-        if(result.statusCode() == ResultCode.ACCEPT && !matchTable.isPreviousRoundPassed()){
+        if(result.statusCode() == ResultCode.ACCEPT){
             finishTurn();
         }
         return result;
-    }
-
-    public void printPowers() {
-        int player = matchTable.getTurn();
-        for(int i = (1 - player) * 3; i < (2 - player) * 3; i++) {
-            for(Card card : matchTable.getUserTable(player).getRowByNumber(graphicRowToLogicRow(i)).getCards()) {
-                System.out.println(card.getName() + " " + card.calculatePower());
-            }
-        }
     }
 
     public CommandResult leaderExecute(){
@@ -306,8 +309,7 @@ public class GameController {
             return new CommandResult(ResultCode.FAILED, "Leader ability is before used");
         matchTable.getCurrentUserTable().getLeader().getAbility().execute();
         leader.setRoundOfAbilityUsed(matchTable.getRoundNumber());
-        if(!matchTable.isPreviousRoundPassed())
-            finishTurn();
+        finishTurn();
         return new CommandResult(ResultCode.ACCEPT, "Leader ability executed successfully");
     }
 
@@ -346,7 +348,11 @@ public class GameController {
         Row row = matchTable.getUserTable(player).getRowByNumber(rowNumber);
         row.addCard(card);
         Ability ability = card.getAbility();
-        if(ability != null && !(ability instanceof Berserker)) ability.execute();
+        if(ability != null && !(ability instanceof Berserker)) {
+			if (ability instanceof Muster) ability.execute(card);
+			else ability.execute();
+        }
+
         return new CommandResult(ResultCode.ACCEPT, "Unit card placed successfully");
         //done here
     }
@@ -409,14 +415,21 @@ public class GameController {
     }
 
     public void finishTurn(){
-        matchTable.changeTurn();
+        System.out.println("TotalTurn :" + matchTable.getTotalTurns() + " RoundNumber: " + matchTable.getRoundNumber() +
+                " Turn: " + matchTable.getTurn() + " PreviousRoundPassed: " + matchTable.isPreviousRoundPassed() + " isFinishTurn");
+        if(!matchTable.isPreviousRoundPassed()){
+            matchTable.changeTurn();
+            GameGraphics.getInstance().preTurnLoading();
+        }
         matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
-        matchTable.setPreviousRoundPassed(false);
         // TODO: call graphic
     }
 
     public CommandResult passTurn() {
+        System.out.println("TotalTurn :" + matchTable.getTotalTurns() + " RoundNumber: " + matchTable.getRoundNumber() +
+                " Turn: " + matchTable.getTurn() + " PreviousRoundPassed: " + matchTable.isPreviousRoundPassed() + " isPassTurn");
         matchTable.changeTurn();
+        GameGraphics.getInstance().preTurnLoading();
         matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
         if(matchTable.isPreviousRoundPassed()){
             finishRound();
@@ -426,7 +439,7 @@ public class GameController {
         return new CommandResult(ResultCode.ACCEPT, "Turn passed successfully");
     }
 
-    private void finishRound(){
+    private void finishRound() {
         int winner = getRoundWinner();
         if(winner != 0) matchTable.getUserTable(0).decreaseLife();
         if(winner != 1) matchTable.getUserTable(1).decreaseLife();
@@ -434,14 +447,14 @@ public class GameController {
             finishGame();
             return;
         }
+        matchTable.setPreviousRoundPassed(false);
         matchTable.changeRound();
-        matchTable.setTotalTurns(0);
         startRound(winner);
     }
 
     private void startRound(int winner){
         // TODO: call graphical controller for this changes
-        if(matchTable.getRoundNumber() == 0){
+        if(matchTable.getRoundNumber() == 0) {
             ArrayList<Integer> scoiataelUsers = new ArrayList<>();
             for (int userIndex = 0; userIndex < 2; userIndex++) {
                 if(matchTable.getUserTable(userIndex).getFaction() == Faction.SCOIATAEL) scoiataelUsers.add(userIndex);
@@ -452,6 +465,7 @@ public class GameController {
                 matchTable.setTurn(scoiataelUsers.get(0));
             }
         }
+        //Here above, we determine who should start the round
 
         for (int userIndex = 0; userIndex < 2; userIndex++) {
             UserTable userTable = matchTable.getUserTable(userIndex);
@@ -464,19 +478,19 @@ public class GameController {
             for (int rowIndex = 0; rowIndex < 3; rowIndex++) {
                 Row row = userTable.getRowByNumber(rowIndex);
                 ArrayList<Card> rowCards = new ArrayList<>(row.getCards());
-                for (Card card : rowCards) {
+                for (int i = rowCards.size() - 1; i > -1; i--) {
+                    Card card = rowCards.get(i);
                     boolean canDelete = true;
                     if(card == heroRemain) canDelete = false;
                     if(card.getAbility() instanceof Transformers){
-                        Transformers transformers = (Transformers) card.getAbility();
-                        if(!transformers.isConverted()) {
+                        if(!((Transformers)card.getAbility()).isConverted()) {
                             canDelete = false;
-                            transformers.execute();
+                            card.getAbility().execute(card);
                         }
                     }
                     if(canDelete){
                         userTable.addOutOfPlay(card);
-                        row.removeCard(card);
+                        row.getCards().remove(i);
                     }
                 }
                 if(row.getSpell() != null) {
@@ -484,6 +498,7 @@ public class GameController {
                     row.setSpell(null);
                 }
             }
+            //deletes cards from the round before
             if(userTable.getFaction() == Faction.NORTHEN_REALMS && winner == userIndex){
                 Card newAddedCard = null;
                 if(!userTable.getDeck().isEmpty())
@@ -493,6 +508,7 @@ public class GameController {
                     userTable.addHand(newAddedCard);
                 }
             }
+            //add cards if the Faction is NorthernRealms
 
             if(userTable.getFaction() == Faction.SKELLIGE && matchTable.getRoundNumber() == 2){
                 for (int addedCardIndex = 0; addedCardIndex < 2; addedCardIndex++) {
@@ -505,6 +521,7 @@ public class GameController {
                     }
                 }
             }
+            //add cards to hand if it's the final round
         }
     }
 
@@ -532,7 +549,7 @@ public class GameController {
         if(matchTable.getUserTable(0).getLife() == matchTable.getUserTable(1).getLife()) gameWinner = -1;
         else if(matchTable.getUserTable(0).getLife() > matchTable.getUserTable(1).getLife()) gameWinner = 0;
         else gameWinner = 1;
-
+        GameGraphics.getInstance().showWinner(gameWinner);
         // TODO: return winner to the graphical controller
     }
 
