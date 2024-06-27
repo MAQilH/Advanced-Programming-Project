@@ -348,7 +348,11 @@ public class GameController {
         Row row = matchTable.getUserTable(player).getRowByNumber(rowNumber);
         row.addCard(card);
         Ability ability = card.getAbility();
-        if(ability != null && !(ability instanceof Berserker)) ability.execute();
+        if(ability != null && !(ability instanceof Berserker)) {
+			if (ability instanceof Muster) ability.execute(card);
+			else ability.execute();
+        }
+
         return new CommandResult(ResultCode.ACCEPT, "Unit card placed successfully");
         //done here
     }
