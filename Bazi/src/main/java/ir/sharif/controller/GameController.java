@@ -396,7 +396,6 @@ public class GameController {
     }
 
     public CommandResult passTurn() {
-
         matchTable.changeTurn();
         matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
         if(matchTable.isPreviousRoundPassed()){
