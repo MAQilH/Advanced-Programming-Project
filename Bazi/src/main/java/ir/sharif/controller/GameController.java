@@ -402,7 +402,7 @@ public class GameController {
             finishRound();
             return new CommandResult(ResultCode.ACCEPT, "Round finished successfully");
         }
-        matchTable.setPreviousRoundPassed(true);
+        if(matchTable.getTotalTurns() > 2) matchTable.setPreviousRoundPassed(true);
         return new CommandResult(ResultCode.ACCEPT, "Turn passed successfully");
     }
 

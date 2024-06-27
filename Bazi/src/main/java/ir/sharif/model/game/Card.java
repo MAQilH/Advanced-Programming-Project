@@ -1,6 +1,7 @@
 package ir.sharif.model.game;
 
 import ir.sharif.controller.GameController;
+import ir.sharif.model.game.abilities.Spy;
 import ir.sharif.service.AppService;
 import ir.sharif.service.GameService;
 
@@ -99,6 +100,9 @@ public class Card {
 			validPositions.add((1 - player) * 3 + 6);
 			validPositions.add((1 - player) * 3 + 7);
 			validPositions.add((1 - player) * 3 + 8);
+		}
+		if (this.getAbility() instanceof Spy) {
+			player = 1 - player;
 		}
 		if(this.cardPosition == CardPosition.RANGED_UNIT) {
 			validPositions.add((1 - player) * 3 + 1);
