@@ -91,9 +91,7 @@ public class GameGraphics {
 
 		pane.requestFocus();
 		pane.setOnKeyPressed(e -> {
-			if (e.getCode().toString().equals("SPACE")) {
-				addCardToHBox(CardTypes.KAMBI.getInstance(), rows[0]);
-			} else if (e.getCode().toString().equals("ENTER")) {
+			 if (e.getCode().toString().equals("ENTER")) {
 				removeNodeWithAnimation(rows[0], rows[0].getChildren().get(Random.getRandomInt(rows[0].getChildren().size())));
 			} else if (e.getCode().toString().equals("H")) {
 				for (int i = 0; i < 6; i++) {
@@ -217,9 +215,8 @@ public class GameGraphics {
 		for (int i = 0; i < 13; i++) {
 			ArrayList<Card> cardsInRow = controller.getMatchTable().getCardsByPosition(i);
 			ArrayList<Card> cardsInRowGraphics = new ArrayList<>();
-			for (Node node : rows[i].getChildren()) {
+			for (Node node : rows[i].getChildren())
 				cardsInRowGraphics.add(((CardGraphics) node).getCard());
-			}
 
 			for (Card card : cardsInRow) {
 				if (!cardsInRowGraphics.contains(card)) {
@@ -323,9 +320,9 @@ public class GameGraphics {
 						int rowNumber = Integer.parseInt(row.getId().substring(3));
 						CommandResult result = controller.placeCard(card, rowNumber);
 						if (result.statusCode() == ResultCode.ACCEPT) {
-							addCardToHBox(card, row);
 							removeCardFromHBox(card, hand);
 							updatePowerLabels();
+							updateCardsInRows();
 						} else {
 							showErrorToast(result.message());
 						}

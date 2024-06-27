@@ -410,6 +410,7 @@ public class GameController {
             matchTable.changeTurn();
             GameGraphics.getInstance().preTurnLoading();
         }
+
         matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
         // TODO: call graphic
     }
