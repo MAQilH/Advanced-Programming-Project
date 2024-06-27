@@ -205,4 +205,8 @@ public class UserTable {
         rows.add(siege);
         return rows;
     }
+
+    public void setLife(int x) {
+        life = x;
+    }
 }

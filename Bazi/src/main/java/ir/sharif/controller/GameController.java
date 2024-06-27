@@ -417,7 +417,6 @@ public class GameController {
         matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
         matchTable.setPreviousRoundPassed(false);
         // TODO: call graphic
-        new CommandResult(ResultCode.ACCEPT, "Turn finished successfully");
     }
 
     public CommandResult passTurn() {
@@ -569,4 +568,47 @@ public class GameController {
 	public MatchTable getMatchTable() {
 		return matchTable;
 	}
+
+    public CommandResult instantWinCheat(int player) {
+        matchTable.getUserTable(1 - player).setLife(0);
+        finishGame();
+        return new CommandResult(ResultCode.ACCEPT, "Instant win. cheat activated");
+    }
+    public CommandResult instantLoseCheat(int player) {
+        matchTable.getUserTable(player).setLife(0);
+        finishGame();
+        return new CommandResult(ResultCode.ACCEPT, "Instant lose. cheat activated");
+    }
+    public CommandResult addCardToHandCheat(int player) {
+        if(matchTable.getUser(player).getDeckInfo().getStorage().isEmpty()) {
+            return new CommandResult(ResultCode.FAILED, "DeckInfo is empty");
+        }
+        int randomNumber = Random.getRandomInt(matchTable.getUser(player).getDeckInfo().getStorage().size());
+        CardTypes cardType = matchTable.getUser(player).getDeckInfo().getStorage().get(randomNumber);
+        Card card = cardType.getInstance();
+        matchTable.getUserTable(player).getHand().add(card);
+        return new CommandResult(ResultCode.ACCEPT, "Random Card added to hand. cheat activated");
+    }
+
+    public CommandResult removeOpponentHandCheat() {
+        matchTable.getUserTable(1 - matchTable.getTurn()).getHand().clear();
+        return new CommandResult(ResultCode.ACCEPT, "Opponent hand removed. cheat activated");
+    }
+
+    public CommandResult addLifeCheat(int player) {
+        matchTable.getUserTable(player).setLife(matchTable.getUserTable(player).getLife() + 1);
+        return new CommandResult(ResultCode.ACCEPT, "Life added. cheat activated");
+    }
+
+    public CommandResult clearWeatherCheat() {
+        matchTable.getWeatherCards().clear();
+        return new CommandResult(ResultCode.ACCEPT, "Weather cleared. cheat activated");
+    }
+
+    public CommandResult leaderExecutionCheat(int player) {
+        Leader leader = matchTable.getUserTable(player).getLeader();
+        leader.getAbility().execute();
+        return new CommandResult(ResultCode.ACCEPT, "Leader ability executed. cheat activated");
+    }
+
 }
