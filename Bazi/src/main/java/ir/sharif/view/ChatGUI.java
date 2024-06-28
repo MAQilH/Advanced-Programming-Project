@@ -1,11 +1,7 @@
 package ir.sharif.view;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import ir.sharif.client.TCPClient;
-import ir.sharif.model.Message;
 import ir.sharif.service.UserService;
-import ir.sharif.utils.ConstantsLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
@@ -16,17 +12,10 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.function.Function;
-
 public class ChatGUI {
 	private Stage stage;
 	private TextArea outputArea;
-	private TCPClient tcpClient = new TCPClient();
+	private TCPClient tcpClient;
 
 	public ChatGUI() {
 		stage = new Stage();
@@ -42,6 +31,8 @@ public class ChatGUI {
 		stage.setScene(scene);
 		stage.show();
 		stage.sizeToScene();
+
+		tcpClient = new TCPClient();
 	}
 
 	@NotNull

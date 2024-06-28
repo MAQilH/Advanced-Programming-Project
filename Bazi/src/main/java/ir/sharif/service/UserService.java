@@ -1,6 +1,8 @@
 package ir.sharif.service;
 
 import ir.sharif.model.User;
+import ir.sharif.service.storage.Database;
+import ir.sharif.service.storage.Storage;
 
 import java.util.ArrayList;
 
@@ -8,10 +10,9 @@ public class UserService {
     private static UserService instance;
     private User currentUser;
     private boolean stayLoggedIn;
-    private ArrayList<User> allUsers = new ArrayList<>();
-
+    private Database database;
     private UserService() {
-
+        database = Database.getInstance();
     }
 
     public static UserService getInstance() {
@@ -30,13 +31,7 @@ public class UserService {
     }
 
     public User getUserByUsername(String username) {
-        for (User user : allUsers) {
-            if (user.getUsername().equals(username)) {
-                return user;
-            }
-        }
-
-        return null;
+        return database.getUserWithUsername(username);
     }
 
     public boolean isUsernameTaken(String username) {
@@ -52,10 +47,15 @@ public class UserService {
     }
 
     public void addUser(User user){
-        allUsers.add(user);
+        database.addUser(user);
     }
 
-    public ArrayList<User> getAllUsers() {
-        return allUsers;
+    public void changeUser(String username, User user){
+        Database.getInstance().changeUserInfo(username, user);
+    }
+
+    public ArrayList<User> getUsers(){
+        System.out.println(Storage.loadStorage().getUsers().size());
+        return Storage.loadStorage().getUsers();
     }
 }

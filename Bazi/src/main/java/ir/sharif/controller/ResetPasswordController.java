@@ -51,10 +51,15 @@ public class ResetPasswordController {
 		}
 
 		if (!Regex.PASSWORD.getMatcher(password).matches()) {
+			return new CommandResult(ResultCode.FAILED, "password is invalid");
+		}
+
+		if (!Regex.STRONG_PASSWORD.getMatcher(password).matches()) {
 			return new CommandResult(ResultCode.FAILED, "password is weak");
 		}
 
 		user.setPassword(password);
+		UserService.getInstance().changeUser(user.getUsername(), user);
 		return new CommandResult(ResultCode.ACCEPT, "password changed");
 	}
 }

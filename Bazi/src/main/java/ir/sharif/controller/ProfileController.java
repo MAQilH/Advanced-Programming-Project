@@ -73,8 +73,8 @@ public class ProfileController {
         jsonObject.put("username", user.getUsername());
         jsonObject.put("nickname", user.getNickname());
         jsonObject.put("maxScore", GameHistoryService.getInstance().getHighestScore(user.getUsername()));
-        jsonObject.put("rank", GameHistoryService.getInstance().getHighestScore(user.getUsername()));
-        jsonObject.put("numberOfGames", GameHistoryService.getInstance().getHighestScore(user.getUsername()));
+        jsonObject.put("rank", GameHistoryService.getInstance().getUserRank(user.getUsername()));
+        jsonObject.put("numberOfGames", GameHistoryService.getInstance().getNumberOfGames(user.getUsername()));
         jsonObject.put("numberOfDraws", GameHistoryService.getInstance().getNumberOfDraws(user.getUsername()));
         jsonObject.put("numberOfWins", GameHistoryService.getInstance().getNumberOfWins(user.getUsername()));
         jsonObject.put("numberOfLoose", GameHistoryService.getInstance().getNumberOfLosses(user.getUsername()));

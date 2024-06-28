@@ -4,9 +4,13 @@ import ir.sharif.controller.GameController;
 import ir.sharif.controller.LoginController;
 import ir.sharif.controller.PreGameController;
 import ir.sharif.controller.RegisterController;
+import ir.sharif.model.CommandResult;
+import ir.sharif.model.GameHistory;
 import ir.sharif.model.SecurityQuestion;
+import ir.sharif.model.User;
 import ir.sharif.model.game.CardTypes;
 import ir.sharif.service.BackgroundMusicService;
+import ir.sharif.service.GameHistoryService;
 import ir.sharif.service.GameService;
 import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.view.controllers.Game;
@@ -17,6 +21,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
+import java.util.ArrayList;
 
 public class GUIApplication extends Application {
 	@Override
@@ -32,9 +38,12 @@ public class GUIApplication extends Application {
 		pane.getChildren().add(new CardGraphics(CardTypes.KAYRAN.getInstance(), 0.5));
 		//new TerminalGUI(null);
 		// BackgroundMusicService.getInstance().playMusic();
-		new RegisterController().register("sohsoh", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "sohsoh", "sohsoh84@gmail.com");
+		CommandResult commandResult2 = new RegisterController().register("sohsoh", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "sohsoh", "sohsoh84@gmail.com");
+		System.out.println(commandResult2.message());
 		new RegisterController().register("guest", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "guest", "aqil@gmail.com");
-		new LoginController().login("sohsoh", "Soheil@84", true);
+		new RegisterController().register("aqil", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "guest", "aqil@gmail.com");
+		CommandResult commandResult = new LoginController().login("sohsoh", "Soheil@84", true);
+		System.out.println(commandResult.message());
 		PreGameController preGameController = new PreGameController();
 		System.err.println(preGameController.createGame("guest").statusCode());
 		System.err.println(preGameController.loadDeck("test").statusCode());
@@ -44,6 +53,28 @@ public class GUIApplication extends Application {
 
 		GameService.getInstance().createController();
 		ViewLoader.newScene("game");
+
+		testGameHistory();
+	}
+
+	void testGameHistory(){
+		GameHistory gameHistory = new GameHistory(
+				new User("aqil"),
+				new User("sohsoh"),
+				new User("aqil"),
+				null
+		);
+
+		System.out.println(GameHistoryService.getInstance().addGameHistory(
+				gameHistory
+		).getAdditionalInfo());
+
+		System.out.println(GameHistoryService.getInstance().getNumberOfWins("aqil"));
+
+		ArrayList<GameHistory> gameHistories = GameHistoryService.getInstance().getUserHistory("ali");
+		System.out.println(gameHistories);
+
+		System.out.println(GameHistoryService.getInstance().getUserRank("aqil"));
 	}
 
 	public static void main(String[] args) {

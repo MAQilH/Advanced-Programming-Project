@@ -1,15 +1,18 @@
 package ir.sharif.client;
 
 import com.google.gson.*;
-import ir.sharif.messages.ChatSendMessage;
-import ir.sharif.messages.ServerMessage;
+import com.google.gson.reflect.TypeToken;
+import ir.sharif.enums.ResultCode;
+import ir.sharif.messages.*;
 import ir.sharif.model.CommandResult;
-import ir.sharif.model.Message;
+import ir.sharif.model.GameHistory;
+import ir.sharif.model.User;
 import ir.sharif.utils.ConstantsLoader;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -61,24 +64,30 @@ public class TCPClient {
 			sendBuffer.close();
 			return true;
 		} catch (IOException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
 
-	private boolean sendMessage(String message) {
+	private ServerMessage sendMessage(ClientMessage clientMessage) {
 		try {
-			sendBuffer.writeUTF(message);
-			return true;
+			establishConnection();
+			sendBuffer.writeUTF(gsonAgent.toJson(clientMessage));
+			lastServerMessage = receiveResponse();
+			endConnection();
+			return lastServerMessage;
 		} catch (Exception e) {
-			return false;
+			e.printStackTrace();
+			return null;
 		}
 	}
 
-	private String recieveResponse() {
+	private ServerMessage receiveResponse() {
 		try {
-			return recieveBuffer.readUTF();
+			return gsonAgent.fromJson(recieveBuffer.readUTF(), ServerMessage.class);
 		} catch (IOException e) {
-			return null;
+			e.printStackTrace();
+			return new ServerMessage(ResultCode.FAILED, "Unable to receive response");
 		}
 	}
 
@@ -86,12 +95,35 @@ public class TCPClient {
 		return lastServerMessage;
 	}
 
-	public boolean sendChatMessage(String message, String senderUsername) {
+
+	public ServerMessage sendChatMessage(String message, String senderUsername) {
 		ChatSendMessage chatSendMessage = new ChatSendMessage(message, senderUsername);
-		establishConnection();
-		sendMessage(gsonAgent.toJson(chatSendMessage));
-		lastServerMessage = gsonAgent.fromJson(recieveResponse(), ServerMessage.class);
-		endConnection();
-		return lastServerMessage.wasSuccessfull();
+		return sendMessage(chatSendMessage);
 	}
+
+	public ServerMessage login(String username, String password){
+		LoginMessage loginMessage = new LoginMessage(username, password);
+		return sendMessage(loginMessage);
+	}
+
+	public ServerMessage register(User user){
+		RegisterMessage registerMessage = new RegisterMessage(user);
+		return sendMessage(registerMessage);
+	}
+
+	public ServerMessage addGameHistory(GameHistory gameHistory) {
+		AddGameHistoryMessage addGameHistoryMessage = new AddGameHistoryMessage(gameHistory);
+		return sendMessage(addGameHistoryMessage);
+	}
+
+	public ArrayList<GameHistory> getGameHistories() {
+		GetGameHistoriesMessage getGameHistoriesMessage = new GetGameHistoriesMessage();
+		sendMessage(getGameHistoriesMessage);
+		if(lastServerMessage.getStatusCode() == ResultCode.ACCEPT) {
+			Type type = new TypeToken<ArrayList<GameHistory>>(){}.getType();
+			return gsonAgent.fromJson(lastServerMessage.getAdditionalInfo(), type);
+		}
+		return new ArrayList<>();
+	}
+
 }

@@ -2,4 +2,8 @@ package ir.sharif.messages;
 
 public enum ClientMessageType {
 	CHAT_SEND_MESSAGE,
+	REGISTER_MESSAGE,
+	LOGIN_MESSAGE,
+	GET_GAME_HISTORIES_MESSAGE,
+	ADD_GAME_HISTORY_MESSAGE;
 }
