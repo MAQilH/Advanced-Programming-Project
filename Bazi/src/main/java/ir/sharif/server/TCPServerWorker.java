@@ -2,13 +2,10 @@ package ir.sharif.server;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import ir.sharif.messages.Chat.ChatAllMessage;
-import ir.sharif.messages.Chat.ChatSendMessage;
-import ir.sharif.messages.ClientMessage;
-import ir.sharif.messages.Friends.AcceptFriendRequestMessage;
-import ir.sharif.messages.Friends.FriendRequestCreateMessage;
-import ir.sharif.messages.Friends.GetFriendsMessage;
 import ir.sharif.messages.Game.*;
+import ir.sharif.messages.chat.*;
+import ir.sharif.messages.ClientMessage;
+import ir.sharif.messages.friends.*;
 import ir.sharif.messages.ServerMessage;
 import ir.sharif.model.Message;
 import ir.sharif.enums.ResultCode;
@@ -128,7 +125,9 @@ public class TCPServerWorker extends Thread {
                     return gsonAgent.fromJson(clientStr, GetFriendsMessage.class);
                 case FRIEND_REQUEST_CREATE_MESSAGE:
                     return gsonAgent.fromJson(clientStr, FriendRequestCreateMessage.class);
-                case ACCEPT_FRIEND_REQUEST_MESSAGE:
+	            case PENDING_FRIEND_REQUESTS:
+					return gsonAgent.fromJson(clientStr, PendingFriendRequests.class);
+				case ACCEPT_FRIEND_REQUEST_MESSAGE:
                     return gsonAgent.fromJson(clientStr, AcceptFriendRequestMessage.class);
 				case START_NEW_GAME_MESSAGE:
 					return gsonAgent.fromJson(clientStr, StartNewGameMessage.class);
@@ -142,7 +141,8 @@ public class TCPServerWorker extends Thread {
 					return gsonAgent.fromJson(clientStr, GameAcceptRequestMessage.class);
 				case GET_GAME_RECORD_MESSAGE:
 					return gsonAgent.fromJson(clientStr, GetGameRecordMessage.class);
-				default:
+                default:
+                    System.err.println("wtf: " + clientStr);
                     return null;
             }
         }
@@ -188,9 +188,11 @@ public class TCPServerWorker extends Thread {
 				new BufferedOutputStream(socket.getOutputStream())
 			);
 
+
 			clientRequest = recieveBuffer.readUTF();
 			ClientMessage msg = extractClientMessage(clientRequest);
             splitHandler(msg);
+
 
 			sendBuffer.close();
 			recieveBuffer.close();
@@ -230,26 +232,30 @@ public class TCPServerWorker extends Thread {
             AcceptFriendRequestMessage acceptMessage = (AcceptFriendRequestMessage) msg;
             FriendRequestService.getInstance().acceptFriendRequest(acceptMessage.getFromUsername(), acceptMessage.getTargetUsername());
             sendSuccess("Friend request accepted");
-        } else if(msg instanceof StartNewGameMessage){
-			StartNewGameMessage startNewGameMessage = (StartNewGameMessage) msg;
-			sendMessage(gameHandler.startNewGame(startNewGameMessage));
-		} else if(msg instanceof GameAcceptRequestMessage) {
-			GameAcceptRequestMessage gameAcceptRequestMessage = (GameAcceptRequestMessage) msg;
-			sendMessage(gameHandler.gameAcceptRequest(gameAcceptRequestMessage));
-		} else if(msg instanceof GameIsAcceptedMessage){
-			GameIsAcceptedMessage gameIsAcceptedMessage = (GameIsAcceptedMessage) msg;
-			sendMessage(gameHandler.gameIsAccepted(gameIsAcceptedMessage));
-		} else if(msg instanceof GameRequestMessage){
-			GameRequestMessage gameRequestMessage = (GameRequestMessage) msg;
-			sendMessage(gameHandler.gameRequest(gameRequestMessage));
-		} else if(msg instanceof GetQueuedGameMessage){
-			GetQueuedGameMessage getQueuedGameMessage = (GetQueuedGameMessage) msg;
-			sendMessage(gameHandler.getQueuedGame(getQueuedGameMessage));
-		} else if(msg instanceof GetGameRecordMessage){
-			GetGameRecordMessage getGameRecordMessage = (GetGameRecordMessage) msg;
-			sendMessage(gameHandler.getGameRecord(getGameRecordMessage));
-		}
+        } else if (msg instanceof PendingFriendRequests) {
+			sendSuccess(gsonAgent.toJson(FriendRequestService.getInstance().getPendingFriends(((PendingFriendRequests) msg).getUsername())));
+        }
+        else if(msg instanceof StartNewGameMessage){
+            StartNewGameMessage startNewGameMessage = (StartNewGameMessage) msg;
+            sendMessage(gameHandler.startNewGame(startNewGameMessage));
+        } else if(msg instanceof GameAcceptRequestMessage) {
+            GameAcceptRequestMessage gameAcceptRequestMessage = (GameAcceptRequestMessage) msg;
+            sendMessage(gameHandler.gameAcceptRequest(gameAcceptRequestMessage));
+        } else if(msg instanceof GameIsAcceptedMessage){
+            GameIsAcceptedMessage gameIsAcceptedMessage = (GameIsAcceptedMessage) msg;
+            sendMessage(gameHandler.gameIsAccepted(gameIsAcceptedMessage));
+        } else if(msg instanceof GameRequestMessage){
+            GameRequestMessage gameRequestMessage = (GameRequestMessage) msg;
+            sendMessage(gameHandler.gameRequest(gameRequestMessage));
+        } else if(msg instanceof GetQueuedGameMessage){
+            GetQueuedGameMessage getQueuedGameMessage = (GetQueuedGameMessage) msg;
+            sendMessage(gameHandler.getQueuedGame(getQueuedGameMessage));
+        } else if(msg instanceof GetGameRecordMessage){
+            GetGameRecordMessage getGameRecordMessage = (GetGameRecordMessage) msg;
+            sendMessage(gameHandler.getGameRecord(getGameRecordMessage));
+        }
         else {
+	        System.err.println("invalid client command :)");
             sendFailure("Invalid message type");
         }
     }

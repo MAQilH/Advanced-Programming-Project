@@ -1,22 +1,25 @@
 package ir.sharif.client;
 
-import com.almasb.fxgl.net.Server;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.messages.*;
-import ir.sharif.messages.Chat.ChatAllMessage;
-import ir.sharif.messages.Chat.ChatSendMessage;
-import ir.sharif.messages.Friends.AcceptFriendRequestMessage;
-import ir.sharif.messages.Friends.FriendRequestCreateMessage;
+import ir.sharif.messages.chat.*;
+import ir.sharif.messages.friends.*;
 import ir.sharif.messages.Game.*;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.Message;
 import ir.sharif.model.User;
 import ir.sharif.model.server.GameRecord;
+import ir.sharif.messages.chat.ChatAllMessage;
+import ir.sharif.messages.chat.ChatSendMessage;
+import ir.sharif.messages.friends.AcceptFriendRequestMessage;
+import ir.sharif.messages.friends.FriendRequestCreateMessage;
+import ir.sharif.messages.friends.PendingFriendRequests;
+import ir.sharif.messages.react.AllReactsMessage;
+import ir.sharif.messages.react.ReactMessage;
+import ir.sharif.model.*;
 import ir.sharif.service.UserService;
-import ir.sharif.model.GameHistory;
-import ir.sharif.model.User;
 import ir.sharif.utils.ConstantsLoader;
 
 import java.io.DataInputStream;
@@ -36,7 +39,6 @@ public class TCPClient {
 
 	private Gson gsonAgent;
 
-	private String username, password;
 	private String bio;
 	private String token;
 
@@ -163,7 +165,7 @@ public class TCPClient {
             return null;
         }
 
-        sendMessage(new ir.sharif.messages.Friends.GetFriendsMessage(username));
+        sendMessage(new ir.sharif.messages.friends.GetFriendsMessage(username));
         ArrayList<String> result = null;
         if (lastServerMessage.wasSuccessfull()) {
             Type token = new TypeToken<ArrayList<String>>() {}.getType();
@@ -173,7 +175,20 @@ public class TCPClient {
         return result;
     }
 
-    public CommandResult sendFriendRequest() {
+	public ArrayList<String> getPendingFriendRequests(String username) {
+		PendingFriendRequests pendingFriendRequests = new PendingFriendRequests(username);
+		sendMessage(pendingFriendRequests);
+
+		ArrayList<String> result = null;
+		if (lastServerMessage.wasSuccessfull()) {
+			Type token = new TypeToken<ArrayList<String>>() {}.getType();
+			result =  gsonAgent.fromJson(lastServerMessage.getAdditionalInfo(), token);
+		}
+
+		return result;
+	}
+
+    public CommandResult sendFriendRequest(String username) {
         if (UserService.getInstance().getUserByUsername(username) == null) {
             return new CommandResult(ResultCode.FAILED, "User not found!");
         }
@@ -253,4 +268,23 @@ public class TCPClient {
         }
         return gsonAgent.fromJson(response.getAdditionalInfo(), GameRecord.class);
     }
+
+	public CommandResult sendReaction(String sender, String message) {
+		sendMessage(new ReactMessage(sender, message));
+		if (lastServerMessage.wasSuccessfull()) {
+			return new CommandResult(ResultCode.ACCEPT, "react sent successfully");
+		} else {
+			return new CommandResult(ResultCode.FAILED, "react failed");
+		}
+	}
+
+	public ArrayList<React> getAllReacts(int bufferSize) {
+		sendMessage(new AllReactsMessage(bufferSize));
+		if (lastServerMessage.wasSuccessfull()) {
+			Type type = new TypeToken<ArrayList<React>>(){}.getType();
+			return gsonAgent.fromJson(lastServerMessage.getAdditionalInfo(), type);
+		}
+
+		return null;
+ 	}
 }

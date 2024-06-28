@@ -1,6 +1,5 @@
 package ir.sharif.view;
 
-import ir.sharif.client.TCPClient;
 import ir.sharif.controller.GameController;
 import ir.sharif.controller.LoginController;
 import ir.sharif.controller.PreGameController;
