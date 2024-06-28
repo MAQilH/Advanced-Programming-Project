@@ -1,7 +1,9 @@
 package ir.sharif.controller;
 
+import ir.sharif.client.TCPClient;
 import ir.sharif.enums.Menus;
 import ir.sharif.enums.ResultCode;
+import ir.sharif.messages.ServerMessage;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.User;
 import ir.sharif.service.AppService;
@@ -10,7 +12,6 @@ import ir.sharif.view.Regex;
 import ir.sharif.view.terminal.Menu;
 
 public class LoginController {
-    private UserService userService;
     public CommandResult menuEnter(Menus menu) {
         switch (menu){
             case RegisterMenu:
@@ -55,6 +56,11 @@ public class LoginController {
             return new CommandResult(ResultCode.FAILED, "password is invalid");
         if(!Regex.STRONG_PASSWORD.matches(password))
             return new CommandResult(ResultCode.FAILED, "password is weak");
+
+        User user = UserService.getInstance().getCurrentUser();
+        user.setPassword(password);
+        UserService.getInstance().changeUser(user.getUsername(), user);
+
         return new CommandResult(ResultCode.ACCEPT, "password changed successfully");
     }
 }

@@ -20,6 +20,10 @@ public class User implements Serializable {
         this.deckInfo = null;
     }
 
+    public User(String username){
+        this.username = username;
+    }
+
     public String getId() {
         return id;
     }
