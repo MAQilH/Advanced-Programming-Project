@@ -36,7 +36,7 @@ public class GUIApplication extends Application {
 		new LoginController().login("sohsoh", "Soheil@84", true);
 		ViewLoader.newScene("pregame");
 //
-//		ViewLoader.newScene("game");
+//		ViewLoader.newScene("friend-request");
 	}
 
 	public static void main(String[] args) {

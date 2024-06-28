@@ -68,6 +68,7 @@ public class Pregame {
 		if (faction == null)
 			return;
 
+		leaderList.getItems().clear();
 		for (LeaderType leaderType : LeaderType.values()) {
 			if (leaderType.getFaction() == faction) {
 				leaderList.getItems().add(leaderType.toString());
