@@ -108,6 +108,12 @@ public class GameGraphics {
 				loadModel();
 			});
 		}
+
+
+		for (int i = 0; i < 2; i++) {
+			Label nickname = (Label) getChildrenById("user" + String.valueOf(i + 1) + "nick");
+			nickname.setText(controller.getMatchTable().getUser(i).getNickname());
+		}
 	}
 
 	public void startGame() {

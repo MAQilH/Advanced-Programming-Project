@@ -41,5 +41,7 @@
       <Label fx:id="userPower0" alignment="CENTER" layoutX="266.0" layoutY="529.0" prefHeight="17.0" prefWidth="136.0" text="power1" />
       <ImageView fx:id="leader1" fitHeight="100.0" fitWidth="74.0" layoutX="105.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="leader0" fitHeight="100.0" fitWidth="74.0" layoutX="105.0" layoutY="609.0" pickOnBounds="true" preserveRatio="true" />
+      <Label fx:id="user1nick" alignment="CENTER" layoutX="206.0" layoutY="100.0" prefHeight="17.0" prefWidth="136.0" text="power1" />
+      <Label fx:id="user2nick" alignment="CENTER" layoutX="198.0" layoutY="651.0" prefHeight="17.0" prefWidth="136.0" text="power1" />
    </children>
 </Pane>
