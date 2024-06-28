@@ -18,6 +18,37 @@
 /*    -fx-background-color: #8B4513; !* Tomato background *!*/
 /*    -fx-text-fill: #ffffff; !* White text color *!*/
 /*}*/
+.list-view {
+    -fx-background-color: transparent; /* Dark gray background */
+    -fx-text-fill: #B8860B; /* White text color */
+    -fx-control-inner-background: transparent; /* Dark gray cell background */
+    -fx-control-innner-text-fill: #B8860B; /* White cell text color */
+    -fx-font-family: 'Ancient'; /* Change the font family */
+    -fx-font-size: 20px; /* Increase the font size */
+}
+
+.list-view .cell {
+    -fx-text-fill: #B8860B; /* Gold text color */
+    -fx-background-color: transparent; /* Transparent cell background */
+    -fx-font-family: 'Ancient'; /* Change the font family */
+    -fx-font-size: 20px; /* Increase the font size */
+}
+
+.list-cell {
+    -fx-alignment: center;
+}
+
+.h2 {
+    -fx-font-family: "Ancient" !important;
+    -fx-font-size: 30px !important;
+    -fx-text-fill: #B8860B !important; /* Brown text color */
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,2,3 ) !important;
+}
+
+.list-view .cell :hover {
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
 
 .ancient {
     -fx-text-fill: #B8860B; /* Tomato text color */
