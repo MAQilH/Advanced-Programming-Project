@@ -28,6 +28,7 @@ public class FriendRequest {
 		friends.getItems().add("Friend 2");
 		friends.getItems().add("Friend 3");
 		friends.setStyle("-fx-background-color: transparent;");
+		pendingFriends.setStyle("-fx-background-color: transparent;");
 
 		pendingFriends.getItems().add("Pending Friend 1");
 		pendingFriends.getItems().add("Pending Friend 2");

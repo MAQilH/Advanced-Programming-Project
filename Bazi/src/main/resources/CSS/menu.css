@@ -18,7 +18,7 @@
 /*    -fx-background-color: #8B4513; !* Tomato background *!*/
 /*    -fx-text-fill: #ffffff; !* White text color *!*/
 /*}*/
-.list-view {
+.transparent-list .list-view {
     -fx-background-color: transparent; /* Dark gray background */
     -fx-text-fill: #B8860B; /* White text color */
     -fx-control-inner-background: transparent; /* Dark gray cell background */
@@ -27,7 +27,7 @@
     -fx-font-size: 20px; /* Increase the font size */
 }
 
-.list-view .cell {
+.transparent-list .cell {
     -fx-text-fill: #B8860B; /* Gold text color */
     -fx-background-color: transparent; /* Transparent cell background */
     -fx-font-family: 'Ancient'; /* Change the font family */

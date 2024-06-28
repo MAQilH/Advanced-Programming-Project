@@ -113,6 +113,9 @@ public class CardGraphics extends Pane {
 		borderPane.setBottom(nameLabel);
 
 		this.getChildren().addAll(borderPane);
+
+		powerLabel.setScaleX(scale * 3);
+		powerLabel.setScaleY(scale * 3);
 	}
 
 	private ImageView loadIcon(String iconName) {
