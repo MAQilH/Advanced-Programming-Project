@@ -106,7 +106,6 @@ public enum CardTypes {
     SIEGE_TECHNICIAN("Siege Technician", 0, 1, CardPosition.SIEGE_UNIT, new Medic(), Faction.NILFGAARDIAN_EMPIRE, false),
     SWEERS("Sweers", 2, 1, CardPosition.RANGED_UNIT, null, Faction.NILFGAARDIAN_EMPIRE, false),
     VANHEMAR("Vanhemar", 4, 1, CardPosition.RANGED_UNIT, null, Faction.NILFGAARDIAN_EMPIRE, false),
-    VATTIER_DE_RIDEAUX_2("Vattier de Rideaux", 4, 1, CardPosition.CLOSE_COMBAT_UNIT, new Spy(), Faction.NILFGAARDIAN_EMPIRE, false),
     VREEMDE("Vreemde", 2, 1, CardPosition.CLOSE_COMBAT_UNIT, null, Faction.NILFGAARDIAN_EMPIRE, false),
     DRAUG("Draug", 10, 1, CardPosition.CLOSE_COMBAT_UNIT, null, Faction.MONSTERS, true),
     IMLERITH("Imlerith", 10, 1, CardPosition.CLOSE_COMBAT_UNIT, null, Faction.MONSTERS, true),

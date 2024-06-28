@@ -14,7 +14,7 @@ public class TheRelentless implements Ability {
     public void execute(Object... objs) {
 //         TODO: its most be peek from out of plays card
         UserTable opponentTable = GameService.getInstance().getMatchTable().getOpponentUserTable();
-        UserTable userTable = GameService.getInstance().getMatchTable().getOpponentUserTable();
+        UserTable userTable = GameService.getInstance().getMatchTable().getCurrentUserTable();
         ArrayList<Card> peekCandidate = new ArrayList<>();
 
         for (Card outOfPlayCard : opponentTable.getOutOfPlays()) {

@@ -233,13 +233,12 @@ public class GameGraphics {
 				}
 			}
 
-			if(cardsInRowGraphics != null && !cardsInRowGraphics.isEmpty()) {
-				for (Card card : cardsInRowGraphics) {
-					if (!cardsInRow.contains(card)) {
-						removeCardFromHBox(card, rows[i]);
-					}
+			for (Card card : cardsInRowGraphics) {
+				if (!cardsInRow.contains(card)) {
+					removeCardFromHBox(card, rows[i]);
 				}
 			}
+
 		}
 	}
 

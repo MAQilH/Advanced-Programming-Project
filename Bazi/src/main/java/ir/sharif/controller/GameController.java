@@ -8,6 +8,7 @@ import ir.sharif.service.GameService;
 import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.utils.Random;
 import ir.sharif.view.GameGraphics;
+import ir.sharif.view.controllers.Game;
 
 import java.util.ArrayList;
 
@@ -167,6 +168,9 @@ public class GameController {
                     getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
                 counter2x++;
             }
+        }
+        if(card.getAbility() instanceof CommandersHorn) {
+            counter2x--;
         }
         if(counter2x > 0) {
             cofficient *= 2;
@@ -347,11 +351,9 @@ public class GameController {
         Row row = matchTable.getUserTable(player).getRowByNumber(rowNumber);
         row.addCard(card);
         Ability ability = card.getAbility();
-        if(ability != null && !(ability instanceof Berserker)) {
-			if (ability instanceof Muster) ability.execute(card);
-			else ability.execute(card);
+        if(ability != null && !(ability instanceof Berserker) && !(ability instanceof Transformers)) {
+			ability.execute(card, rowNumber);
         }
-
         return new CommandResult(ResultCode.ACCEPT, "Unit card placed successfully");
         //done here
     }
@@ -417,8 +419,8 @@ public class GameController {
     }
 
     public void finishTurn(){
-        System.out.println("TotalTurn :" + matchTable.getTotalTurns() + " RoundNumber: " + matchTable.getRoundNumber() +
-                " Turn: " + matchTable.getTurn() + " PreviousRoundPassed: " + matchTable.isPreviousRoundPassed() + " isFinishTurn");
+//        System.out.println("TotalTurn :" + matchTable.getTotalTurns() + " RoundNumber: " + matchTable.getRoundNumber() +
+//                " Turn: " + matchTable.getTurn() + " PreviousRoundPassed: " + matchTable.isPreviousRoundPassed() + " isFinishTurn");
         if(!matchTable.isPreviousRoundPassed()){
             matchTable.changeTurn();
             GameGraphics.getInstance().preTurnLoading();
@@ -428,13 +430,15 @@ public class GameController {
     }
 
     public CommandResult passTurn() {
-        System.out.println("TotalTurn :" + matchTable.getTotalTurns() + " RoundNumber: " + matchTable.getRoundNumber() +
-                " Turn: " + matchTable.getTurn() + " PreviousRoundPassed: " + matchTable.isPreviousRoundPassed() + " isPassTurn");
+        //System.out.println("TotalTurn :" + matchTable.getTotalTurns() + " RoundNumber: " + matchTable.getRoundNumber() +
+        //" Turn: " + matchTable.getTurn() + " PreviousRoundPassed: " + matchTable.isPreviousRoundPassed() + " isPassTurn");
         matchTable.changeTurn();
+        GameGraphics.getInstance().preTurnLoading();//todo: maybe should be deleted
         matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
         if(matchTable.isPreviousRoundPassed()){
             finishRound();
             GameGraphics.getInstance().preTurnLoading();
+            GameGraphics.getInstance().loadModel();
             return new CommandResult(ResultCode.ACCEPT, "Round finished successfully");
         }
         GameGraphics.getInstance().preTurnLoading();
@@ -457,16 +461,14 @@ public class GameController {
 
     private void startRound(int winner){
         // TODO: call graphical controller for this changes
-        if(matchTable.getRoundNumber() == 0) {
-            ArrayList<Integer> scoiataelUsers = new ArrayList<>();
-            for (int userIndex = 0; userIndex < 2; userIndex++) {
-                if(matchTable.getUserTable(userIndex).getFaction() == Faction.SCOIATAEL) scoiataelUsers.add(userIndex);
-            }
-            if(scoiataelUsers.isEmpty() || scoiataelUsers.size() == 2){
-                matchTable.setTurn(Random.getRandomInt(2));
-            } else {
-                matchTable.setTurn(scoiataelUsers.get(0));
-            }
+        ArrayList<Integer> scoiataelUsers = new ArrayList<>();
+        for (int userIndex = 0; userIndex < 2; userIndex++) {
+            if(matchTable.getUserTable(userIndex).getFaction() == Faction.SCOIATAEL) scoiataelUsers.add(userIndex);
+        }
+        if(scoiataelUsers.isEmpty() || scoiataelUsers.size() == 2){
+            matchTable.setTurn(Random.getRandomInt(2));
+        } else {
+            matchTable.setTurn(scoiataelUsers.get(0));
         }
         //Here above, we determine who should start the round
 
@@ -475,7 +477,9 @@ public class GameController {
             Card heroRemain = null;
             if(userTable.getFaction() == Faction.MONSTERS) {
                 ArrayList<Card> heroCards = userTable.getHeroesCard();
-                if(!heroCards.isEmpty()) heroRemain = heroCards.get(Random.getRandomInt(heroCards.size()));
+                if(!heroCards.isEmpty()) {
+                    heroRemain = heroCards.get(Random.getRandomInt(heroCards.size()));
+                }
             }
 
             for (int rowIndex = 0; rowIndex < 3; rowIndex++) {
@@ -495,11 +499,18 @@ public class GameController {
                         userTable.addOutOfPlay(card);
                         row.getCards().remove(i);
                     }
+//                    else {
+//                        System.out.println("player " + userIndex + ", row " +
+//                                rowIndex + ". size: " + row.getCards().size() +
+//                                " card: " + card.getName() + " is hero: " + card.isHero());
+//                    }
                 }
                 if(row.getSpell() != null) {
                     userTable.addOutOfPlay(row.getSpell());
                     row.setSpell(null);
                 }
+//                System.out.println("player " + userIndex + ", row " + rowIndex +
+//                        ". size: " + row.getCards().size());
             }
             //deletes cards from the round before
             if(userTable.getFaction() == Faction.NORTHEN_REALMS && winner == userIndex){

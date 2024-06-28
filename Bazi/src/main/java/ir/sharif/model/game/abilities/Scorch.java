@@ -59,13 +59,14 @@ public class Scorch implements Ability {
     }
 
     public void delete(Row row, int maxPower, UserTable opponentTable) {
-        for(int i = row.getCards().size() - 1; i > -1; i--){
-            Card rowCard = row.getCards().get(i);
-            if(rowCard.isHero()) continue;
-            if(maxPower == rowCard.calculatePower()){
-                row.getCards().remove(i);
-                opponentTable.addOutOfPlay(rowCard);
+        ArrayList<Card> toBeDeleted = new ArrayList<>();
+        for(Card cards : row.getCards()) {
+            if(cards.calculatePower() == maxPower && !cards.isHero()) {
+                toBeDeleted.add(cards);
             }
+        }
+        for(Card toBeDeletedCards : toBeDeleted) {
+            row.getCards().remove(toBeDeletedCards);
         }
     }
 }

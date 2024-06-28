@@ -9,9 +9,9 @@ public class TheWhiteFlame implements Ability {
     @Override
     public void execute(Object... objs) {
         UserTable userTable = GameService.getInstance().getMatchTable().getCurrentUserTable();
-        for (Card card : userTable.getHand()) {
+        for (Card card : userTable.getDeck()) {
             if(CardTypes.getCardType(card.getName()) == CardTypes.TORRENTIAL_RAIN){
-                userTable.getHand().remove(card);
+                userTable.getDeck().remove(card);
                 GameService.getInstance().getController().forcePlaceCard(card, 12);
                 return;
             }
