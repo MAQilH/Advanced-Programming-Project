@@ -340,7 +340,6 @@ public class GameController {
         return new CommandResult(ResultCode.ACCEPT, "Spy card placed successfully");
         //done here
     }
-
     public CommandResult placeUnitCard(Card card, int pos) {
         //TODO: execute ability
         int player = matchTable.getTurn();
@@ -350,7 +349,7 @@ public class GameController {
         Ability ability = card.getAbility();
         if(ability != null && !(ability instanceof Berserker)) {
 			if (ability instanceof Muster) ability.execute(card);
-			else ability.execute();
+			else ability.execute(card);
         }
 
         return new CommandResult(ResultCode.ACCEPT, "Unit card placed successfully");

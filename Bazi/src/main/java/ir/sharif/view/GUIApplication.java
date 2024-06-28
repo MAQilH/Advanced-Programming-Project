@@ -34,17 +34,17 @@ public class GUIApplication extends Application {
 		new RegisterController().register("sohsoh", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "sohsoh", "sohsoh84@gmail.com");
 		new RegisterController().register("guest", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "guest", "aqil@gmail.com");
 		new LoginController().login("sohsoh", "Soheil@84", true);
-		ViewLoader.newScene("pregame");
-		//		PreGameController preGameController = new PreGameController();
-//		System.err.println(preGameController.createGame("guest").statusCode());
-//		System.err.println(preGameController.loadDeck("test").statusCode());
-//		System.err.println(preGameController.changeTurn().statusCode());
-//		System.err.println(preGameController.loadDeck("test").statusCode());
-//		System.err.println(preGameController.changeTurn().statusCode());
-//		System.err.println(preGameController.startGame().statusCode());
-//
-//		GameService.getInstance().createController();
-//		ViewLoader.newScene("game");
+	//	ViewLoader.newScene("pregame");
+				PreGameController preGameController = new PreGameController();
+		System.err.println(preGameController.createGame("guest").statusCode());
+		System.err.println(preGameController.loadDeck("m1.1").statusCode());
+		System.err.println(preGameController.changeTurn().statusCode());
+		System.err.println(preGameController.loadDeck("m1.1").statusCode());
+		System.err.println(preGameController.changeTurn().statusCode());
+		System.err.println(preGameController.startGame().statusCode());//m1.1
+
+		GameService.getInstance().createController();
+		ViewLoader.newScene("game");
 	}
 
 	public static void main(String[] args) {
