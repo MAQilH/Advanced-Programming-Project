@@ -1,5 +1,7 @@
-package ir.sharif.messages;
+package ir.sharif.messages.Chat;
 
+import ir.sharif.messages.ClientMessage;
+import ir.sharif.messages.ClientMessageType;
 import ir.sharif.model.Message;
 
 import java.util.ArrayList;

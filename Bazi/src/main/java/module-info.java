@@ -27,4 +27,8 @@ module Bazi {
 	exports ir.sharif.controller to javafx.fxml;
 	opens ir.sharif.controller to javafx.fxml;
 	opens ir.sharif.messages to com.google.gson;
+	exports ir.sharif.messages.Chat to com.google.gson;
+	opens ir.sharif.messages.Chat to com.google.gson;
+	exports ir.sharif.messages.Friends to com.google.gson;
+	opens ir.sharif.messages.Friends to com.google.gson;
 }

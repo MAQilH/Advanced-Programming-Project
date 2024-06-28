@@ -2,9 +2,12 @@ package ir.sharif.server;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import ir.sharif.messages.ChatAllMessage;
-import ir.sharif.messages.ChatSendMessage;
+import ir.sharif.messages.Chat.ChatAllMessage;
+import ir.sharif.messages.Chat.ChatSendMessage;
 import ir.sharif.messages.ClientMessage;
+import ir.sharif.messages.Friends.AcceptFriendRequestMessage;
+import ir.sharif.messages.Friends.FriendRequestCreateMessage;
+import ir.sharif.messages.Friends.GetFriendsMessage;
 import ir.sharif.messages.ServerMessage;
 import ir.sharif.model.Message;
 import ir.sharif.utils.ConstantsLoader;
@@ -92,15 +95,19 @@ public class TCPServerWorker extends Thread {
 	}
 
 	private ClientMessage extractClientMessage(String clientStr) {
-		System.err.println(clientStr);
 		try {
 			ClientMessage clientMessage = gsonAgent.fromJson(clientStr, ClientMessage.class);
 			switch (clientMessage.getType()) {
 				case CHAT_SEND_MESSAGE:
 					return gsonAgent.fromJson(clientStr, ChatSendMessage.class);
 				case CHAT_ALL_MESSAGES:
-					System.err.println("kheilie fuck");
 					return gsonAgent.fromJson(clientStr, ChatAllMessage.class);
+				case GET_FRIENDS_MESSAGE:
+					return gsonAgent.fromJson(clientStr, GetFriendsMessage.class);
+				case FRIEND_REQUEST_CREATE_MESSAGE:
+					return gsonAgent.fromJson(clientStr, FriendRequestCreateMessage.class);
+				case ACCEPT_FRIEND_REQUEST_MESSAGE:
+					return gsonAgent.fromJson(clientStr, AcceptFriendRequestMessage.class);
 				default:
 					return null;
 			}
@@ -155,6 +162,16 @@ public class TCPServerWorker extends Thread {
 				sendSuccess("Message received");
 			} else if (msg instanceof ChatAllMessage) {
 				sendSuccess(gsonAgent.toJson(ChatService.getInstance().getMessages()));
+			} else if (msg instanceof FriendRequestCreateMessage) {
+				FriendRequestCreateMessage request = (FriendRequestCreateMessage) msg;
+				FriendRequestService.getInstance().createFriendRequest(request.getFromUsername(), request.getTargetUsername());
+				sendSuccess("Friend request sent");
+			} else if (msg instanceof GetFriendsMessage) {
+				sendSuccess(gsonAgent.toJson(FriendRequestService.getInstance().getFriends(((GetFriendsMessage) msg).getUsername())));
+			} else if (msg instanceof AcceptFriendRequestMessage) {
+				AcceptFriendRequestMessage acceptMessage = (AcceptFriendRequestMessage) msg;
+				FriendRequestService.getInstance().acceptFriendRequest(acceptMessage.getFromUsername(), acceptMessage.getTargetUsername());
+				sendSuccess("Friend request accepted");
 			} else {
 				sendFailure("Invalid message type");
 			}

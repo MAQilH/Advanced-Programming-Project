@@ -1,8 +1,8 @@
 package ir.sharif.messages;
 
 public class ServerMessage {
-	private boolean success;
-	private String additionalInfo;
+	private final boolean success;
+	private final String additionalInfo;
 
 	public ServerMessage (boolean success, String info) {
 		this.success = success;
