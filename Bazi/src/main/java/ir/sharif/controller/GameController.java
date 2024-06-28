@@ -144,7 +144,6 @@ public class GameController {
         }
         if(rowNumber == 2 && matchTable.getUserTable(player).getLeader().
                 getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
-            System.out.println("alksdfj");
             if(LeaderType.getLeaderType(matchTable.getUserTable(player).getLeader().getName())
                     == LeaderType.KING_OF_TEMERIA) {
                 counter2x++;
