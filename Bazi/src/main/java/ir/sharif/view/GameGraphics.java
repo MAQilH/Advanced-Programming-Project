@@ -1,15 +1,11 @@
 package ir.sharif.view;
 
-import eu.hansolo.tilesfx.Command;
 import ir.sharif.controller.GameController;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.game.Card;
-import ir.sharif.model.game.CardTypes;
-import ir.sharif.model.game.Leader;
 import ir.sharif.model.game.LeaderType;
 import ir.sharif.service.GameService;
-import ir.sharif.utils.Random;
 import ir.sharif.view.game.CardGraphics;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
@@ -32,7 +28,6 @@ import javafx.util.Duration;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 public class GameGraphics {
 	private Pane pane;
@@ -66,6 +61,7 @@ public class GameGraphics {
 	}
 
 	public void initialize(Pane pane) {
+		System.err.println(pane.getChildren());
 		this.pane = pane;
 		controller = GameService.getInstance().getController();
 
@@ -90,23 +86,11 @@ public class GameGraphics {
 		healths[1] = (HBox) getChildrenById("health2");
 
 		pane.requestFocus();
-		pane.setOnKeyPressed(e -> {
-			 if (e.getCode().toString().equals("ENTER")) {
-				removeNodeWithAnimation(rows[0], rows[0].getChildren().get(Random.getRandomInt(rows[0].getChildren().size())));
-			} else if (e.getCode().toString().equals("H")) {
-				for (int i = 0; i < 6; i++) {
-					powerLabels[i].setTextFill(Color.WHITE);
-				}
-
-				for (int i = 0; i < 2; i++) {
-					userPowerLabels[i].setTextFill(Color.WHITE);
-				}
-				preTurnLoading();
-			}
-		});
 
 		for (int i = 0; i < 2; i++) {
+			System.err.println(controller.getUserUserTable(i).getLeader().getName());
 			LeaderType leaderType = LeaderType.getLeaderType(controller.getUserUserTable(i).getLeader().getName());
+			System.err.println(leaderType.toString());
 			leaderGraphics[i].setImage(new Image(getClass().getResourceAsStream("/images/leader/" + leaderType.toString() + ".jpg")));
 			int finalI = i;
 			leaderGraphics[i].setOnMouseClicked(event -> {
@@ -124,6 +108,18 @@ public class GameGraphics {
 				loadModel();
 			});
 		}
+	}
+
+	public void startGame() {
+		for (int i = 0; i < 6; i++) {
+			powerLabels[i].setTextFill(Color.WHITE);
+		}
+
+		for (int i = 0; i < 2; i++) {
+			userPowerLabels[i].setTextFill(Color.WHITE);
+		}
+
+		preTurnLoading();
 	}
 
 	public void showCurrentUserHand() {

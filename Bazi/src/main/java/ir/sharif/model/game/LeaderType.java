@@ -41,13 +41,13 @@ public enum LeaderType {
         this.ability = ability;
     }
 
-	public static LeaderType getLeaderType(String name) {
+	public static LeaderType getLeaderType(String enumName) {
 		for (LeaderType type : LeaderType.values()) {
-			if (type.getName().equals(name))
+			if (type.toString().equals(enumName))
 				return type;
 		}
 
-		return LeaderType.BRINGER_OF_DEATH;
+		return null;
 	}
 
 	public Leader getInstance() {

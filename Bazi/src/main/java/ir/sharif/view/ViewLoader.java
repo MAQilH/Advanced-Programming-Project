@@ -83,7 +83,6 @@ public class ViewLoader {
 			pane.setBackground(new Background(createBackgroundImage("background.jpg", width, height)));
 		else {
 			pane.setBackground(new Background(createBackgroundImage("board.jpg", width, height)));
-			GameGraphics.getInstance().initialize(pane);
 		}
 	}
 
