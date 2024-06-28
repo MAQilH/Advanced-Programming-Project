@@ -77,7 +77,7 @@ public class CardGraphics extends Pane {
 		pane.getChildren().add(powerLabel);
 		powerLabel.setLayoutX(0);
 		powerLabel.setLayoutY(0);
-		powerLabel.setPadding(new Insets(size / 6, 0, 0, size / 6));
+		powerLabel.setPadding(new Insets(size / (isHero ? 6 : 4), 0, 0, size / (isHero ? 6 : 4)));
 		pane.setAlignment(Pos.TOP_LEFT);
 
 		icons.getChildren().add(pane);
@@ -114,8 +114,8 @@ public class CardGraphics extends Pane {
 
 		this.getChildren().addAll(borderPane);
 
-		powerLabel.setScaleX(scale * 3);
-		powerLabel.setScaleY(scale * 3);
+		powerLabel.setScaleX(scale * 2d);
+		powerLabel.setScaleY(scale * 2d);
 	}
 
 	private ImageView loadIcon(String iconName) {
