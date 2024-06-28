@@ -95,6 +95,8 @@ public class ViewLoader {
 				new TerminalGUI(null);
 			} if (event.getCode() == KeyCode.C && event.isShiftDown()) {
 				new ChatGUI();
+			} if (event.getCode() == KeyCode.R && event.isShiftDown()) {
+				new ReactionGUI();
 			}
 		});
 

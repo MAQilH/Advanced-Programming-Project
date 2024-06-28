@@ -2,20 +2,17 @@ package ir.sharif.server;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import ir.sharif.messages.Chat.ChatAllMessage;
-import ir.sharif.messages.Chat.ChatSendMessage;
+import ir.sharif.messages.chat.ChatAllMessage;
+import ir.sharif.messages.chat.ChatSendMessage;
 import ir.sharif.messages.ClientMessage;
-import ir.sharif.messages.Friends.AcceptFriendRequestMessage;
-import ir.sharif.messages.Friends.FriendRequestCreateMessage;
-import ir.sharif.messages.Friends.GetFriendsMessage;
-import ir.sharif.messages.Friends.PendingFriendRequests;
+import ir.sharif.messages.friends.AcceptFriendRequestMessage;
+import ir.sharif.messages.friends.FriendRequestCreateMessage;
+import ir.sharif.messages.friends.GetFriendsMessage;
+import ir.sharif.messages.friends.PendingFriendRequests;
 import ir.sharif.messages.ServerMessage;
 import ir.sharif.model.Message;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.messages.*;
-import ir.sharif.model.GameHistory;
-import ir.sharif.model.User;
-import ir.sharif.service.GameHistoryService;
 import ir.sharif.utils.ConstantsLoader;
 
 import java.io.*;

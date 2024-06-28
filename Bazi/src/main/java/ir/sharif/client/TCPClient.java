@@ -4,17 +4,16 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.messages.*;
-import ir.sharif.messages.Chat.ChatAllMessage;
-import ir.sharif.messages.Chat.ChatSendMessage;
-import ir.sharif.messages.Friends.AcceptFriendRequestMessage;
-import ir.sharif.messages.Friends.FriendRequestCreateMessage;
-import ir.sharif.messages.Friends.PendingFriendRequests;
+import ir.sharif.messages.chat.ChatAllMessage;
+import ir.sharif.messages.chat.ChatSendMessage;
+import ir.sharif.messages.friends.AcceptFriendRequestMessage;
+import ir.sharif.messages.friends.FriendRequestCreateMessage;
+import ir.sharif.messages.friends.PendingFriendRequests;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.Message;
 import ir.sharif.model.User;
 import ir.sharif.service.UserService;
 import ir.sharif.model.GameHistory;
-import ir.sharif.model.User;
 import ir.sharif.utils.ConstantsLoader;
 
 import java.io.DataInputStream;
@@ -160,7 +159,7 @@ public class TCPClient {
             return null;
         }
 
-        sendMessage(new ir.sharif.messages.Friends.GetFriendsMessage(username));
+        sendMessage(new ir.sharif.messages.friends.GetFriendsMessage(username));
         ArrayList<String> result = null;
         if (lastServerMessage.wasSuccessfull()) {
             Type token = new TypeToken<ArrayList<String>>() {}.getType();

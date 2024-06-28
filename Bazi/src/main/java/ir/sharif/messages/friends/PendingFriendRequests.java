@@ -1,4 +1,4 @@
-package ir.sharif.messages.Friends;
+package ir.sharif.messages.friends;
 
 import ir.sharif.messages.ClientMessage;
 import ir.sharif.messages.ClientMessageType;
