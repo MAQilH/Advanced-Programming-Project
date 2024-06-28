@@ -124,6 +124,7 @@ public class TCPServerWorker extends Thread {
 					return gsonAgent.fromJson(clientStr, PendingFriendRequests.class);
 				case ACCEPT_FRIEND_REQUEST_MESSAGE:
                     return gsonAgent.fromJson(clientStr, AcceptFriendRequestMessage.class);
+
 				default:
 					System.err.println("wtf: " + clientStr);
                     return null;

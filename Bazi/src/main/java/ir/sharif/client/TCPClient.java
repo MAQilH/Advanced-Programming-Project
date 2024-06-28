@@ -9,11 +9,10 @@ import ir.sharif.messages.chat.ChatSendMessage;
 import ir.sharif.messages.friends.AcceptFriendRequestMessage;
 import ir.sharif.messages.friends.FriendRequestCreateMessage;
 import ir.sharif.messages.friends.PendingFriendRequests;
-import ir.sharif.model.CommandResult;
-import ir.sharif.model.Message;
-import ir.sharif.model.User;
+import ir.sharif.messages.react.AllReactsMessage;
+import ir.sharif.messages.react.ReactMessage;
+import ir.sharif.model.*;
 import ir.sharif.service.UserService;
-import ir.sharif.model.GameHistory;
 import ir.sharif.utils.ConstantsLoader;
 
 import java.io.DataInputStream;
@@ -202,4 +201,23 @@ public class TCPClient {
             return new CommandResult(ResultCode.FAILED, lastServerMessage.getAdditionalInfo());
         }
     }
+
+	public CommandResult sendReaction(String sender, String message) {
+		sendMessage(new ReactMessage(sender, message));
+		if (lastServerMessage.wasSuccessfull()) {
+			return new CommandResult(ResultCode.ACCEPT, "react sent successfully");
+		} else {
+			return new CommandResult(ResultCode.FAILED, "react failed");
+		}
+	}
+
+	public ArrayList<React> getAllReacts(int bufferSize) {
+		sendMessage(new AllReactsMessage(bufferSize));
+		if (lastServerMessage.wasSuccessfull()) {
+			Type type = new TypeToken<ArrayList<React>>(){}.getType();
+			return gsonAgent.fromJson(lastServerMessage.getAdditionalInfo(), type);
+		}
+
+		return null;
+ 	}
 }
