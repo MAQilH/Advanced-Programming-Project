@@ -1,19 +1,26 @@
 package ir.sharif.messages;
 
+import ir.sharif.enums.ResultCode;
+
 public class ServerMessage {
-	private final boolean success;
+	private final ResultCode statusCode;
 	private final String additionalInfo;
 
-	public ServerMessage (boolean success, String info) {
-		this.success = success;
+	public ServerMessage (ResultCode statusCode, String info) {
+		this.statusCode = statusCode;
 		this.additionalInfo = info;
 	}
 
 	public boolean wasSuccessfull () {
-		return this.success;
+		return this.statusCode == ResultCode.ACCEPT;
 	}
 
-	public String getAdditionalInfo () {
+    public ResultCode getStatusCode() {
+        return statusCode;
+    }
+
+
+    public String getAdditionalInfo () {
 		return this.additionalInfo;
 	}
 }

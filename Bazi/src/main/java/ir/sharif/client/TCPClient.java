@@ -3,15 +3,17 @@ package ir.sharif.client;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ir.sharif.enums.ResultCode;
+import ir.sharif.messages.*;
 import ir.sharif.messages.Chat.ChatAllMessage;
 import ir.sharif.messages.Chat.ChatSendMessage;
 import ir.sharif.messages.Friends.AcceptFriendRequestMessage;
 import ir.sharif.messages.Friends.FriendRequestCreateMessage;
-import ir.sharif.messages.ServerMessage;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.Message;
 import ir.sharif.model.User;
 import ir.sharif.service.UserService;
+import ir.sharif.model.GameHistory;
+import ir.sharif.model.User;
 import ir.sharif.utils.ConstantsLoader;
 
 import java.io.DataInputStream;
@@ -69,114 +71,123 @@ public class TCPClient {
 			sendBuffer.close();
 			return true;
 		} catch (IOException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
 
-	private boolean sendMessage(String message) {
-		try {
-			sendBuffer.writeUTF(message);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
+    private ServerMessage sendMessage(ClientMessage clientMessage) {
+        try {
+            establishConnection();
+            sendBuffer.writeUTF(gsonAgent.toJson(clientMessage));
+            lastServerMessage = receiveResponse();
+            endConnection();
+            return lastServerMessage;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-	private String recieveResponse() {
-		try {
-			return recieveBuffer.readUTF();
-		} catch (IOException e) {
-			return null;
-		}
-	}
+    private ServerMessage receiveResponse() {
+        try {
+            return gsonAgent.fromJson(recieveBuffer.readUTF(), ServerMessage.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ServerMessage(ResultCode.FAILED, "Unable to receive response");
+        }
+    }
 
 	public ServerMessage getLastServerMessage() {
 		return lastServerMessage;
 	}
 
-	public boolean sendChatMessage(String message, String senderUsername) {
-		ChatSendMessage chatSendMessage = new ChatSendMessage(senderUsername, message);
-		establishConnection();
-		sendMessage(gsonAgent.toJson(chatSendMessage));
-		lastServerMessage = gsonAgent.fromJson(recieveResponse(), ServerMessage.class);
-		endConnection();
-		return lastServerMessage.wasSuccessfull();
-	}
+    public ServerMessage sendChatMessage(String message, String senderUsername) {
+        ChatSendMessage chatSendMessage = new ChatSendMessage(message, senderUsername);
+        return sendMessage(chatSendMessage);
+    }
 
-	public ArrayList<Message> getMessages() {
-		ChatAllMessage chatAllMessage = new ChatAllMessage();
-		try {
-			establishConnection();
-			sendMessage(gsonAgent.toJson(chatAllMessage));
-			lastServerMessage = gsonAgent.fromJson(recieveResponse(), ServerMessage.class);
-			ArrayList<Message> result = null;
-			if (lastServerMessage.wasSuccessfull()) {
-				Type token = new TypeToken<ArrayList<Message>>() {}.getType();
-				result =  gsonAgent.fromJson(lastServerMessage.getAdditionalInfo(), token);
-			}
+    public ServerMessage register(User user){
+        RegisterMessage registerMessage = new RegisterMessage(user);
+        return sendMessage(registerMessage);
+    }
 
-			endConnection();
-			return result;
-		} catch (Exception e) {
-			return null;
-		}
-	}
+    public ServerMessage addGameHistory(GameHistory gameHistory) {
+        AddGameHistoryMessage addGameHistoryMessage = new AddGameHistoryMessage(gameHistory);
+        return sendMessage(addGameHistoryMessage);
+    }
 
-	public CommandResult acceptFriendRequest(String fromUsername) {
-		if (UserService.getInstance().getUserByUsername(fromUsername) == null) {
-			return new CommandResult(ResultCode.FAILED, "User not found!");
-		}
+    public ArrayList<GameHistory> getGameHistories() {
+        GetGameHistoriesMessage getGameHistoriesMessage = new GetGameHistoriesMessage();
+        sendMessage(getGameHistoriesMessage);
+        if(lastServerMessage.getStatusCode() == ResultCode.ACCEPT) {
+            Type type = new TypeToken<ArrayList<GameHistory>>(){}.getType();
+            return gsonAgent.fromJson(lastServerMessage.getAdditionalInfo(), type);
+        }
+        return new ArrayList<>();
+    }
 
-		establishConnection();
-		sendMessage(gsonAgent.toJson(new AcceptFriendRequestMessage(fromUsername, UserService.getInstance().getCurrentUser().getUsername())));
-		lastServerMessage = gsonAgent.fromJson(recieveResponse(), ServerMessage.class);
-		endConnection();
-		if (lastServerMessage.wasSuccessfull()) {
-			return new CommandResult(ResultCode.ACCEPT, "Friend request accepted successfully!");
-		} else {
-			return new CommandResult(ResultCode.FAILED, lastServerMessage.getAdditionalInfo());
-		}
-	}
+    public ArrayList<Message> getMessages() {
+        ChatAllMessage chatAllMessage = new ChatAllMessage();
+        try {
+            sendMessage(chatAllMessage);
+            ArrayList<Message> result = null;
+            if (lastServerMessage.wasSuccessfull()) {
+                Type token = new TypeToken<ArrayList<Message>>() {}.getType();
+                result =  gsonAgent.fromJson(lastServerMessage.getAdditionalInfo(), token);
+            }
+            return result;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
-	public ArrayList<String> getFriends(String username) {
-		if (UserService.getInstance().getUserByUsername(username) == null) {
-			return null;
-		}
+    public CommandResult acceptFriendRequest(String fromUsername) {
+        if (UserService.getInstance().getUserByUsername(fromUsername) == null) {
+            return new CommandResult(ResultCode.FAILED, "User not found!");
+        }
 
-		establishConnection();
-		sendMessage(gsonAgent.toJson(new ir.sharif.messages.Friends.GetFriendsMessage(username)));
-		lastServerMessage = gsonAgent.fromJson(recieveResponse(), ServerMessage.class);
-		ArrayList<String> result = null;
-		if (lastServerMessage.wasSuccessfull()) {
-			Type token = new TypeToken<ArrayList<String>>() {}.getType();
-			result =  gsonAgent.fromJson(lastServerMessage.getAdditionalInfo(), token);
-		}
+        sendMessage(new AcceptFriendRequestMessage(fromUsername, UserService.getInstance().getCurrentUser().getUsername()));
+        if (lastServerMessage.wasSuccessfull()) {
+            return new CommandResult(ResultCode.ACCEPT, "Friend request accepted successfully!");
+        } else {
+            return new CommandResult(ResultCode.FAILED, lastServerMessage.getAdditionalInfo());
+        }
+    }
 
-		endConnection();
-		return result;
-	}
+    public ArrayList<String> getFriends(String username) {
+        if (UserService.getInstance().getUserByUsername(username) == null) {
+            return null;
+        }
 
-	public CommandResult sendFriendRequest() {
-		if (UserService.getInstance().getUserByUsername(username) == null) {
-			return new CommandResult(ResultCode.FAILED, "User not found!");
-		}
+        sendMessage(new ir.sharif.messages.Friends.GetFriendsMessage(username));
+        ArrayList<String> result = null;
+        if (lastServerMessage.wasSuccessfull()) {
+            Type token = new TypeToken<ArrayList<String>>() {}.getType();
+            result =  gsonAgent.fromJson(lastServerMessage.getAdditionalInfo(), token);
+        }
 
-		if (UserService.getInstance().getUserByUsername(username).getUsername().equals(UserService.getInstance().getCurrentUser().getUsername())) {
-			return new CommandResult(ResultCode.FAILED, "You can't send friend request to yourself!");
-		}
+        return result;
+    }
 
-		if (getFriends(UserService.getInstance().getCurrentUser().getUsername()).contains(username)) {
-			return new CommandResult(ResultCode.FAILED, "You are already friends with this user!");
-		}
+    public CommandResult sendFriendRequest() {
+        if (UserService.getInstance().getUserByUsername(username) == null) {
+            return new CommandResult(ResultCode.FAILED, "User not found!");
+        }
 
-		establishConnection();
-		sendMessage(gsonAgent.toJson(new FriendRequestCreateMessage(UserService.getInstance().getCurrentUser().getUsername(), username)));
-		lastServerMessage = gsonAgent.fromJson(recieveResponse(), ServerMessage.class);
-		endConnection();
-		if (lastServerMessage.wasSuccessfull()) {
-			return new CommandResult(ResultCode.ACCEPT, "Friend request sent successfully!");
-		} else {
-			return new CommandResult(ResultCode.FAILED, lastServerMessage.getAdditionalInfo());
-		}
-	}
+        if (UserService.getInstance().getUserByUsername(username).getUsername().equals(UserService.getInstance().getCurrentUser().getUsername())) {
+            return new CommandResult(ResultCode.FAILED, "You can't send friend request to yourself!");
+        }
+
+        if (getFriends(UserService.getInstance().getCurrentUser().getUsername()).contains(username)) {
+            return new CommandResult(ResultCode.FAILED, "You are already friends with this user!");
+        }
+
+        sendMessage(new FriendRequestCreateMessage(UserService.getInstance().getCurrentUser().getUsername(), username));
+        if (lastServerMessage.wasSuccessfull()) {
+            return new CommandResult(ResultCode.ACCEPT, "Friend request sent successfully!");
+        } else {
+            return new CommandResult(ResultCode.FAILED, lastServerMessage.getAdditionalInfo());
+        }
+    }
 }

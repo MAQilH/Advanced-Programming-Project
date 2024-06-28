@@ -1,5 +1,7 @@
 package ir.sharif.service;
 
+import ir.sharif.client.TCPClient;
+import ir.sharif.messages.ServerMessage;
 import ir.sharif.model.GameHistory;
 import ir.sharif.model.Pair;
 import ir.sharif.model.User;
@@ -13,10 +15,7 @@ import java.util.HashMap;
 
 public class GameHistoryService {
 
-    private ArrayList<GameHistory> gameHistories = new ArrayList<>();
-    private GameHistoryService() {
-
-    }
+    private GameHistoryService() { }
 
     static GameHistoryService instance;
     public static GameHistoryService getInstance() {
@@ -26,11 +25,14 @@ public class GameHistoryService {
         return instance;
     }
 
-    public void addGameHistory(GameHistory gameHistory) {
-        gameHistories.add(gameHistory);
+    public ServerMessage addGameHistory(GameHistory gameHistory) {
+        TCPClient tcpClient = new TCPClient();
+        return tcpClient.addGameHistory(gameHistory);
     }
 
     public ArrayList<GameHistory> getUserHistory(String username){
+        TCPClient tcpClient = new TCPClient();
+        ArrayList<GameHistory> gameHistories = tcpClient.getGameHistories();
         ArrayList<GameHistory> userHistory = new ArrayList<>();
         for (GameHistory gameHistory : gameHistories) {
             if (gameHistory.getUser1().getUsername().equals(username) || gameHistory.getUser2().getUsername().equals(username)) {
@@ -41,13 +43,18 @@ public class GameHistoryService {
     }
 
     public int getUserRank(String username){
-        ArrayList<User> users = UserService.getInstance().getAllUsers();
+        ArrayList<User> users = UserService.getInstance().getUsers();
         HashMap<User, Integer> numberOfWins = new HashMap<>();
         for(User user: users){
             numberOfWins.put(user, getNumberOfWins(user.getUsername()));
         }
         users.sort((User user1, User user2) -> numberOfWins.get(user2) - numberOfWins.get(user1));
-        return users.indexOf(UserService.getInstance().getUserByUsername(username)) + 1;
+        for(int userIndex = 0; userIndex < users.size(); userIndex++){
+            if(users.get(userIndex).getUsername().equals(username)){
+                return userIndex + 1;
+            }
+        }
+        return -1;
     }
 
     public int getNumberOfWins(String username){

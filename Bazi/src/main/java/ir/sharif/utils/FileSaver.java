@@ -26,7 +26,8 @@ public class FileSaver {
 
     public static Object loadObject(String filename) {
         Object obj = null;
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
+        try {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
             obj = (Object) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
