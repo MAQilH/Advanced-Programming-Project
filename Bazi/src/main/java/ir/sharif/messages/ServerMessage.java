@@ -11,11 +11,16 @@ public class ServerMessage {
 		this.additionalInfo = info;
 	}
 
-	public ResultCode getStatusCode() {
-		return statusCode;
+	public boolean wasSuccessfull () {
+		return this.statusCode == ResultCode.ACCEPT;
 	}
 
-	public String getAdditionalInfo () {
+    public ResultCode getStatusCode() {
+        return statusCode;
+    }
+
+
+    public String getAdditionalInfo () {
 		return this.additionalInfo;
 	}
 }

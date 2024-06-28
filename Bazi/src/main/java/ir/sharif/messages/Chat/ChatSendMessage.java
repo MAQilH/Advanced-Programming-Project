@@ -1,4 +1,7 @@
-package ir.sharif.messages;
+package ir.sharif.messages.Chat;
+
+import ir.sharif.messages.ClientMessage;
+import ir.sharif.messages.ClientMessageType;
 
 import java.util.Date;
 
@@ -7,7 +10,7 @@ public class ChatSendMessage extends ClientMessage {
 	private Date date;
 	private String message;
 
-	public ChatSendMessage(String message, String senderUsername) {
+	public ChatSendMessage(String senderUsername, String message) {
 		this.message = message;
 		this.senderUsername = senderUsername;
 		this.date = new Date();

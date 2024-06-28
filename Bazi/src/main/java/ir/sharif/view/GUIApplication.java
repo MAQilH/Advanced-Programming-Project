@@ -69,9 +69,9 @@ public class GUIApplication extends Application {
 				gameHistory
 		).getAdditionalInfo());
 
-		System.out.println(GameHistoryService.getInstance().getNumberOfWins("aqil"));
+		System.out.println(GameHistoryService.getInstance().getNumberOfWins("sohsoh"));
 
-		ArrayList<GameHistory> gameHistories = GameHistoryService.getInstance().getUserHistory("ali");
+		ArrayList<GameHistory> gameHistories = GameHistoryService.getInstance().getUserHistory("sohsoh");
 		System.out.println(gameHistories);
 
 		System.out.println(GameHistoryService.getInstance().getUserRank("aqil"));
