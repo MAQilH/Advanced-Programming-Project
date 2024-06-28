@@ -1,5 +1,8 @@
 package ir.sharif.utils;
 
+import java.security.SecureRandom;
+import java.util.Base64;
+
 public class Random {
     public static int getRandomInt(int min, int max) {
         return (int) (Math.random() * (max - min) + min);
@@ -27,4 +30,13 @@ public class Random {
 		}
 		return password.toString();
     }
+
+	private static final SecureRandom secureRandom = new SecureRandom();
+	private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
+
+	public static String generateNewToken() {
+		byte[] randomBytes = new byte[24];
+		secureRandom.nextBytes(randomBytes);
+		return base64Encoder.encodeToString(randomBytes);
+	}
 }

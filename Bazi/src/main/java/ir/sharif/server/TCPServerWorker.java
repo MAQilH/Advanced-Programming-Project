@@ -8,6 +8,7 @@ import ir.sharif.messages.ClientMessage;
 import ir.sharif.messages.Friends.AcceptFriendRequestMessage;
 import ir.sharif.messages.Friends.FriendRequestCreateMessage;
 import ir.sharif.messages.Friends.GetFriendsMessage;
+import ir.sharif.messages.Game.*;
 import ir.sharif.messages.ServerMessage;
 import ir.sharif.model.Message;
 import ir.sharif.enums.ResultCode;
@@ -16,7 +17,9 @@ import ir.sharif.model.GameHistory;
 import ir.sharif.model.User;
 import ir.sharif.service.GameHistoryService;
 import ir.sharif.utils.ConstantsLoader;
+import ir.sharif.view.controllers.Game;
 
+import javax.xml.catalog.CatalogManager;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -43,6 +46,7 @@ public class TCPServerWorker extends Thread {
 
 	private AuthHandler authHandler = new AuthHandler();
 	private GameHistoryHandler gameHistoryHandler = new GameHistoryHandler();
+	private GameHandler gameHandler;
 
 	private static boolean setupServer(int portNumber, int workerNum) {
 		try {
@@ -59,6 +63,8 @@ public class TCPServerWorker extends Thread {
 	public TCPServerWorker() {
 		GsonBuilder builder = new GsonBuilder();
 		gsonAgent = builder.create();
+
+		gameHandler = GameHandler.getInstance();
 	}
 
 	public void listen() throws IOException {
@@ -124,7 +130,19 @@ public class TCPServerWorker extends Thread {
                     return gsonAgent.fromJson(clientStr, FriendRequestCreateMessage.class);
                 case ACCEPT_FRIEND_REQUEST_MESSAGE:
                     return gsonAgent.fromJson(clientStr, AcceptFriendRequestMessage.class);
-                    default:
+				case START_NEW_GAME_MESSAGE:
+					return gsonAgent.fromJson(clientStr, StartNewGameMessage.class);
+				case GAME_REQUEST_MESSAGE:
+						return gsonAgent.fromJson(clientStr, GameRequestMessage.class);
+				case GAME_IS_ACCEPTED_MESSAGE:
+					return gsonAgent.fromJson(clientStr, GameIsAcceptedMessage.class);
+				case GET_QUEUED_GAME_MESSAGE:
+					return gsonAgent.fromJson(clientStr, GetQueuedGameMessage.class);
+				case GAME_ACCEPT_REQUEST_MESSAGE:
+					return gsonAgent.fromJson(clientStr, GameAcceptRequestMessage.class);
+				case GET_GAME_RECORD_MESSAGE:
+					return gsonAgent.fromJson(clientStr, GetGameRecordMessage.class);
+				default:
                     return null;
             }
         }
@@ -170,11 +188,9 @@ public class TCPServerWorker extends Thread {
 				new BufferedOutputStream(socket.getOutputStream())
 			);
 
-
 			clientRequest = recieveBuffer.readUTF();
 			ClientMessage msg = extractClientMessage(clientRequest);
             splitHandler(msg);
-
 
 			sendBuffer.close();
 			recieveBuffer.close();
@@ -214,7 +230,25 @@ public class TCPServerWorker extends Thread {
             AcceptFriendRequestMessage acceptMessage = (AcceptFriendRequestMessage) msg;
             FriendRequestService.getInstance().acceptFriendRequest(acceptMessage.getFromUsername(), acceptMessage.getTargetUsername());
             sendSuccess("Friend request accepted");
-        }
+        } else if(msg instanceof StartNewGameMessage){
+			StartNewGameMessage startNewGameMessage = (StartNewGameMessage) msg;
+			sendMessage(gameHandler.startNewGame(startNewGameMessage));
+		} else if(msg instanceof GameAcceptRequestMessage) {
+			GameAcceptRequestMessage gameAcceptRequestMessage = (GameAcceptRequestMessage) msg;
+			sendMessage(gameHandler.gameAcceptRequest(gameAcceptRequestMessage));
+		} else if(msg instanceof GameIsAcceptedMessage){
+			GameIsAcceptedMessage gameIsAcceptedMessage = (GameIsAcceptedMessage) msg;
+			sendMessage(gameHandler.gameIsAccepted(gameIsAcceptedMessage));
+		} else if(msg instanceof GameRequestMessage){
+			GameRequestMessage gameRequestMessage = (GameRequestMessage) msg;
+			sendMessage(gameHandler.gameRequest(gameRequestMessage));
+		} else if(msg instanceof GetQueuedGameMessage){
+			GetQueuedGameMessage getQueuedGameMessage = (GetQueuedGameMessage) msg;
+			sendMessage(gameHandler.getQueuedGame(getQueuedGameMessage));
+		} else if(msg instanceof GetGameRecordMessage){
+			GetGameRecordMessage getGameRecordMessage = (GetGameRecordMessage) msg;
+			sendMessage(gameHandler.getGameRecord(getGameRecordMessage));
+		}
         else {
             sendFailure("Invalid message type");
         }

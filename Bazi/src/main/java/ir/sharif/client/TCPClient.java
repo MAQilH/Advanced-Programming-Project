@@ -1,5 +1,6 @@
 package ir.sharif.client;
 
+import com.almasb.fxgl.net.Server;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ir.sharif.enums.ResultCode;
@@ -8,9 +9,11 @@ import ir.sharif.messages.Chat.ChatAllMessage;
 import ir.sharif.messages.Chat.ChatSendMessage;
 import ir.sharif.messages.Friends.AcceptFriendRequestMessage;
 import ir.sharif.messages.Friends.FriendRequestCreateMessage;
+import ir.sharif.messages.Game.*;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.Message;
 import ir.sharif.model.User;
+import ir.sharif.model.server.GameRecord;
 import ir.sharif.service.UserService;
 import ir.sharif.model.GameHistory;
 import ir.sharif.model.User;
@@ -85,7 +88,7 @@ public class TCPClient {
             return lastServerMessage;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return new ServerMessage(ResultCode.FAILED, "pat ro sime");
         }
     }
 
@@ -189,5 +192,65 @@ public class TCPClient {
         } else {
             return new CommandResult(ResultCode.FAILED, lastServerMessage.getAdditionalInfo());
         }
+    }
+
+    public String startNewGame(User user1, User user2){ // return gameId
+        StartNewGameMessage startNewGameMessage = new StartNewGameMessage(user1, user2);
+        ServerMessage response =  sendMessage(startNewGameMessage);
+        if(response != null && response.getStatusCode() == ResultCode.ACCEPT) return response.getAdditionalInfo();
+        return null;
+    }
+
+    public String gameRequest(User user, String receiverUsername){
+        GameRequestMessage gameRequestMessage = new GameRequestMessage(user, receiverUsername);
+        ServerMessage response = sendMessage(gameRequestMessage);
+        if(response.getStatusCode() == ResultCode.FAILED){
+            System.err.println(response.getAdditionalInfo());
+            return null;
+        }
+        return response.getAdditionalInfo();
+    }
+
+    public User gameIsAccepted(String gameToken){
+        GameIsAcceptedMessage gameIsAcceptedMessage = new GameIsAcceptedMessage(gameToken);
+        ServerMessage response = sendMessage(gameIsAcceptedMessage);
+        if(response.getStatusCode() == ResultCode.FAILED){
+            System.err.println(response.getAdditionalInfo());
+            return null;
+        }
+        if(response.getStatusCode() == ResultCode.NOT_FOUND){
+            return null;
+        }
+        return gsonAgent.fromJson(response.getAdditionalInfo(), User.class);
+    }
+
+    public String getQueuedGame(String username){
+        GetQueuedGameMessage getQueuedGameMessage = new GetQueuedGameMessage(username);
+        ServerMessage response = sendMessage(getQueuedGameMessage);
+        if(response.getStatusCode() != ResultCode.ACCEPT){
+            System.err.println(response.getAdditionalInfo());
+            return null;
+        }
+        return response.getAdditionalInfo();
+    }
+
+    public User gameAcceptRequest(String gameToken, User user){
+        GameAcceptRequestMessage gameAcceptRequestMessage = new GameAcceptRequestMessage(gameToken, user);
+        ServerMessage response = sendMessage(gameAcceptRequestMessage);
+        if(response.getStatusCode() != ResultCode.ACCEPT){
+            System.err.println(response.getAdditionalInfo());
+            return null;
+        }
+        return gsonAgent.fromJson(response.getAdditionalInfo(), User.class);
+    }
+
+    public GameRecord getGameRecord(String gameToken){
+        GetGameRecordMessage getGameRecordMessage = new GetGameRecordMessage(gameToken);
+        ServerMessage response = sendMessage(getGameRecordMessage);
+        if(response.getStatusCode() != ResultCode.ACCEPT){
+            System.err.println(response.getAdditionalInfo());
+            return null;
+        }
+        return gsonAgent.fromJson(response.getAdditionalInfo(), GameRecord.class);
     }
 }
