@@ -89,14 +89,17 @@ public class GameController {
     public int weatherCardsOnTable() {
         int answer = 0;
         for(Card card : matchTable.getWeatherCards()) {
-            if(card.getName().equals("Torrential rain")) {
+            if(card.getName().equals("Torrential Rain")) {
                 answer |= 4;
             }
             if(card.getName().equals("Impenetrable fog")) {
                 answer |= 2;
             }
-            if(card.getName().equals("Biting frost")) {
+            if(card.getName().equals("Biting Frost")) {
                 answer |= 1;
+            }
+            if(card.getName().equals("Skellige Storm")) {
+                answer |= 6;
             }
         }
         return answer;
@@ -139,20 +142,22 @@ public class GameController {
                 counter2x++;
             }
         }
-        if(matchTable.getUserTable(player).getLeader().getName().equals("King of Temeria")) {
-            if(pos == 2 && matchTable.getUserTable(player).getLeader().
-                    getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
+        if(rowNumber == 2 && matchTable.getUserTable(player).getLeader().
+                getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
+            System.out.println("alksdfj");
+            if(LeaderType.getLeaderType(matchTable.getUserTable(player).getLeader().getName())
+                    == LeaderType.KING_OF_TEMERIA) {
                 counter2x++;
             }
         }
         if(matchTable.getUserTable(player).getLeader().getName().equals("Bringer of Death")) {
-            if(pos == 0 && matchTable.getUserTable(player).getLeader().
+            if(rowNumber == 0 && matchTable.getUserTable(player).getLeader().
                     getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
                 counter2x++;
             }
         }
         if(matchTable.getUserTable(player).getLeader().getName().equals("The Beautiful")) {
-            if(pos == 1 && matchTable.getUserTable(player).getLeader().
+            if(rowNumber == 1 && matchTable.getUserTable(player).getLeader().
                     getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
                 counter2x++;
             }
@@ -321,6 +326,9 @@ public class GameController {
         matchTable.addWeatherCard(card); //abilities done
         Ability ability = card.getAbility();
         if(ability != null) ability.execute();
+        if(card.getName().equals("Clear Weather")) {
+            matchTable.getWeatherCards().clear();
+        }
         return new CommandResult(ResultCode.ACCEPT, "Weather card placed successfully");
     }
 
@@ -461,6 +469,7 @@ public class GameController {
 
     private void startRound(int winner){
         // TODO: call graphical controller for this changes
+        matchTable.getWeatherCards().clear();
         ArrayList<Integer> scoiataelUsers = new ArrayList<>();
         for (int userIndex = 0; userIndex < 2; userIndex++) {
             if(matchTable.getUserTable(userIndex).getFaction() == Faction.SCOIATAEL) scoiataelUsers.add(userIndex);
