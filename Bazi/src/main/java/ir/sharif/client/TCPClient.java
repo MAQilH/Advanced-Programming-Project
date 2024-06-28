@@ -8,6 +8,7 @@ import ir.sharif.messages.Chat.ChatAllMessage;
 import ir.sharif.messages.Chat.ChatSendMessage;
 import ir.sharif.messages.Friends.AcceptFriendRequestMessage;
 import ir.sharif.messages.Friends.FriendRequestCreateMessage;
+import ir.sharif.messages.Friends.PendingFriendRequests;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.Message;
 import ir.sharif.model.User;
@@ -33,7 +34,6 @@ public class TCPClient {
 
 	private Gson gsonAgent;
 
-	private String username, password;
 	private String bio;
 	private String token;
 
@@ -170,7 +170,20 @@ public class TCPClient {
         return result;
     }
 
-    public CommandResult sendFriendRequest() {
+	public ArrayList<String> getPendingFriendRequests(String username) {
+		PendingFriendRequests pendingFriendRequests = new PendingFriendRequests(username);
+		sendMessage(pendingFriendRequests);
+
+		ArrayList<String> result = null;
+		if (lastServerMessage.wasSuccessfull()) {
+			Type token = new TypeToken<ArrayList<String>>() {}.getType();
+			result =  gsonAgent.fromJson(lastServerMessage.getAdditionalInfo(), token);
+		}
+
+		return result;
+	}
+
+    public CommandResult sendFriendRequest(String username) {
         if (UserService.getInstance().getUserByUsername(username) == null) {
             return new CommandResult(ResultCode.FAILED, "User not found!");
         }

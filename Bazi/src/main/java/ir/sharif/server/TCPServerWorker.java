@@ -8,6 +8,7 @@ import ir.sharif.messages.ClientMessage;
 import ir.sharif.messages.Friends.AcceptFriendRequestMessage;
 import ir.sharif.messages.Friends.FriendRequestCreateMessage;
 import ir.sharif.messages.Friends.GetFriendsMessage;
+import ir.sharif.messages.Friends.PendingFriendRequests;
 import ir.sharif.messages.ServerMessage;
 import ir.sharif.model.Message;
 import ir.sharif.enums.ResultCode;
@@ -122,9 +123,12 @@ public class TCPServerWorker extends Thread {
                     return gsonAgent.fromJson(clientStr, GetFriendsMessage.class);
                 case FRIEND_REQUEST_CREATE_MESSAGE:
                     return gsonAgent.fromJson(clientStr, FriendRequestCreateMessage.class);
-                case ACCEPT_FRIEND_REQUEST_MESSAGE:
+	            case PENDING_FRIEND_REQUESTS:
+					return gsonAgent.fromJson(clientStr, PendingFriendRequests.class);
+				case ACCEPT_FRIEND_REQUEST_MESSAGE:
                     return gsonAgent.fromJson(clientStr, AcceptFriendRequestMessage.class);
-                    default:
+				default:
+					System.err.println("wtf: " + clientStr);
                     return null;
             }
         }
@@ -214,8 +218,10 @@ public class TCPServerWorker extends Thread {
             AcceptFriendRequestMessage acceptMessage = (AcceptFriendRequestMessage) msg;
             FriendRequestService.getInstance().acceptFriendRequest(acceptMessage.getFromUsername(), acceptMessage.getTargetUsername());
             sendSuccess("Friend request accepted");
-        }
-        else {
+        } else if (msg instanceof PendingFriendRequests) {
+			sendSuccess(gsonAgent.toJson(FriendRequestService.getInstance().getPendingFriends(((PendingFriendRequests) msg).getUsername())));
+        } else {
+	        System.err.println("invalid client command :)");
             sendFailure("Invalid message type");
         }
     }

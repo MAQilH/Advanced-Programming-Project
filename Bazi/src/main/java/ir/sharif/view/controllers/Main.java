@@ -21,4 +21,14 @@ public class Main {
 		UserService.getInstance().setCurrentUser(null);
 		ViewLoader.newScene("start");
 	}
+
+	public void friends(MouseEvent mouseEvent) {
+		ViewLoader.newScene("friend-request");
+	}
+
+	public void gameLobby(MouseEvent mouseEvent) {
+	}
+
+	public void selectDeck(MouseEvent mouseEvent) {
+	}
 }

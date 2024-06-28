@@ -46,6 +46,8 @@ public class GUIApplication extends Application {
 //
 //		GameService.getInstance().createController();
 //		ViewLoader.newScene("game");
+
+		ViewLoader.newScene("friend-request");
 	}
 
 	public static void main(String[] args) {
