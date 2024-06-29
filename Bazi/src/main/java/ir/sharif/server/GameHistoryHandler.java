@@ -23,7 +23,6 @@ public class GameHistoryHandler {
     }
 
     public ServerMessage addGameHistory(AddGameHistoryMessage addGameHistoryMessage) {
-
         Database.getInstance().addGameHistories(addGameHistoryMessage.getGameHistory());
         return new ServerMessage(ResultCode.ACCEPT, "Game history added successfully");
     }
