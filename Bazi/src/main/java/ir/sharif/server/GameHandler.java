@@ -126,7 +126,8 @@ public class GameHandler {
         return new ServerMessage(ResultCode.ACCEPT, "game finished successfully");
     }
 
-    public ServerMessage getActions(GetActionsMessage getActionsMessage) {
+
+    public synchronized ServerMessage getActions(GetActionsMessage getActionsMessage) {
         int buffer = getActionsMessage.getBuffer();
         String token = getActionsMessage.getGameToken();
 

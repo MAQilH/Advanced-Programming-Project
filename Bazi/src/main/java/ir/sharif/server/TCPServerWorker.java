@@ -47,6 +47,7 @@ public class TCPServerWorker extends Thread {
 	private AuthHandler authHandler = new AuthHandler();
 	private GameHistoryHandler gameHistoryHandler = new GameHistoryHandler();
 	private GameHandler gameHandler;
+	private UserHandler userHandler;
 
 	private static boolean setupServer(int portNumber, int workerNum) {
 		try {
@@ -65,6 +66,7 @@ public class TCPServerWorker extends Thread {
 		gsonAgent = builder.create();
 
 		gameHandler = GameHandler.getInstance();
+		userHandler = UserHandler.getInstance();
 	}
 
 	public void listen() throws IOException {
@@ -278,7 +280,14 @@ public class TCPServerWorker extends Thread {
         } else if(msg instanceof GetActionsMessage) {
 	        GetActionsMessage getActionsMessage = (GetActionsMessage) msg;
 	        sendMessage(gameHandler.getActions(getActionsMessage));
-        } else {
+        } else if(msg instanceof GetUserStatusMessage){
+			GetUserStatusMessage getUserStatusMessage = (GetUserStatusMessage) msg;
+			sendMessage(userHandler.getUserStatus(getUserStatusMessage));
+		} else if(msg instanceof SetUserStatusMessage){
+			SetUserStatusMessage setUserStatusMessage = (SetUserStatusMessage) msg;
+			sendMessage(userHandler.setUserStatus(setUserStatusMessage));
+		}
+		else {
 	        System.err.println("invalid client command :)");
             sendFailure("Invalid message type");
         }

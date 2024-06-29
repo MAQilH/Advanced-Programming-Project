@@ -1,12 +1,9 @@
 package ir.sharif.client;
 
-import com.almasb.fxgl.net.Server;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.messages.*;
-import ir.sharif.messages.chat.*;
-import ir.sharif.messages.friends.*;
 import ir.sharif.messages.Game.*;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.Message;
@@ -307,5 +304,19 @@ public class TCPClient {
         }
          Type token = new TypeToken<ArrayList<String>>() {}.getType();
          return gsonAgent.fromJson(lastServerMessage.getAdditionalInfo(), token);
+     }
+
+     public boolean getUserStatus(String username){
+        ServerMessage response = sendMessage(new GetUserStatusMessage(username));
+        if(response.getStatusCode() != ResultCode.ACCEPT){
+            System.err.println(response.getAdditionalInfo());
+            return false;
+        }
+        return Boolean.parseBoolean(response.getAdditionalInfo());
+     }
+
+     public CommandResult setUserStatus(String username, boolean status){
+         ServerMessage response = sendMessage(new SetUserStatusMessage(username, status));
+         return new CommandResult(response.getStatusCode(), response.getAdditionalInfo());
      }
 }
