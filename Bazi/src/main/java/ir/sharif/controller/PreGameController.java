@@ -257,7 +257,7 @@ public class PreGameController {
         }
 
         AppService.getInstance().setCurrentMenu(Menus.GameMenu);
-        GameService.getInstance().setMatchTable(new MatchTable(UserService.getInstance().getCurrentUser(), enemy));
+        GameService.getInstance().setMatchTable(new MatchTable(UserService.getInstance().getCurrentUser(), enemy, null));
 
         return new CommandResult(ResultCode.ACCEPT, "game started successfully");
     }

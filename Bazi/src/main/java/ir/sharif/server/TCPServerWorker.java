@@ -2,13 +2,13 @@ package ir.sharif.server;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import ir.sharif.messages.Chat.ChatAllMessage;
-import ir.sharif.messages.Chat.ChatSendMessage;
+import ir.sharif.messages.Game.*;
+import ir.sharif.messages.chat.*;
 import ir.sharif.messages.ClientMessage;
-import ir.sharif.messages.Friends.AcceptFriendRequestMessage;
-import ir.sharif.messages.Friends.FriendRequestCreateMessage;
-import ir.sharif.messages.Friends.GetFriendsMessage;
+import ir.sharif.messages.friends.*;
 import ir.sharif.messages.ServerMessage;
+import ir.sharif.messages.react.AllReactsMessage;
+import ir.sharif.messages.react.ReactMessage;
 import ir.sharif.model.Message;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.messages.*;
@@ -16,7 +16,10 @@ import ir.sharif.model.GameHistory;
 import ir.sharif.model.User;
 import ir.sharif.service.GameHistoryService;
 import ir.sharif.utils.ConstantsLoader;
+import ir.sharif.view.controllers.Game;
+import ir.sharif.model.React;
 
+import javax.xml.catalog.CatalogManager;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -43,6 +46,8 @@ public class TCPServerWorker extends Thread {
 
 	private AuthHandler authHandler = new AuthHandler();
 	private GameHistoryHandler gameHistoryHandler = new GameHistoryHandler();
+	private GameHandler gameHandler;
+	private UserHandler userHandler;
 
 	private static boolean setupServer(int portNumber, int workerNum) {
 		try {
@@ -59,6 +64,9 @@ public class TCPServerWorker extends Thread {
 	public TCPServerWorker() {
 		GsonBuilder builder = new GsonBuilder();
 		gsonAgent = builder.create();
+
+		gameHandler = GameHandler.getInstance();
+		userHandler = UserHandler.getInstance();
 	}
 
 	public void listen() throws IOException {
@@ -122,9 +130,32 @@ public class TCPServerWorker extends Thread {
                     return gsonAgent.fromJson(clientStr, GetFriendsMessage.class);
                 case FRIEND_REQUEST_CREATE_MESSAGE:
                     return gsonAgent.fromJson(clientStr, FriendRequestCreateMessage.class);
-                case ACCEPT_FRIEND_REQUEST_MESSAGE:
+	            case PENDING_FRIEND_REQUESTS:
+					return gsonAgent.fromJson(clientStr, PendingFriendRequests.class);
+				case ACCEPT_FRIEND_REQUEST_MESSAGE:
                     return gsonAgent.fromJson(clientStr, AcceptFriendRequestMessage.class);
-                    default:
+	            case REACT_MESSAGE:
+					return gsonAgent.fromJson(clientStr, ReactMessage.class);
+	            case ALL_REACTS_MESSAGE:
+					return gsonAgent.fromJson(clientStr, AllReactsMessage.class);
+				case START_NEW_GAME_MESSAGE:
+					return gsonAgent.fromJson(clientStr, StartNewGameMessage.class);
+				case GAME_REQUEST_MESSAGE:
+						return gsonAgent.fromJson(clientStr, GameRequestMessage.class);
+				case GAME_IS_ACCEPTED_MESSAGE:
+					return gsonAgent.fromJson(clientStr, GameIsAcceptedMessage.class);
+				case GET_QUEUED_GAME_MESSAGE:
+					return gsonAgent.fromJson(clientStr, GetQueuedGameMessage.class);
+				case GAME_ACCEPT_REQUEST_MESSAGE:
+					return gsonAgent.fromJson(clientStr, GameAcceptRequestMessage.class);
+				case GET_GAME_RECORD_MESSAGE:
+					return gsonAgent.fromJson(clientStr, GetGameRecordMessage.class);
+				case GAME_ACTION_MESSAGE:
+					return gsonAgent.fromJson(clientStr, GameActionMessage.class);
+				case FINISH_GAME_MESSAGE:
+					return gsonAgent.fromJson(clientStr, FinishGameMessage.class);
+                default:
+                    System.err.println("wtf: " + clientStr);
                     return null;
             }
         }
@@ -214,8 +245,50 @@ public class TCPServerWorker extends Thread {
             AcceptFriendRequestMessage acceptMessage = (AcceptFriendRequestMessage) msg;
             FriendRequestService.getInstance().acceptFriendRequest(acceptMessage.getFromUsername(), acceptMessage.getTargetUsername());
             sendSuccess("Friend request accepted");
-        }
-        else {
+        } else if (msg instanceof PendingFriendRequests) {
+			sendSuccess(gsonAgent.toJson(FriendRequestService.getInstance().getPendingFriends(((PendingFriendRequests) msg).getUsername())));
+        }  else if (msg instanceof ReactMessage) {
+	        ReactService.getInstance().addReact(((ReactMessage) msg).getReact());
+			sendSuccess("React added");
+        } else if (msg instanceof AllReactsMessage) {
+	        System.err.println("getting all reacts: " + ((AllReactsMessage) msg).getBufferSize());
+			sendSuccess(gsonAgent.toJson(ReactService.getInstance().getAllReacts(((AllReactsMessage) msg).getBufferSize())));
+        } else if(msg instanceof StartNewGameMessage){
+	        StartNewGameMessage startNewGameMessage = (StartNewGameMessage) msg;
+	        sendMessage(gameHandler.startNewGame(startNewGameMessage));
+        } else if(msg instanceof GameAcceptRequestMessage) {
+	        GameAcceptRequestMessage gameAcceptRequestMessage = (GameAcceptRequestMessage) msg;
+	        sendMessage(gameHandler.gameAcceptRequest(gameAcceptRequestMessage));
+        } else if(msg instanceof GameIsAcceptedMessage){
+	        GameIsAcceptedMessage gameIsAcceptedMessage = (GameIsAcceptedMessage) msg;
+	        sendMessage(gameHandler.gameIsAccepted(gameIsAcceptedMessage));
+        } else if(msg instanceof GameRequestMessage){
+	        GameRequestMessage gameRequestMessage = (GameRequestMessage) msg;
+	        sendMessage(gameHandler.gameRequest(gameRequestMessage));
+        } else if(msg instanceof GetQueuedGameMessage){
+	        GetQueuedGameMessage getQueuedGameMessage = (GetQueuedGameMessage) msg;
+	        sendMessage(gameHandler.getQueuedGame(getQueuedGameMessage));
+        } else if(msg instanceof GetGameRecordMessage){
+	        GetGameRecordMessage getGameRecordMessage = (GetGameRecordMessage) msg;
+	        sendMessage(gameHandler.getGameRecord(getGameRecordMessage));
+        } else if(msg instanceof GameActionMessage){
+	        GameActionMessage gameActionMessage = (GameActionMessage) msg;
+	        sendMessage(gameHandler.gameAction(gameActionMessage));
+        } else if(msg instanceof FinishGameMessage){
+	        FinishGameMessage finishGameMessage = (FinishGameMessage) msg;
+	        sendMessage(gameHandler.finishGame(finishGameMessage));
+        } else if(msg instanceof GetActionsMessage) {
+	        GetActionsMessage getActionsMessage = (GetActionsMessage) msg;
+	        sendMessage(gameHandler.getActions(getActionsMessage));
+        } else if(msg instanceof GetUserStatusMessage){
+			GetUserStatusMessage getUserStatusMessage = (GetUserStatusMessage) msg;
+			sendMessage(userHandler.getUserStatus(getUserStatusMessage));
+		} else if(msg instanceof SetUserStatusMessage){
+			SetUserStatusMessage setUserStatusMessage = (SetUserStatusMessage) msg;
+			sendMessage(userHandler.setUserStatus(setUserStatusMessage));
+		}
+		else {
+	        System.err.println("invalid client command :)");
             sendFailure("Invalid message type");
         }
     }

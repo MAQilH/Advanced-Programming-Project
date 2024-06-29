@@ -32,6 +32,24 @@
                     <Insets />
                 </VBox.margin>
             </HBox>
+            <HBox alignment="CENTER" prefHeight="96.0" prefWidth="300.0" spacing="10.0">
+                <children>
+                    <Button mnemonicParsing="false" onMouseClicked="#friends" text="Friends">
+                        <HBox.margin>
+                            <Insets />
+                        </HBox.margin>
+                    </Button>
+                    <Button mnemonicParsing="false" onMouseClicked="#gameLobby" text="Lobby">
+                        <HBox.margin>
+                            <Insets />
+                        </HBox.margin>
+                    </Button>
+                    <Button mnemonicParsing="false" onMouseClicked="#selectDeck" text="Select Deck" />
+                </children>
+                <VBox.margin>
+                    <Insets />
+                </VBox.margin>
+            </HBox>
             <Label fx:id="errorLabel" styleClass="error-label" />
         </children>
     </VBox>

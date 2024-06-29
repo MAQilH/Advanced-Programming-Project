@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class Pregame {
+	public static boolean isSingle;
 	@FXML
 	private ComboBox factionList;
 	@FXML
@@ -56,8 +57,8 @@ public class Pregame {
 		leaderList.setMinWidth(300);
 		factionList.setMinWidth(300);
 
+		if (isSingle) nextButton.setText("select");
 		pregameController.createGame("guest");
-
 	}
 
 	private void updateLeaders() {
@@ -244,6 +245,15 @@ public class Pregame {
 	}
 
 	public void next() {
+		if (isSingle) {
+			CommandResult result = pregameController.setDeck(getDeckInfo());
+			if (result.statusCode() == ResultCode.ACCEPT) ViewLoader.newScene("main");
+			else {
+				errorLabel.setText(result.message());
+				return;
+			}
+		}
+
 		if (turn == 0) {
 			CommandResult result = pregameController.setDeck(getDeckInfo());
 			if (result.statusCode() == ResultCode.ACCEPT) {

@@ -1,11 +1,15 @@
 package ir.sharif.view;
 
+import eu.hansolo.tilesfx.Command;
 import ir.sharif.controller.GameController;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.game.Card;
+import ir.sharif.model.game.CardTypes;
+import ir.sharif.model.game.Leader;
 import ir.sharif.model.game.LeaderType;
 import ir.sharif.service.GameService;
+import ir.sharif.utils.Random;
 import ir.sharif.view.game.CardGraphics;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
@@ -28,6 +32,7 @@ import javafx.util.Duration;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GameGraphics {
 	private Pane pane;
@@ -61,7 +66,6 @@ public class GameGraphics {
 	}
 
 	public void initialize(Pane pane) {
-		System.err.println(pane.getChildren());
 		this.pane = pane;
 		controller = GameService.getInstance().getController();
 
@@ -86,6 +90,20 @@ public class GameGraphics {
 		healths[1] = (HBox) getChildrenById("health2");
 
 		pane.requestFocus();
+		pane.setOnKeyPressed(e -> {
+			 if (e.getCode().toString().equals("ENTER")) {
+				removeNodeWithAnimation(rows[0], rows[0].getChildren().get(Random.getRandomInt(rows[0].getChildren().size())));
+			} else if (e.getCode().toString().equals("H")) {
+				for (int i = 0; i < 6; i++) {
+					powerLabels[i].setTextFill(Color.WHITE);
+				}
+
+				for (int i = 0; i < 2; i++) {
+					userPowerLabels[i].setTextFill(Color.WHITE);
+				}
+				preTurnLoading();
+			}
+		});
 
 		for (int i = 0; i < 2; i++) {
 			System.err.println(controller.getUserUserTable(i).getLeader().getName());
@@ -126,6 +144,56 @@ public class GameGraphics {
 		}
 
 		preTurnLoading();
+
+		startReactShowerThread();
+	}
+
+	public void startReactShowerThread() {
+		Thread thread = new Thread(() -> {
+			try {
+				TCPClient client = new TCPClient();
+				int buffer = client.getAllReacts(0).size();
+				while (true) {
+					try {
+						Thread.sleep(1000);
+						ArrayList<React> reacts = client.getAllReacts(buffer);
+						for (React react : reacts) {
+							Platform.runLater(() -> {
+								if (react.getMessage().contains(".png")) {
+									ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream("/images/reacts/" + react.getMessage())));
+									imageView.setFitWidth(100);
+									imageView.setFitHeight(100);
+
+									pane.getChildren().add(imageView);
+									imageView.setY(pane.getHeight() - 100);
+									imageView.setX(pane.getWidth() / 2 - 50);
+									// move the react from bottom to top and fade it in 6 seconds
+									TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(6), imageView);
+									translateTransition.setByY(-1000);
+									translateTransition.play();
+
+									FadeTransition fadeTransition = new FadeTransition(Duration.seconds(6), imageView);
+									fadeTransition.setFromValue(1.0);
+									fadeTransition.setToValue(0.0);
+									fadeTransition.play();
+									showToast(react.getSender() + " reacted with ");
+								} else {
+									showToast(react.getSender() + " reacted: " + react.getMessage());
+								}
+							});
+						}
+
+						buffer += reacts.size();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();;
+			}
+		});
+
+		thread.start();
 	}
 
 	public void showCurrentUserHand() {
@@ -233,12 +301,13 @@ public class GameGraphics {
 				}
 			}
 
-			for (Card card : cardsInRowGraphics) {
-				if (!cardsInRow.contains(card)) {
-					removeCardFromHBox(card, rows[i]);
+			if(cardsInRowGraphics != null && !cardsInRowGraphics.isEmpty()) {
+				for (Card card : cardsInRowGraphics) {
+					if (!cardsInRow.contains(card)) {
+						removeCardFromHBox(card, rows[i]);
+					}
 				}
 			}
-
 		}
 	}
 
