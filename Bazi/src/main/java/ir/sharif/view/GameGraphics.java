@@ -1,9 +1,11 @@
 package ir.sharif.view;
 
 import eu.hansolo.tilesfx.Command;
+import ir.sharif.client.TCPClient;
 import ir.sharif.controller.GameController;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
+import ir.sharif.model.React;
 import ir.sharif.model.game.Card;
 import ir.sharif.model.game.CardTypes;
 import ir.sharif.model.game.Leader;
@@ -14,6 +16,7 @@ import ir.sharif.view.game.CardGraphics;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
