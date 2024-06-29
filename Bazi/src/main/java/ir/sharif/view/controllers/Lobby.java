@@ -1,9 +1,13 @@
 package ir.sharif.view.controllers;
 
 import ir.sharif.client.TCPClient;
+import ir.sharif.controller.GameController;
+import ir.sharif.controller.PreGameController;
 import ir.sharif.model.User;
 import ir.sharif.model.server.GameRecord;
+import ir.sharif.service.GameService;
 import ir.sharif.service.UserService;
+import ir.sharif.view.ViewLoader;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -25,6 +29,7 @@ public class Lobby {
 	@FXML
 	HBox hbox;
 	private String lastGameToken = null;
+	private String lastGameCreated = null;
 
 	@FXML
 	public void initialize() {
@@ -57,6 +62,20 @@ public class Lobby {
 					});
 				}
 
+				if (lastGameCreated != null) {
+					User user2 = client.gameIsAccepted(lastGameCreated);
+					if (user2 != null) {
+						GameRecord record = client.getGameRecord(lastGameCreated);
+						PreGameController controller = new PreGameController();
+						controller.startOnlineGame(record);
+						Platform.runLater(() -> {
+							ViewLoader.newScene("game");
+						});
+
+						return;
+					}
+				}
+
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -74,7 +93,7 @@ public class Lobby {
 		if (gameToken == null) errorLabel.setText("Error in game request");
 		else {
 			errorLabel.setText("Game request sent to " + item);
-			System.err.println(gameToken);
+			lastGameCreated = gameToken;
 		}
 	}
 
@@ -85,6 +104,9 @@ public class Lobby {
 	public void acceptGame(MouseEvent mouseEvent) {
 		TCPClient client = new TCPClient();
 		User user2 = client.gameAcceptRequest(lastGameToken, UserService.getInstance().getCurrentUser());
-		errorLabel.setText("game accepted");
+		GameRecord record = client.getGameRecord(lastGameToken);
+		PreGameController controller = new PreGameController();
+		controller.startOnlineGame(record);
+		ViewLoader.newScene("game");
 	}
 }

@@ -248,10 +248,8 @@ public class Pregame {
 		if (isSingle) {
 			CommandResult result = pregameController.setDeck(getDeckInfo());
 			if (result.statusCode() == ResultCode.ACCEPT) ViewLoader.newScene("main");
-			else {
-				errorLabel.setText(result.message());
-				return;
-			}
+			else errorLabel.setText(result.message());
+			return;
 		}
 
 		if (turn == 0) {

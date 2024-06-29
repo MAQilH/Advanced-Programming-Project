@@ -5,6 +5,7 @@ import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.User;
 import ir.sharif.model.game.*;
+import ir.sharif.model.server.GameRecord;
 import ir.sharif.service.AppService;
 import ir.sharif.service.GameService;
 import ir.sharif.service.UserService;
@@ -149,6 +150,7 @@ public class PreGameController {
     }
 
     public CommandResult setDeck(DeckInfo deckInfo){
+	    System.err.println(deckInfo);
         User user = UserService.getInstance().getCurrentUser();
         user.setDeckInfo(deckInfo);
         return new CommandResult(ResultCode.ACCEPT, "deck set successfully");
@@ -261,6 +263,12 @@ public class PreGameController {
 
         return new CommandResult(ResultCode.ACCEPT, "game started successfully");
     }
+
+	public void startOnlineGame(GameRecord record) {
+		AppService.getInstance().setCurrentMenu(Menus.GameMenu);
+		GameService.getInstance().setMatchTable(new MatchTable(record.getUser1(), record.getUser2(), record.getGameToken()));
+		GameService.getInstance().createController();
+	}
 
     public DeckInfo getDeck(){
         return UserService.getInstance().getCurrentUser().getDeckInfo();
