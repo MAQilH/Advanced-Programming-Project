@@ -14,9 +14,9 @@ public class Muster implements Ability {
         int rowNum = (int) objs[1];
         UserTable userTable = GameService.getInstance().getMatchTable().getCurrentUserTable();
         GameController gameController = GameService.getInstance().getController();
-        userTable.getRowByNumber(rowNum).removeCard(card);
         for(int i = userTable.getHand().size() - 1; i > -1; i--){
             Card handCard = userTable.getHand().get(i);
+            if(handCard == card) continue;
             if(handCard.getFaction() == card.getFaction() && handCard.getAbility() instanceof Muster){
                 userTable.getHand().remove(i);
                 Row insertedRow;

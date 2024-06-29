@@ -122,10 +122,14 @@ public class GameController {
         }
 
         if (((1 << rowNumber) & weather) != 0) {
-            if(matchTable.getUserTable(player).getLeader().getName().equals("King Bran")) {
+            if(LeaderType.getLeaderType(matchTable.getUserTable(player).getLeader().getName())
+                    == LeaderType.KING_BRAN && matchTable.getUserTable(player).getLeader().
+                        getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
                 cofficient *= 0.5;
             }
-            else if(matchTable.getUserTable(player).getLeader().getName().equals("The Steel-Forged")) {
+            else if(LeaderType.getLeaderType(matchTable.getUserTable(player).getLeader().getName())
+                    == LeaderType.THE_STEEL_FORGED && matchTable.getUserTable(player).getLeader().
+                            getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
                 cofficient *= 1;
             }
             else {
@@ -149,25 +153,29 @@ public class GameController {
                 counter2x++;
             }
         }
-        if(matchTable.getUserTable(player).getLeader().getName().equals("Bringer of Death")) {
+        if(LeaderType.getLeaderType(matchTable.getUserTable(player).getLeader().getName())
+                == LeaderType.BRINGER_OF_DEATH) {
             if(rowNumber == 0 && matchTable.getUserTable(player).getLeader().
                     getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
                 counter2x++;
             }
         }
-        if(matchTable.getUserTable(player).getLeader().getName().equals("The Beautiful")) {
+        if(LeaderType.getLeaderType(matchTable.getUserTable(player).getLeader().getName())
+                == LeaderType.THE_BEAUTIFUL) {
             if(rowNumber == 1 && matchTable.getUserTable(player).getLeader().
                     getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
                 counter2x++;
             }
         }
-        if(matchTable.getUserTable(player).getLeader().getName().equals("The Treacherous")) {
+        if(LeaderType.getLeaderType(matchTable.getUserTable(player).getLeader().getName())
+                == LeaderType.THE_TREACHEROUS) {
             if(card.getAbility() instanceof Spy && matchTable.getUserTable(player).getLeader().
                     getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
                 counter2x++;
             }
         }
-        if(matchTable.getUserTable(1 - player).getLeader().getName().equals("The Treacherous")) {
+        if(LeaderType.getLeaderType(matchTable.getUserTable(1 - player).getLeader().getName())
+                == LeaderType.THE_TREACHEROUS) {
             if(card.getAbility() instanceof Spy && matchTable.getUserTable(1 - player).getLeader().
                     getRoundOfAbilityUsed() == matchTable.getRoundNumber()) {
                 counter2x++;
@@ -292,6 +300,8 @@ public class GameController {
             result = placeSpellCard(card, pos);
         } else if(card.getAbility() instanceof Spy) {
             result = placeSpyCard(card, pos);
+        } else if(card.getAbility() instanceof Muster) {
+            result = placeMusterCard(card, pos);
         } else {
             result = placeUnitCard(card, pos);
         }
@@ -309,18 +319,6 @@ public class GameController {
         return result;
     }
 
-    public CommandResult leaderExecute(){
-        Leader leader = matchTable.getCurrentUserTable().getLeader();
-        if(leader.getDisableRound() == matchTable.getRoundNumber())
-            return new CommandResult(ResultCode.FAILED, "Leader ability is disabled for this round");
-        if(leader.getRoundOfAbilityUsed() != -1)
-            return new CommandResult(ResultCode.FAILED, "Leader ability is before used");
-        matchTable.getCurrentUserTable().getLeader().getAbility().execute();
-        leader.setRoundOfAbilityUsed(matchTable.getRoundNumber());
-        finishTurn();
-        return new CommandResult(ResultCode.ACCEPT, "Leader ability executed successfully");
-    }
-
     public CommandResult placeWeatherCard(Card card) {
         matchTable.addWeatherCard(card); //abilities done
         Ability ability = card.getAbility();
@@ -334,6 +332,7 @@ public class GameController {
     public CommandResult placeSpellCard(Card card, int pos) {
         int player = matchTable.getTurn();
         int rowNumber = graphicRowToLogicRow(pos);
+//        System.out.println("pos and rowNumber: " + pos + " " + rowNumber);
         matchTable.getUserTable(player).getRowByNumber(rowNumber).setSpell(card);
         if (card.getAbility() instanceof Mardroeme) {
             Row row = matchTable.getUserTable(player).getRowByNumber(rowNumber);
@@ -343,7 +342,6 @@ public class GameController {
     }
 
     public CommandResult placeSpyCard(Card card, int pos) {
-        //TODO: I can do its action by executing the ability
         int player = 1 - matchTable.getTurn();
         int rowNumber = graphicRowToLogicRow(pos);
         matchTable.getUserTable(player).getRowByNumber(rowNumber).addCard(card);
@@ -351,6 +349,14 @@ public class GameController {
         return new CommandResult(ResultCode.ACCEPT, "Spy card placed successfully");
         //done here
     }
+
+    public CommandResult placeMusterCard(Card card, int pos) {
+        int player = matchTable.getTurn();
+        int rowNumber = graphicRowToLogicRow(pos);
+        card.getAbility().execute(card, rowNumber);
+        return new CommandResult(ResultCode.ACCEPT, "Muster card placed successfully");
+    }
+
     public CommandResult placeUnitCard(Card card, int pos) {
         //TODO: execute ability
         int player = matchTable.getTurn();
@@ -358,11 +364,26 @@ public class GameController {
         Row row = matchTable.getUserTable(player).getRowByNumber(rowNumber);
         row.addCard(card);
         Ability ability = card.getAbility();
-        if(ability != null && !(ability instanceof Berserker) && !(ability instanceof Transformers)) {
+        if(ability != null && ability instanceof Mardroeme) {
+            ability.execute(row);
+        }
+        else if(ability != null && !(ability instanceof Berserker) && !(ability instanceof Transformers)) {
 			ability.execute(card, rowNumber);
         }
         return new CommandResult(ResultCode.ACCEPT, "Unit card placed successfully");
         //done here
+    }
+
+    public CommandResult leaderExecute(){//Written By Aqil, just moved this method
+        Leader leader = matchTable.getCurrentUserTable().getLeader();
+        if(leader.getDisableRound() == matchTable.getRoundNumber())
+            return new CommandResult(ResultCode.FAILED, "Leader ability is disabled for this round");
+        if(leader.getRoundOfAbilityUsed() != -1)
+            return new CommandResult(ResultCode.FAILED, "Leader ability is before used");
+        matchTable.getCurrentUserTable().getLeader().getAbility().execute();
+        leader.setRoundOfAbilityUsed(matchTable.getRoundNumber());
+        finishTurn();
+        return new CommandResult(ResultCode.ACCEPT, "Leader ability executed successfully");
     }
 
     public CommandResult showCommander() {
@@ -440,12 +461,14 @@ public class GameController {
         //System.out.println("TotalTurn :" + matchTable.getTotalTurns() + " RoundNumber: " + matchTable.getRoundNumber() +
         //" Turn: " + matchTable.getTurn() + " PreviousRoundPassed: " + matchTable.isPreviousRoundPassed() + " isPassTurn");
         matchTable.changeTurn();
-        GameGraphics.getInstance().preTurnLoading();//todo: maybe should be deleted
+        //GameGraphics.getInstance().preTurnLoading();//todo: maybe should be deleted
         matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
         if(matchTable.isPreviousRoundPassed()){
             finishRound();
             GameGraphics.getInstance().preTurnLoading();
             GameGraphics.getInstance().loadModel();
+            finishTurn();
+            finishTurn();
             return new CommandResult(ResultCode.ACCEPT, "Round finished successfully");
         }
         GameGraphics.getInstance().preTurnLoading();
@@ -498,7 +521,7 @@ public class GameController {
                     boolean canDelete = true;
                     if(card == heroRemain) canDelete = false;
                     if(card.getAbility() instanceof Transformers){
-                        if(!((Transformers)card.getAbility()).isConverted()) {
+                        if(card.getPower() != 8) {
                             canDelete = false;
                             card.getAbility().execute(card);
                         }
@@ -532,7 +555,9 @@ public class GameController {
             }
             //add cards if the Faction is NorthernRealms
 
-            if(userTable.getFaction() == Faction.SKELLIGE && matchTable.getRoundNumber() == 2){
+            if(userTable.getFaction() == Faction.SKELLIGE &&
+                    (matchTable.getRoundNumber() == 2 || ((matchTable.getUserTable(0).getLife() == 1) &&
+                        matchTable.getUserTable(1).getLife() == 1))){
                 for (int addedCardIndex = 0; addedCardIndex < 2; addedCardIndex++) {
                     Card newAddedCard = null;
                     if(!userTable.getOutOfPlays().isEmpty())
