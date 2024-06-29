@@ -22,6 +22,9 @@ module Bazi {
 	exports ir.sharif.messages to com.google.gson;
 	exports ir.sharif.enums to com.google.gson;
 	exports ir.sharif.model.game to com.google.gson;
+	exports ir.sharif.messages.react to com.google.gson;
+	exports ir.sharif.messages.friends to com.google.gson;
+	exports ir.sharif.messages.chat to com.google.gson;
 
 	opens ir.sharif.view to javafx.fxml, com.google.gson;
 	opens ir.sharif.view.controllers to javafx.fxml;
@@ -29,10 +32,9 @@ module Bazi {
 	exports ir.sharif.controller to javafx.fxml;
 	opens ir.sharif.controller to javafx.fxml;
 	opens ir.sharif.messages to com.google.gson;
-	exports ir.sharif.messages.chat to com.google.gson;
 	opens ir.sharif.messages.chat to com.google.gson;
-	exports ir.sharif.messages.friends to com.google.gson;
 	opens ir.sharif.messages.friends to com.google.gson;
 	opens ir.sharif.enums to com.google.gson;
 	opens ir.sharif.model.game to com.google.gson;
+	opens ir.sharif.messages.react to com.google.gson;
 }

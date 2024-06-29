@@ -36,18 +36,18 @@ public class GUIApplication extends Application {
 		new RegisterController().register("aqil", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "aqil", "aqil2@gmail.com");
 		new LoginController().login("sohsoh", "Soheil@84", true);
 		//ViewLoader.newScene("pregame");
-		//		PreGameController preGameController = new PreGameController();
-//		System.err.println(preGameController.createGame("guest").statusCode());
-//		System.err.println(preGameController.loadDeck("test").statusCode());
-//		System.err.println(preGameController.changeTurn().statusCode());
-//		System.err.println(preGameController.loadDeck("test").statusCode());
-//		System.err.println(preGameController.changeTurn().statusCode());
-//		System.err.println(preGameController.startGame().statusCode());
-//
-//		GameService.getInstance().createController();
-//		ViewLoader.newScene("game");
+				PreGameController preGameController = new PreGameController();
+		System.err.println(preGameController.createGame("guest").statusCode());
+		System.err.println(preGameController.loadDeck("test").statusCode());
+		System.err.println(preGameController.changeTurn().statusCode());
+		System.err.println(preGameController.loadDeck("test").statusCode());
+		System.err.println(preGameController.changeTurn().statusCode());
+		System.err.println(preGameController.startGame().statusCode());
 
-		ViewLoader.newScene("friend-request");
+		GameService.getInstance().createController();
+		ViewLoader.newScene("game");
+
+		//ViewLoader.newScene("friend-request");
 	}
 
 	public static void main(String[] args) {

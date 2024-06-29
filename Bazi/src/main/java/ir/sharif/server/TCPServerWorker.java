@@ -10,9 +10,12 @@ import ir.sharif.messages.friends.FriendRequestCreateMessage;
 import ir.sharif.messages.friends.GetFriendsMessage;
 import ir.sharif.messages.friends.PendingFriendRequests;
 import ir.sharif.messages.ServerMessage;
+import ir.sharif.messages.react.AllReactsMessage;
+import ir.sharif.messages.react.ReactMessage;
 import ir.sharif.model.Message;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.messages.*;
+import ir.sharif.model.React;
 import ir.sharif.utils.ConstantsLoader;
 
 import java.io.*;
@@ -124,12 +127,16 @@ public class TCPServerWorker extends Thread {
 					return gsonAgent.fromJson(clientStr, PendingFriendRequests.class);
 				case ACCEPT_FRIEND_REQUEST_MESSAGE:
                     return gsonAgent.fromJson(clientStr, AcceptFriendRequestMessage.class);
-
+	            case REACT_MESSAGE:
+					return gsonAgent.fromJson(clientStr, ReactMessage.class);
+	            case ALL_REACTS_MESSAGE:
+					return gsonAgent.fromJson(clientStr, AllReactsMessage.class);
 				default:
 					System.err.println("wtf: " + clientStr);
                     return null;
             }
         }
+
         catch (Exception e) {
             e.printStackTrace();
         }
@@ -218,6 +225,13 @@ public class TCPServerWorker extends Thread {
             sendSuccess("Friend request accepted");
         } else if (msg instanceof PendingFriendRequests) {
 			sendSuccess(gsonAgent.toJson(FriendRequestService.getInstance().getPendingFriends(((PendingFriendRequests) msg).getUsername())));
+        }  else if (msg instanceof ReactMessage) {
+	        ReactService.getInstance().addReact(((ReactMessage) msg).getReact());
+			sendSuccess("React added");
+	        System.err.println("react added: " + ((ReactMessage) msg).getReact().getMessage());
+        } else if (msg instanceof AllReactsMessage) {
+	        System.err.println("getting all reacts: " + ((AllReactsMessage) msg).getBufferSize());
+			sendSuccess(gsonAgent.toJson(ReactService.getInstance().getAllReacts(((AllReactsMessage) msg).getBufferSize())));
         } else {
 	        System.err.println("invalid client command :)");
             sendFailure("Invalid message type");
