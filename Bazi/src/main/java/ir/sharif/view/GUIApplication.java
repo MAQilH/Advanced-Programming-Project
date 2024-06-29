@@ -29,14 +29,14 @@ public class GUIApplication extends Application {
 		Font.loadFont(getClass().getResource("/fonts/Ancient.ttf").toExternalForm(), 10);
 
 		primaryStage.setTitle(ConstantsLoader.getInstance().getProperty("app.title"));
-		primaryStage.initStyle(StageStyle.UNDECORATED);
+		// primaryStage.initStyle(StageStyle.UNDECORATED);
 		ViewLoader.newScene("start");
 		//Pane pane = (Pane) (ViewLoader.getStage().getScene().getRoot());
 		//pane.getChildren().add(new CardGraphics(CardTypes.KAYRAN.getInstance(), 0.5));
 		BackgroundMusicService.getInstance().playMusic();
 		new RegisterController().register("sohsoh", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "sohsoh", "sohsoh84@gmail.com");
 		new RegisterController().register("guest", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "guest", "aqil@gmail.com");
-		new LoginController().login("sohsoh", "Soheil@84", true);
+		new RegisterController().register("aqil", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "sohsoh", "sohsoh84@gmail.com");
 		//ViewLoader.newScene("pregame");
 		//		PreGameController preGameController = new PreGameController();
 //		System.err.println(preGameController.createGame("guest").statusCode());
@@ -49,6 +49,17 @@ public class GUIApplication extends Application {
 //		GameService.getInstance().createController();
 //		ViewLoader.newScene("game");
 
+		addAFriendRequest();
+		ViewLoader.newScene("main");
+	}
+
+	void addAFriendRequest() {
+		new LoginController().login("sohsoh", "Soheil@84", true);
+		TCPClient client = new TCPClient();
+		client.sendFriendRequest("aqil");
+		new LoginController().login("aqil", "Soheil@84", true);
+		System.err.println(UserService.getInstance().getCurrentUser().getUsername());
+		client.acceptFriendRequest("sohsoh");
 	}
 
     void testStartGame(){
@@ -79,6 +90,7 @@ public class GUIApplication extends Application {
                 System.err.println("game started by user 2, and name of user 1 is: " + user1.getUsername());
             }
         });
+
         thread.start();
 
         Thread thread2 = new Thread(new Runnable() {
