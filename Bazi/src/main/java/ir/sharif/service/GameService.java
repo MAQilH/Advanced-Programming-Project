@@ -1,6 +1,8 @@
 package ir.sharif.service;
 
+import ir.sharif.client.TCPClient;
 import ir.sharif.controller.GameController;
+import ir.sharif.model.CommandResult;
 import ir.sharif.model.game.MatchTable;
 import ir.sharif.view.controllers.Game;
 
@@ -33,4 +35,9 @@ public class GameService {
 	public GameController getController() {
 		return controller;
 	}
+
+    public CommandResult sendAction(String action){
+        TCPClient tcpClient = new TCPClient();
+        return tcpClient.gameAction(action, matchTable.getGameToken());
+    }
 }

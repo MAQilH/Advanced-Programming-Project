@@ -1,5 +1,6 @@
 package ir.sharif.client;
 
+import com.almasb.fxgl.net.Server;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ir.sharif.enums.ResultCode;
@@ -287,4 +288,24 @@ public class TCPClient {
 
 		return null;
  	}
+
+     public CommandResult gameAction(String action, String gameToken){
+        ServerMessage response = sendMessage(new GameActionMessage(action, gameToken));
+        return new CommandResult(response.getStatusCode(), response.getAdditionalInfo());
+     }
+
+     public CommandResult finishGame(GameHistory gameHistory, String gameToken){
+        ServerMessage response = sendMessage(new FinishGameMessage(gameHistory, gameToken));
+        return new CommandResult(response.getStatusCode(), response.getAdditionalInfo());
+     }
+
+     public ArrayList<String> getActions(int buffer, String gameToken){
+        ServerMessage response = sendMessage(new GetActionsMessage(buffer, gameToken));
+        if(response.getStatusCode() != ResultCode.ACCEPT){
+            System.err.println(response.getAdditionalInfo());
+            return new ArrayList<>();
+        }
+         Type token = new TypeToken<ArrayList<String>>() {}.getType();
+         return gsonAgent.fromJson(lastServerMessage.getAdditionalInfo(), token);
+     }
 }

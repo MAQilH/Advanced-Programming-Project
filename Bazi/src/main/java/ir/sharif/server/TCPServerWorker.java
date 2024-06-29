@@ -141,6 +141,10 @@ public class TCPServerWorker extends Thread {
 					return gsonAgent.fromJson(clientStr, GameAcceptRequestMessage.class);
 				case GET_GAME_RECORD_MESSAGE:
 					return gsonAgent.fromJson(clientStr, GetGameRecordMessage.class);
+				case GAME_ACTION_MESSAGE:
+					return gsonAgent.fromJson(clientStr, GameActionMessage.class);
+				case FINISH_GAME_MESSAGE:
+					return gsonAgent.fromJson(clientStr, FinishGameMessage.class);
                 default:
                     System.err.println("wtf: " + clientStr);
                     return null;
@@ -234,8 +238,7 @@ public class TCPServerWorker extends Thread {
             sendSuccess("Friend request accepted");
         } else if (msg instanceof PendingFriendRequests) {
 			sendSuccess(gsonAgent.toJson(FriendRequestService.getInstance().getPendingFriends(((PendingFriendRequests) msg).getUsername())));
-        }
-        else if(msg instanceof StartNewGameMessage){
+        } else if(msg instanceof StartNewGameMessage){
             StartNewGameMessage startNewGameMessage = (StartNewGameMessage) msg;
             sendMessage(gameHandler.startNewGame(startNewGameMessage));
         } else if(msg instanceof GameAcceptRequestMessage) {
@@ -245,16 +248,25 @@ public class TCPServerWorker extends Thread {
             GameIsAcceptedMessage gameIsAcceptedMessage = (GameIsAcceptedMessage) msg;
             sendMessage(gameHandler.gameIsAccepted(gameIsAcceptedMessage));
         } else if(msg instanceof GameRequestMessage){
-            GameRequestMessage gameRequestMessage = (GameRequestMessage) msg;
-            sendMessage(gameHandler.gameRequest(gameRequestMessage));
-        } else if(msg instanceof GetQueuedGameMessage){
+			GameRequestMessage gameRequestMessage = (GameRequestMessage) msg;
+			sendMessage(gameHandler.gameRequest(gameRequestMessage));
+		} else if(msg instanceof GetQueuedGameMessage){
             GetQueuedGameMessage getQueuedGameMessage = (GetQueuedGameMessage) msg;
             sendMessage(gameHandler.getQueuedGame(getQueuedGameMessage));
         } else if(msg instanceof GetGameRecordMessage){
             GetGameRecordMessage getGameRecordMessage = (GetGameRecordMessage) msg;
             sendMessage(gameHandler.getGameRecord(getGameRecordMessage));
-        }
-        else {
+        } else if(msg instanceof GameActionMessage){
+			GameActionMessage gameActionMessage = (GameActionMessage) msg;
+			sendMessage(gameHandler.gameAction(gameActionMessage));
+		} else if(msg instanceof FinishGameMessage){
+			FinishGameMessage finishGameMessage = (FinishGameMessage) msg;
+			sendMessage(gameHandler.finishGame(finishGameMessage));
+		} else if(msg instanceof GetActionsMessage) {
+			GetActionsMessage getActionsMessage = (GetActionsMessage) msg;
+			sendMessage(gameHandler.getActions(getActionsMessage));
+		}
+		else {
 	        System.err.println("invalid client command :)");
             sendFailure("Invalid message type");
         }

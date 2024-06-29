@@ -4,9 +4,11 @@ import com.almasb.fxgl.net.Server;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ir.sharif.enums.ResultCode;
+import ir.sharif.messages.FinishGameMessage;
 import ir.sharif.messages.Game.*;
 import ir.sharif.messages.ServerMessage;
 import ir.sharif.messages.StartNewGameMessage;
+import ir.sharif.model.GameHistory;
 import ir.sharif.model.User;
 import ir.sharif.model.server.GameRecord;
 import ir.sharif.service.storage.Database;
@@ -14,6 +16,9 @@ import ir.sharif.utils.Random;
 import ir.sharif.view.GameGraphics;
 import ir.sharif.view.controllers.Game;
 
+import javax.xml.transform.Result;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GameHandler {
@@ -31,7 +36,6 @@ public class GameHandler {
         if(instance == null) instance = new GameHandler();
         return instance;
     }
-
 
 
     HashMap<String, String> queuedGame = new HashMap<>(); // key username, value gameToken
@@ -93,5 +97,48 @@ public class GameHandler {
             return new ServerMessage(ResultCode.ACCEPT, gson.toJson(gameRecord));
         }
         return new ServerMessage(ResultCode.NOT_FOUND, "dont exist such game with this token = " + token);
+    }
+
+    public synchronized ServerMessage gameAction(GameActionMessage gameActionMessage) {
+        String token = gameActionMessage.getGameToken();
+        String action = gameActionMessage.getAction();
+
+        if(!liveGames.containsKey(token)){
+            return new ServerMessage(ResultCode.FAILED, "game with this token not exist");
+        }
+
+        GameRecord gameRecord = liveGames.get(token);
+        gameRecord.getCommands().add(action);
+        return new ServerMessage(ResultCode.ACCEPT, "action added successfully");
+    }
+
+    public synchronized ServerMessage finishGame(FinishGameMessage finishGameMessage) {
+        String token = finishGameMessage.getGameToken();
+        GameHistory gameHistory = new GameHistory();
+        if(!liveGames.containsKey(token)){
+            return new ServerMessage(ResultCode.FAILED, "game with this token not exist");
+        }
+        GameRecord gameRecord = liveGames.get(token);
+        liveGames.remove(token);
+
+        Database.getInstance().addGameRecord(gameRecord);
+        Database.getInstance().addGameHistories(gameHistory);
+        return new ServerMessage(ResultCode.ACCEPT, "game finished successfully");
+    }
+
+    public ServerMessage getActions(GetActionsMessage getActionsMessage) {
+        int buffer = getActionsMessage.getBuffer();
+        String token = getActionsMessage.getGameToken();
+
+        if(!liveGames.containsKey(token)){
+            return new ServerMessage(ResultCode.FAILED, "game with this token not exist");
+        }
+
+        GameRecord gameRecord = liveGames.get(token);
+        ArrayList<String> newActions = new ArrayList<>();
+        for (int newActionIndex = buffer; newActionIndex < gameRecord.getCommands().size(); newActionIndex++) {
+            newActions.add(gameRecord.getCommands().get(newActionIndex));
+        }
+        return new ServerMessage(ResultCode.ACCEPT, gson.toJson(newActions));
     }
 }

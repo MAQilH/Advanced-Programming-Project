@@ -9,10 +9,11 @@ public class MatchTable {
     private final User[] users;
     private final ArrayList<Card> weatherCards;
     int turn, roundNumber, totalTurns;
+    private String gameToken;
 
     private boolean previousRoundPassed;
 
-    public MatchTable(User user0, User user1) {
+    public MatchTable(User user0, User user1, String gameToken) {
         turn = 0;
         roundNumber = 0;
         totalTurns = 0;
@@ -24,6 +25,7 @@ public class MatchTable {
         users[0] = user0;
         users[1] = user1;
         previousRoundPassed = false;
+        this.gameToken = gameToken;
     }
 
     public int getTurn() {
@@ -121,4 +123,7 @@ public class MatchTable {
         return cards;
     }
 
+    public String getGameToken() {
+        return gameToken;
+    }
 }
