@@ -29,6 +29,7 @@ public class Main {
 	}
 
 	public void gameLobby(MouseEvent mouseEvent) {
+		ViewLoader.newScene("lobby");
 	}
 
 	public void selectDeck(MouseEvent mouseEvent) {

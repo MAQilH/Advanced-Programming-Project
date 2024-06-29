@@ -39,7 +39,7 @@
                             <Insets />
                         </HBox.margin>
                     </Button>
-                    <Button mnemonicParsing="false" onMouseClicked="#gameLobby" text="Game Lobby">
+                    <Button mnemonicParsing="false" onMouseClicked="#gameLobby" text="Lobby">
                         <HBox.margin>
                             <Insets />
                         </HBox.margin>
