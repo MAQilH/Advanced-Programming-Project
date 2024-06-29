@@ -1,5 +1,6 @@
 package ir.sharif.model.game.abilities;
 
+import ir.sharif.controller.GameController;
 import ir.sharif.model.game.Ability;
 import ir.sharif.model.game.Card;
 import ir.sharif.model.game.Row;
@@ -14,32 +15,23 @@ public class QueenOfDolBlathanna implements Ability {
     @Override
     public void execute(Object... objs) {
         UserTable opponentTable = GameService.getInstance().getMatchTable().getOpponentUserTable();
-
-        int maxPowerNonHeroCloseCombatCard = 0;
-        for (Card card : opponentTable.getCloseCombat().getCards()) {
+        int maxPower = 0, totalPower = 0;
+        for(Card card: opponentTable.getCloseCombat().getCards()){
+            totalPower += card.calculatePower();
             if(card.isHero()) continue;
-            maxPowerNonHeroCloseCombatCard = Math.max(maxPowerNonHeroCloseCombatCard, card.calculatePower());
+            maxPower = Math.max(maxPower, card.calculatePower());
         }
-
-        if(maxPowerNonHeroCloseCombatCard <= 10) return;
-
-        int maxPowerNonHeroRangeCard = 0;
-        for (Card card : opponentTable.getRanged().getCards()) {
+        if(totalPower <= 10) return;
+        ArrayList<Card> toBeDeleted = new ArrayList<>();
+        for(Card card: opponentTable.getCloseCombat().getCards()){
             if(card.isHero()) continue;
-            maxPowerNonHeroRangeCard = Math.max(maxPowerNonHeroRangeCard, card.calculatePower());
+            if(card.calculatePower() == maxPower){
+                toBeDeleted.add(card);
+            }
         }
-
-        ArrayList<Card> removedCandidate = new ArrayList<>();
-        for (Card card : opponentTable.getRanged().getCards()) {
-            if(card.isHero()) continue;
-            if(card.calculatePower() == maxPowerNonHeroRangeCard)
-                removedCandidate.add(card);
+        for(Card card : toBeDeleted) {
+            opponentTable.getCloseCombat().removeCard(card);
+            opponentTable.addOutOfPlay(card);
         }
-
-        if(removedCandidate.isEmpty()) return;
-
-        Card card = removedCandidate.get(Random.getRandomInt(removedCandidate.size()));
-        opponentTable.getRanged().removeCard(card);
     }
-
 }

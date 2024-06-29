@@ -14,13 +14,11 @@ public class LordCommanderOfTheNorth implements Ability {
     @Override
     public void execute(Object... objs) {
         UserTable opponentTable = GameService.getInstance().getMatchTable().getOpponentUserTable();
-        GameController gameController = GameService.getInstance().getController();
-        int opponentPlayerNumber = GameService.getInstance().getMatchTable().getTurn() ^ 1;
         int maxPower = 0, totalPower = 0;
         for(Card card: opponentTable.getSiege().getCards()){
+            totalPower += card.calculatePower();
             if(card.isHero()) continue;
             maxPower = Math.max(maxPower, card.calculatePower());
-            totalPower += card.calculatePower();
         }
         if(totalPower <= 10) return;
         ArrayList<Card> toBeDeleted = new ArrayList<>();
@@ -35,5 +33,4 @@ public class LordCommanderOfTheNorth implements Ability {
             opponentTable.addOutOfPlay(card);
         }
     }
-
 }
