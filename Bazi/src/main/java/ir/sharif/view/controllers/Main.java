@@ -1,5 +1,6 @@
 package ir.sharif.view.controllers;
 
+import ir.sharif.client.TCPClient;
 import ir.sharif.controller.MainMenuController;
 import ir.sharif.controller.PreGameController;
 import ir.sharif.service.UserService;
@@ -25,8 +26,11 @@ public class Main {
 	}
 
 	public void logoutPress(MouseEvent mouseEvent) {
+		String username = UserService.getInstance().getCurrentUser().getUsername();
 		UserService.getInstance().setCurrentUser(null);
 		ViewLoader.newScene("start");
+		TCPClient client = new TCPClient();
+		client.setUserStatus(username, false);
 	}
 
 	public void friends(MouseEvent mouseEvent) {
@@ -47,5 +51,9 @@ public class Main {
 	public void selectDeck(MouseEvent mouseEvent) {
 		Pregame.isSingle = true;
 		ViewLoader.newScene("pregame");
+	}
+
+	public void rankingPress(MouseEvent mouseEvent) {
+		ViewLoader.newScene("ranking");
 	}
 }

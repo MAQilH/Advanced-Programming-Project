@@ -16,11 +16,7 @@
         <children>
             <HBox alignment="CENTER" prefHeight="96.0" prefWidth="300.0" spacing="10.0">
                 <children>
-                    <Button mnemonicParsing="false" onMouseClicked="#logoutPress" text="Log Out">
-                        <HBox.margin>
-                            <Insets />
-                        </HBox.margin>
-                    </Button>
+                    <Button mnemonicParsing="false" onMouseClicked="#rankingPress" text="Ranking"/>
                     <Button mnemonicParsing="false" onMouseClicked="#profileMenuPress" text="Profile Menu">
                         <HBox.margin>
                             <Insets />
@@ -50,6 +46,12 @@
                     <Insets />
                 </VBox.margin>
             </HBox>
+
+            <Button mnemonicParsing="false" onMouseClicked="#logoutPress" text="Log Out">
+                <HBox.margin>
+                    <Insets />
+                </HBox.margin>
+            </Button>
             <Label fx:id="errorLabel" styleClass="error-label" />
         </children>
     </VBox>

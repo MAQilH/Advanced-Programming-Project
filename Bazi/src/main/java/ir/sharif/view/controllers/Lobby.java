@@ -34,6 +34,7 @@ public class Lobby {
 	@FXML
 	public void initialize() {
 		ArrayList<String> friendsArray = new TCPClient().getFriends(UserService.getInstance().getCurrentUser().getUsername());
+		friends.setStyle("-fx-background-color: transparent;");
 		friends.setCellFactory(lv -> {
 			ListCell<String> cell = new ListCell<>();
 			cell.textProperty().bind(cell.itemProperty());
