@@ -1,5 +1,6 @@
 package ir.sharif.controller;
 
+import ir.sharif.client.TCPClient;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.game.*;
@@ -8,9 +9,12 @@ import ir.sharif.service.GameService;
 import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.utils.Random;
 import ir.sharif.view.GameGraphics;
+import ir.sharif.view.Regex;
 import ir.sharif.view.controllers.Game;
+import javafx.css.Match;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
 
 public class GameController {
     private final MatchTable matchTable;
@@ -18,6 +22,44 @@ public class GameController {
     public GameController() {
         this.matchTable = GameService.getInstance().getMatchTable();
         startGame();
+
+        if(GameService.getInstance().getMatchTable().getGameToken() != null){
+            runOnlineMode();
+        }
+    }
+
+    private void runOnlineMode() {
+        Thread thread = new Thread(() -> {
+            while (true){
+                ArrayList<String> newAction = GameService.getInstance().getNewActions();
+                for (String action : newAction) {
+                    run(action);
+                }
+                GameService.getInstance().increaseBufferReading(newAction.size());
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        thread.start();
+    }
+
+    public void run(String action){
+        Matcher matcher;
+        if((matcher = Regex.VETO_CARD.getMatcher(action)).matches()){
+            vetoCard(Integer.parseInt(matcher.group("number")));
+        } else if((matcher = Regex.PASS_TURN.getMatcher(action)).matches()){
+            passTurn();
+        } else if((matcher = Regex.EXECUTE_LEADER.getMatcher(action)).matches()){
+            commanderPowerPlay();
+        } else if((matcher = Regex.PLACE_CARD.getMatcher(action)).matches()){
+            int index = Integer.parseInt(matcher.group("index"));
+            int pos = Integer.parseInt(matcher.group("pos"));
+            Card card = GameService.getInstance().getMatchTable().getCurrentUserTable().getHand().get(index);
+            placeCard(card, pos);
+        }
     }
 
     public CardPosition getCardPositionByRowNumber(int rowNumber) {
@@ -245,6 +287,7 @@ public class GameController {
         if(matchTable.getUserTable(player).getDeck().isEmpty()) {
 	        return new CommandResult(ResultCode.FAILED, "deck is empty");
         }
+        GameService.getInstance().sendAction("veto card -number " + cardNumber);
         Card card = matchTable.getUserTable(player).getHand().get(cardNumber);
         matchTable.getUserTable(player).getHand().remove(cardNumber);
         matchTable.getUserTable(player).getDeck().add(card);
@@ -252,6 +295,7 @@ public class GameController {
         matchTable.getUserTable(player).getDeck().remove(randomCard);
         matchTable.getUserTable(player).getHand().add(cardNumber, randomCard);
         matchTable.getUserTable(player).decreaseVetoesLeft();
+        GameGraphics.getInstance().loadModel();
         return new CommandResult(ResultCode.ACCEPT, "Card vetoed successfully");
     }
 
@@ -301,6 +345,9 @@ public class GameController {
 
     public CommandResult placeCard(Card card, int pos) {
         if(isVetoeTurn()) return new CommandResult(ResultCode.FAILED, "You can't play cards in veto turn");
+        GameService.getInstance().sendAction("place card -index " +
+                GameService.getInstance().getMatchTable().getCurrentUserTable().getHand().indexOf(card) +
+                " -pos " + pos);
         CommandResult result = forcePlaceCard(card, pos);
         if(result.statusCode() == ResultCode.ACCEPT){
             finishTurn();
@@ -314,6 +361,7 @@ public class GameController {
             return new CommandResult(ResultCode.FAILED, "Leader ability is disabled for this round");
         if(leader.getRoundOfAbilityUsed() != -1)
             return new CommandResult(ResultCode.FAILED, "Leader ability is before used");
+        GameService.getInstance().sendAction("execute leader");
         matchTable.getCurrentUserTable().getLeader().getAbility().execute();
         leader.setRoundOfAbilityUsed(matchTable.getRoundNumber());
         finishTurn();
@@ -433,9 +481,12 @@ public class GameController {
         }
         matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
         // TODO: call graphic
+        GameGraphics.getInstance().loadModel();
     }
 
     public CommandResult passTurn() {
+        GameService.getInstance().sendAction("pass turn");
+
         //System.out.println("TotalTurn :" + matchTable.getTotalTurns() + " RoundNumber: " + matchTable.getRoundNumber() +
         //" Turn: " + matchTable.getTurn() + " PreviousRoundPassed: " + matchTable.isPreviousRoundPassed() + " isPassTurn");
         matchTable.changeTurn();
@@ -473,7 +524,7 @@ public class GameController {
             if(matchTable.getUserTable(userIndex).getFaction() == Faction.SCOIATAEL) scoiataelUsers.add(userIndex);
         }
         if(scoiataelUsers.isEmpty() || scoiataelUsers.size() == 2){
-            matchTable.setTurn(Random.getRandomInt(2));
+            matchTable.setTurn(0);
         } else {
             matchTable.setTurn(scoiataelUsers.get(0));
         }

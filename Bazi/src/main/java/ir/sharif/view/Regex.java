@@ -7,7 +7,12 @@ public enum Regex {
     USERNAME("^[a-zA-Z0-9-]+$"),
     PASSWORD("^[A-Za-z\\d@$!%*?&]+$"),
     STRONG_PASSWORD("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"),
-    EMAIL("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    EMAIL("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"),
+    PLACE_CARD("^place card -index (?<index>\\d+) -pos (?<pos>\\d+)$"),
+    VETO_CARD("^veto card -number (?<number>\\d+)$"),
+    EXECUTE_LEADER("^execute leader$"),
+    PASS_TURN("^pass turn$");
+
 
 
     private final Pattern pattern;

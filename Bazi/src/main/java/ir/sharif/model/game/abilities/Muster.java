@@ -21,7 +21,7 @@ public class Muster implements Ability {
                 userTable.getHand().remove(i);
                 Row insertedRow;
                 if(handCard.getCardPosition() == CardPosition.AGILE_UNIT){
-                    if(Random.getRandomInt(2) == 0) insertedRow = userTable.getRanged();
+                    if((i&1) == 0) insertedRow = userTable.getRanged();
                     else insertedRow = userTable.getCloseCombat();
                 }
                 else insertedRow = gameController.getRowByPositionCurrentPlayer(handCard.getCardPosition());
@@ -36,7 +36,7 @@ public class Muster implements Ability {
                 userTable.getDeck().remove(deckCard);
                 Row insertedRow;
                 if(deckCard.getCardPosition() == CardPosition.AGILE_UNIT){
-                    if(Random.getRandomInt(2) == 0) insertedRow = userTable.getRanged();
+                    if((i&1) == 0) insertedRow = userTable.getRanged();
                     else insertedRow = userTable.getCloseCombat();
                 }
                 else insertedRow = gameController.getRowByPositionCurrentPlayer(deckCard.getCardPosition());

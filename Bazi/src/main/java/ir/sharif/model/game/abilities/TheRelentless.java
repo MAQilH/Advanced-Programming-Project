@@ -22,7 +22,7 @@ public class TheRelentless implements Ability {
         }
         if(peekCandidate.isEmpty()) return;
 
-        Card peekCard = peekCandidate.get(Random.getRandomInt(peekCandidate.size()));
+        Card peekCard = Random.getRandFromArrayListCard(peekCandidate);
         opponentTable.removeOutOfPlay(peekCard);
         userTable.addHand(peekCard);
     }
