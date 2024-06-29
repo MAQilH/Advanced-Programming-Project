@@ -7,6 +7,8 @@ import ir.sharif.model.game.Row;
 import ir.sharif.model.game.UserTable;
 import ir.sharif.service.GameService;
 
+import java.util.ArrayList;
+
 public class LordCommanderOfTheNorth implements Ability {
 
     @Override
@@ -14,19 +16,23 @@ public class LordCommanderOfTheNorth implements Ability {
         UserTable opponentTable = GameService.getInstance().getMatchTable().getOpponentUserTable();
         GameController gameController = GameService.getInstance().getController();
         int opponentPlayerNumber = GameService.getInstance().getMatchTable().getTurn() ^ 1;
-        int maxPower = 0;
+        int maxPower = 0, totalPower = 0;
         for(Card card: opponentTable.getSiege().getCards()){
             if(card.isHero()) continue;
             maxPower = Math.max(maxPower, card.calculatePower());
+            totalPower += card.calculatePower();
         }
-        if(maxPower <= 10) return;
+        if(totalPower <= 10) return;
+        ArrayList<Card> toBeDeleted = new ArrayList<>();
         for(Card card: opponentTable.getSiege().getCards()){
             if(card.isHero()) continue;
             if(card.calculatePower() == maxPower){
-                opponentTable.getSiege().removeCard(card);
-                opponentTable.addOutOfPlay(card);
-                return;
+                toBeDeleted.add(card);
             }
+        }
+        for(Card card : toBeDeleted) {
+            opponentTable.getSiege().removeCard(card);
+            opponentTable.addOutOfPlay(card);
         }
     }
 
