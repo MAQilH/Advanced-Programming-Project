@@ -8,6 +8,7 @@ import ir.sharif.controller.RegisterController;
 import ir.sharif.model.SecurityQuestion;
 import ir.sharif.model.User;
 import ir.sharif.model.game.CardTypes;
+import ir.sharif.model.game.DeckInfo;
 import ir.sharif.service.BackgroundMusicService;
 import ir.sharif.service.GameService;
 import ir.sharif.service.UserService;
@@ -21,8 +22,12 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.util.Scanner;
+
 public class GUIApplication extends Application {
-	@Override
+    private static String username;
+
+    @Override
 	public void start(Stage primaryStage) throws Exception {
 		ViewLoader.setStage(primaryStage);
 		Font.loadFont(getClass().getResource("/fonts/KingsCross.ttf").toExternalForm(), 10);
@@ -51,6 +56,7 @@ public class GUIApplication extends Application {
 
 		addAFriendRequest();
 		ViewLoader.newScene("main");
+        runLobby();
 	}
 
 	void addAFriendRequest() {
@@ -120,7 +126,17 @@ public class GUIApplication extends Application {
 //		thread.start();
     }
 
+    public void runLobby() {
+        new LoginController().login(username, "Soheil@84", true);
+
+        PreGameController controller = new PreGameController();
+        controller.loadDeck("test");
+        controller.setDeck(controller.getDeck());
+        ViewLoader.newScene("lobby");
+    }
+
 	public static void main(String[] args) {
+        username = args[0];
 		launch();
 	}
 }

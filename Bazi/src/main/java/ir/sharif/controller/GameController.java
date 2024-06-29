@@ -6,6 +6,7 @@ import ir.sharif.model.CommandResult;
 import ir.sharif.model.game.*;
 import ir.sharif.model.game.abilities.*;
 import ir.sharif.service.GameService;
+import ir.sharif.service.UserService;
 import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.utils.Random;
 import ir.sharif.view.GameGraphics;
@@ -32,9 +33,11 @@ public class GameController {
         Thread thread = new Thread(() -> {
             while (true){
                 ArrayList<String> newAction = GameService.getInstance().getNewActions();
+                GameService.getInstance().setActionLock(true);
                 for (String action : newAction) {
                     run(action);
                 }
+                GameService.getInstance().setActionLock(false);
                 GameService.getInstance().increaseBufferReading(newAction.size());
                 try {
                     Thread.sleep(500);
@@ -49,12 +52,20 @@ public class GameController {
     public void run(String action){
         Matcher matcher;
         if((matcher = Regex.VETO_CARD.getMatcher(action)).matches()){
+            String username = matcher.group("username");
+            if(username.equals(UserService.getInstance().getCurrentUser().getUsername())) return;
             vetoCard(Integer.parseInt(matcher.group("number")));
         } else if((matcher = Regex.PASS_TURN.getMatcher(action)).matches()){
+            String username = matcher.group("username");
+            if(username.equals(UserService.getInstance().getCurrentUser().getUsername())) return;
             passTurn();
         } else if((matcher = Regex.EXECUTE_LEADER.getMatcher(action)).matches()){
+            String username = matcher.group("username");
+            if(username.equals(UserService.getInstance().getCurrentUser().getUsername())) return;
             commanderPowerPlay();
         } else if((matcher = Regex.PLACE_CARD.getMatcher(action)).matches()){
+            String username = matcher.group("username");
+            if(username.equals(UserService.getInstance().getCurrentUser().getUsername())) return;
             int index = Integer.parseInt(matcher.group("index"));
             int pos = Integer.parseInt(matcher.group("pos"));
             Card card = GameService.getInstance().getMatchTable().getCurrentUserTable().getHand().get(index);

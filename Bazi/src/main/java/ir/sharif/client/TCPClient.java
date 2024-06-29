@@ -303,7 +303,7 @@ public class TCPClient {
             return new ArrayList<>();
         }
          Type token = new TypeToken<ArrayList<String>>() {}.getType();
-         return gsonAgent.fromJson(lastServerMessage.getAdditionalInfo(), token);
+        return gsonAgent.fromJson(lastServerMessage.getAdditionalInfo(), token);
      }
 
      public boolean getUserStatus(String username){

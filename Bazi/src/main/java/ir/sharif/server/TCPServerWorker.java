@@ -158,6 +158,8 @@ public class TCPServerWorker extends Thread {
 					return gsonAgent.fromJson(clientStr, GetUserStatusMessage.class);
 	            case USER_SET_STATUS_MESSAGE:
 					return gsonAgent.fromJson(clientStr, SetUserStatusMessage.class);
+				case GET_ACTIONS_MESSAGE:
+					return gsonAgent.fromJson(clientStr, GetActionsMessage.class);
                 default:
                     System.err.println("wtf: " + clientStr);
                     return null;

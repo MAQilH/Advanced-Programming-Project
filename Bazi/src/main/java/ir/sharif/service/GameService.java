@@ -44,6 +44,8 @@ public class GameService {
 	}
 
     public CommandResult sendAction(String action){
+        if(actionLock) return new CommandResult(ResultCode.FAILED, "you cant send action");
+        action += " -username " + UserService.getInstance().getCurrentUser().getUsername();
         TCPClient tcpClient = new TCPClient();
         CommandResult result = tcpClient.gameAction(action, matchTable.getGameToken());
         if(result.statusCode() == ResultCode.ACCEPT)
@@ -59,5 +61,11 @@ public class GameService {
     public ArrayList<String> getNewActions() {
         TCPClient tcpClient = new TCPClient();
         return tcpClient.getActions(bufferReading, matchTable.getGameToken());
+    }
+
+    boolean actionLock;
+
+    public void setActionLock(boolean lock) {
+        actionLock = lock;
     }
 }

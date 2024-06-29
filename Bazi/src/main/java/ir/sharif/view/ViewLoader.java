@@ -58,7 +58,7 @@ public class ViewLoader {
 			newScene = scene;
 			ft.setOnFinished(event -> {
 				stage.setScene(newScene);
-				centerStage();
+				// centerStage(); // TODO: uncomment
 				setGlobalShortcuts(newScene);
 				FadeTransition fadeIn = new FadeTransition(Duration.millis(1000), newScene.getRoot());
 				fadeIn.setFromValue(0.0);

@@ -8,10 +8,10 @@ public enum Regex {
     PASSWORD("^[A-Za-z\\d@$!%*?&]+$"),
     STRONG_PASSWORD("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"),
     EMAIL("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"),
-    PLACE_CARD("^place card -index (?<index>\\d+) -pos (?<pos>\\d+)$"),
-    VETO_CARD("^veto card -number (?<number>\\d+)$"),
-    EXECUTE_LEADER("^execute leader$"),
-    PASS_TURN("^pass turn$");
+    PLACE_CARD("^place card -index (?<index>\\d+) -pos (?<pos>\\d+) -username (?<username>.*)$"),
+    VETO_CARD("^veto card -number (?<number>\\d+) -username (?<username>.*)$"),
+    EXECUTE_LEADER("^execute leader -username (?<username>.*)$"),
+    PASS_TURN("^pass turn -username (?<username>.*)$");
 
 
 

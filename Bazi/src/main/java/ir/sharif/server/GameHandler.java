@@ -107,6 +107,8 @@ public class GameHandler {
         String token = gameActionMessage.getGameToken();
         String action = gameActionMessage.getAction();
 
+        System.err.println(token + " " + action);
+
         if(!liveGames.containsKey(token)){
             return new ServerMessage(ResultCode.FAILED, "game with this token not exist");
         }

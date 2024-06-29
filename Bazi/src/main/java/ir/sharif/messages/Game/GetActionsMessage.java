@@ -9,7 +9,7 @@ public class GetActionsMessage extends ClientMessage {
     public GetActionsMessage(int buffer, String gameToken){
         this.buffer = buffer;
         this.gameToken = gameToken;
-        this.type = ClientMessageType.GAME_ACTION_MESSAGE;
+        this.type = ClientMessageType.GET_ACTIONS_MESSAGE;
     }
 
     public int getBuffer(){

@@ -202,10 +202,12 @@ public class GameGraphics {
 	}
 
 	public void showWinner(int winner) {
-		showToast((winner == -1 ? "draw" : "Player " + (winner + 1) + " won the game"));
-		PauseTransition pause = new PauseTransition(Duration.seconds(5));
-		pause.setOnFinished(event -> ViewLoader.newScene("main"));
-		pause.play();
+		Platform.runLater(() -> {
+			showToast((winner == -1 ? "draw" : "Player " + (winner + 1) + " won the game"));
+			PauseTransition pause = new PauseTransition(Duration.seconds(5));
+			pause.setOnFinished(event -> ViewLoader.newScene("main"));
+			pause.play();
+		});
 	}
 
 	private ImageView loadIcon(String iconName, double size) {
@@ -264,10 +266,12 @@ public class GameGraphics {
 	}
 
 	public void loadModel() {
-		showHealths();
-		showCurrentUserHand();
-		updateCardsInRows();
-		updatePowerLabels();
+		Platform.runLater(() -> {
+			showHealths();
+			showCurrentUserHand();
+			updateCardsInRows();
+			updatePowerLabels();
+		});
 	}
 
 	private void updateCardsInRows() {
@@ -338,12 +342,14 @@ public class GameGraphics {
 	}
 
 	public void preTurnLoading() {
-		loadModel();
-		if (controller.isVetoeTurn()) {
-			showToast("Player " + (controller.getMatchTable().getTurn() + 1) + "'s turn for veto");
-		} else {
-			showToast("Player " + (controller.getMatchTable().getTurn() + 1) + "'s turn");
-		}
+		Platform.runLater(() -> {
+			loadModel();
+			if (controller.isVetoeTurn()) {
+				showToast("Player " + (controller.getMatchTable().getTurn() + 1) + "'s turn for veto");
+			} else {
+				showToast("Player " + (controller.getMatchTable().getTurn() + 1) + "'s turn");
+			}
+		});
 	}
 
 	public void setDragAndDropFunctionality(CardGraphics cardGraphics, HBox hbox) {
