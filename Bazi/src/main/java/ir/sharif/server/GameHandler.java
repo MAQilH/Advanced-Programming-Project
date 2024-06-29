@@ -89,6 +89,10 @@ public class GameHandler {
 
     public synchronized ServerMessage getGameRecord(GetGameRecordMessage getGameRecordMessage) {
         String token = getGameRecordMessage.getGameToken();
+	    if(pendingGames.containsKey(token)){
+		    return new ServerMessage(ResultCode.ACCEPT, gson.toJson(pendingGames.get(token)));
+	    }
+
         if(liveGames.containsKey(token)){
             return new ServerMessage(ResultCode.ACCEPT, gson.toJson(liveGames.get(token)));
         }

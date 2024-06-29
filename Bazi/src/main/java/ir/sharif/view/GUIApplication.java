@@ -31,7 +31,7 @@ public class GUIApplication extends Application {
 		Font.loadFont(getClass().getResource("/fonts/Ancient.ttf").toExternalForm(), 10);
 
 		primaryStage.setTitle(ConstantsLoader.getInstance().getProperty("app.title"));
-		primaryStage.initStyle(StageStyle.UNDECORATED);
+		// primaryStage.initStyle(StageStyle.UNDECORATED); // TODO: return this shit
 		ViewLoader.newScene("start");
 		//Pane pane = (Pane) (ViewLoader.getStage().getScene().getRoot());
 		//pane.getChildren().add(new CardGraphics(CardTypes.KAYRAN.getInstance(), 0.5));
@@ -53,7 +53,17 @@ public class GUIApplication extends Application {
 //		GameService.getInstance().createController();
 //		ViewLoader.newScene("game");
 
-		testStartGame();
+		addAFriendRequest();
+		ViewLoader.newScene("main");
+	}
+
+	void addAFriendRequest() {
+		new LoginController().login("sohsoh", "Soheil@84", true);
+		TCPClient client = new TCPClient();
+		client.sendFriendRequest("aqil");
+		new LoginController().login("aqil", "Soheil@84", true);
+		System.err.println(UserService.getInstance().getCurrentUser().getUsername());
+		client.acceptFriendRequest("sohsoh");
 	}
 
 	void testStartGame(){

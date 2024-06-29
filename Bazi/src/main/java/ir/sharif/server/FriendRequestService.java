@@ -32,7 +32,7 @@ public class FriendRequestService {
 	public ArrayList<String> getFriends(String user) {
 		ArrayList<String> friendsList = new ArrayList<>();
 		for (Pair<String, String> friend : friends) {
-			if (friend.getFirst().equals(user)) {
+			if (friend.getFirst().equals(user) && !friendsList.contains(friend.getSecond())) {
 				friendsList.add(friend.getSecond());
 			}
 		}
@@ -55,7 +55,7 @@ public class FriendRequestService {
 			if (areFriends(friendRequest.getFirst(), friendRequest.getSecond()))
 				continue;
 
-			if (friendRequest.getSecond().equals(username))
+			if (friendRequest.getSecond().equals(username) && !result.contains(friendRequest.getFirst()))
 				result.add(friendRequest.getFirst());
 		}
 
