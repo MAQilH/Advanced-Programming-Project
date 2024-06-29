@@ -1,5 +1,6 @@
 package ir.sharif.view.controllers;
 
+import ir.sharif.client.TCPClient;
 import ir.sharif.controller.LoginController;
 import ir.sharif.controller.ResetPasswordController;
 import ir.sharif.enums.ResultCode;
@@ -28,6 +29,8 @@ public class Login {
 
 		CommandResult result = loginController.login(username, password, true);
 		if (result.statusCode() == ResultCode.ACCEPT) {
+			TCPClient client = new TCPClient();
+			client.setUserStatus(username, true);
 			ViewLoader.newScene("main");
 		} else {
 			errorLabel.setText(result.message());

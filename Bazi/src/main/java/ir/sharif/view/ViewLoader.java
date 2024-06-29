@@ -36,7 +36,8 @@ public class ViewLoader {
 		try {
 			scene = new Scene(fxmlLoader.load());
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
+			return;
 		}
 
 		if (!menuName.equals("game"))
