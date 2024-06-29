@@ -124,4 +124,16 @@ public class Card {
 		}
 		return validPositions;
 	}
+
+	@Override
+	public int hashCode() {
+		int hashCode = 0;
+		long P = 9983;
+		long MOD = (long) (1e9 + 7);
+		for(char c: name.toCharArray()){
+			hashCode = (int) (hashCode*P%MOD);
+			hashCode = (int) ((hashCode + c)%MOD);
+		}
+		return hashCode;
+	}
 }

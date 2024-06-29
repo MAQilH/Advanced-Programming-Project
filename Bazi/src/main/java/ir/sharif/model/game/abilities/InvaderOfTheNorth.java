@@ -15,7 +15,7 @@ public class InvaderOfTheNorth implements Ability {
     }
     void addDeadCard(UserTable userTable){
         if(!userTable.getOutOfPlays().isEmpty()){
-            Card card = userTable.getOutOfPlays().get(Random.getRandomInt(userTable.getOutOfPlays().size()));
+            Card card = Random.getRandFromArrayListCard(userTable.getOutOfPlays());
             userTable.getOutOfPlays().remove(card);
             userTable.addHand(card);
         }

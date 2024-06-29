@@ -21,7 +21,7 @@ public class KingOfWildHunt implements Ability {
             if(!outOfPlay.isHero()) nonHeroCards.add(outOfPlay);
         }
         if(!nonHeroCards.isEmpty()){
-            Card card = nonHeroCards.get(Random.getRandomInt(nonHeroCards.size()));
+            Card card = Random.getRandFromArrayListCard(nonHeroCards);
             userTable.getOutOfPlays().remove(card);
             userTable.addHand(card);
         }

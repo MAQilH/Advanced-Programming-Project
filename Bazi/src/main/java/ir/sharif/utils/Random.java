@@ -1,6 +1,10 @@
 package ir.sharif.utils;
 
+import ir.sharif.model.game.Card;
+import ir.sharif.model.game.CardTypes;
+
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Base64;
 
 public class Random {
@@ -38,5 +42,37 @@ public class Random {
 		byte[] randomBytes = new byte[24];
 		secureRandom.nextBytes(randomBytes);
 		return base64Encoder.encodeToString(randomBytes);
+	}
+
+	public static Card getRandFromArrayListCard(ArrayList<Card> arr){
+		if(arr.isEmpty()) return null;
+		return arr.get(getCardArrayListHashCard(arr)%arr.size());
+	}
+
+	public static CardTypes getRandFromArrayListCardTypes(ArrayList<CardTypes> arr){
+		if(arr.isEmpty()) return null;
+		return arr.get(getCardArrayListHashCardTypes(arr)%arr.size());
+	}
+
+	private static int getCardArrayListHashCard(ArrayList<Card> arrayList){
+		long P = 9983;
+		long MOD = (int) (1e9 + 7);
+		int hashCode = 0;
+		for (Card card : arrayList) {
+			hashCode = (int)(((long)hashCode)*P%MOD);
+			hashCode = (int) ((hashCode + card.hashCode())%MOD);
+		}
+		return hashCode;
+	}
+
+	private static int getCardArrayListHashCardTypes(ArrayList<CardTypes> arrayList){
+		long P = 9983;
+		long MOD = (int) (1e9 + 7);
+		int hashCode = 0;
+		for (CardTypes card : arrayList) {
+			hashCode = (int)(((long)hashCode)*P%MOD);
+			hashCode = (int) ((hashCode + card.hashCode())%MOD);
+		}
+		return hashCode;
 	}
 }

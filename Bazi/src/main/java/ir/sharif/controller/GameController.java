@@ -248,9 +248,8 @@ public class GameController {
         Card card = matchTable.getUserTable(player).getHand().get(cardNumber);
         matchTable.getUserTable(player).getHand().remove(cardNumber);
         matchTable.getUserTable(player).getDeck().add(card);
-        int randomNumber = Random.getRandomInt(matchTable.getUserTable(player).getDeck().size());
-        Card randomCard = matchTable.getUserTable(player).getDeck().get(randomNumber);
-        matchTable.getUserTable(player).getDeck().remove(randomNumber);
+        Card randomCard = Random.getRandFromArrayListCard(matchTable.getUserTable(player).getDeck());
+        matchTable.getUserTable(player).getDeck().remove(randomCard);
         matchTable.getUserTable(player).getHand().add(cardNumber, randomCard);
         matchTable.getUserTable(player).decreaseVetoesLeft();
         return new CommandResult(ResultCode.ACCEPT, "Card vetoed successfully");
@@ -486,7 +485,7 @@ public class GameController {
             if(userTable.getFaction() == Faction.MONSTERS) {
                 ArrayList<Card> heroCards = userTable.getHeroesCard();
                 if(!heroCards.isEmpty()) {
-                    heroRemain = heroCards.get(Random.getRandomInt(heroCards.size()));
+                    heroRemain = Random.getRandFromArrayListCard(heroCards);
                 }
             }
 
@@ -524,7 +523,7 @@ public class GameController {
             if(userTable.getFaction() == Faction.NORTHEN_REALMS && winner == userIndex){
                 Card newAddedCard = null;
                 if(!userTable.getDeck().isEmpty())
-                    newAddedCard = userTable.getDeck().get(Random.getRandomInt(userTable.getDeck().size()));
+                    newAddedCard = Random.getRandFromArrayListCard(userTable.getDeck());
                 if(newAddedCard != null){
                     userTable.getDeck().remove(newAddedCard);
                     userTable.addHand(newAddedCard);
@@ -536,7 +535,7 @@ public class GameController {
                 for (int addedCardIndex = 0; addedCardIndex < 2; addedCardIndex++) {
                     Card newAddedCard = null;
                     if(!userTable.getOutOfPlays().isEmpty())
-                        newAddedCard = userTable.getOutOfPlays().get(Random.getRandomInt(userTable.getOutOfPlays().size()));
+                        newAddedCard = Random.getRandFromArrayListCard(userTable.getOutOfPlays());
                     if(newAddedCard != null){
                         userTable.getOutOfPlays().remove(newAddedCard);
                         userTable.addHand(newAddedCard);
@@ -558,9 +557,8 @@ public class GameController {
             }
             for(int cardIndex = 0; cardIndex < startNumberOfCard; cardIndex++){
                 if(matchTable.getUserTable(playerIndex).getDeck().isEmpty()) break;
-                int randomNumber = Random.getRandomInt(matchTable.getUserTable(playerIndex).getDeck().size());
-                Card randomCard = matchTable.getUserTable(playerIndex).getDeck().get(randomNumber);
-                matchTable.getUserTable(playerIndex).getDeck().remove(randomNumber);
+                Card randomCard = Random.getRandFromArrayListCard(matchTable.getUserTable(playerIndex).getDeck());
+                matchTable.getUserTable(playerIndex).getDeck().remove(randomCard);
                 matchTable.getUserTable(playerIndex).getHand().add(randomCard);
             }
         }
@@ -618,8 +616,7 @@ public class GameController {
         if(matchTable.getUser(player).getDeckInfo().getStorage().isEmpty()) {
             return new CommandResult(ResultCode.FAILED, "DeckInfo is empty");
         }
-        int randomNumber = Random.getRandomInt(matchTable.getUser(player).getDeckInfo().getStorage().size());
-        CardTypes cardType = matchTable.getUser(player).getDeckInfo().getStorage().get(randomNumber);
+        CardTypes cardType = Random.getRandFromArrayListCardTypes(matchTable.getUser(player).getDeckInfo().getStorage());
         Card card = cardType.getInstance();
         matchTable.getUserTable(player).getHand().add(card);
         return new CommandResult(ResultCode.ACCEPT, "Random Card added to hand. cheat activated");

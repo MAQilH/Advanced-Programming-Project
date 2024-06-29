@@ -12,12 +12,12 @@ public class DestroyerOfWorlds implements Ability {
     public void execute(Object... objs) {
         UserTable userTable = GameService.getInstance().getMatchTable().getCurrentUserTable();
         for (int cardIndex = 0; cardIndex < 2 && !userTable.getHand().isEmpty(); cardIndex++) {
-            Card card = userTable.getHand().get(Random.getRandomInt(userTable.getHand().size()));
+            Card card = Random.getRandFromArrayListCard(userTable.getHand());
             userTable.getHand().remove(card);
             userTable.addOutOfPlay(card);
         }
         if(!userTable.getDeck().isEmpty()){
-            Card card = userTable.getDeck().get(Random.getRandomInt(userTable.getDeck().size()));
+            Card card = Random.getRandFromArrayListCard(userTable.getDeck());
             userTable.getDeck().remove(card);
             userTable.addHand(card);
         }

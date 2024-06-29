@@ -48,6 +48,7 @@ public class GUIApplication extends Application {
 //
 //		GameService.getInstance().createController();
 //		ViewLoader.newScene("game");
+
 	}
 
     void testStartGame(){

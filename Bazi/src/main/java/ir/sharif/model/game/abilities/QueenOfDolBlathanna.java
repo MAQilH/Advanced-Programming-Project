@@ -38,7 +38,7 @@ public class QueenOfDolBlathanna implements Ability {
 
         if(removedCandidate.isEmpty()) return;
 
-        Card card = removedCandidate.get(Random.getRandomInt(removedCandidate.size()));
+        Card card = Random.getRandFromArrayListCard(removedCandidate);
         opponentTable.getRanged().removeCard(card);
     }
 

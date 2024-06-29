@@ -12,7 +12,7 @@ public class Medic implements Ability {
     public void execute(Object... objs) {
         UserTable userTable = GameService.getInstance().getMatchTable().getCurrentUserTable();
         if(!userTable.getOutOfPlays().isEmpty()){
-            Card card = userTable.getOutOfPlays().get(Random.getRandomInt(userTable.getOutOfPlays().size()));
+            Card card = Random.getRandFromArrayListCard(userTable.getOutOfPlays());
             userTable.removeOutOfPlay(card);
             userTable.getHand().add(card);
         }
