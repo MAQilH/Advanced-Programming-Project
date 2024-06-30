@@ -10,10 +10,7 @@ import ir.sharif.service.UserService;
 import ir.sharif.view.ViewLoader;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
@@ -28,6 +25,8 @@ public class Lobby {
 	Label usernameLabel;
 	@FXML
 	HBox hbox;
+	@FXML
+	Button acceptButton;
 	private String lastGameToken = null;
 	private String lastGameCreated = null;
 
@@ -104,11 +103,19 @@ public class Lobby {
 	}
 
 	public void acceptGame(MouseEvent mouseEvent) {
+		acceptButton.setDisable(true);
 		TCPClient client = new TCPClient();
 		User user2 = client.gameAcceptRequest(lastGameToken, UserService.getInstance().getCurrentUser());
 		GameRecord record = client.getGameRecord(lastGameToken);
 		PreGameController controller = new PreGameController();
 		controller.startOnlineGame(record);
+		lastGameToken = null;
+		hbox.setOpacity(0);
+
 		ViewLoader.newScene("game");
+	}
+
+	public void back(MouseEvent mouseEvent) {
+		ViewLoader.newScene("main");
 	}
 }

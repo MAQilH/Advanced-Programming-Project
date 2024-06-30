@@ -4,6 +4,7 @@ import ir.sharif.client.TCPClient;
 import ir.sharif.controller.GameController;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
+import ir.sharif.model.GameState;
 import ir.sharif.model.React;
 import ir.sharif.model.User;
 import ir.sharif.model.game.Card;
@@ -190,8 +191,10 @@ public class GameGraphics {
 	public void showCurrentUserHand() {
 		hand.getChildren().clear();
 		ArrayList<Card> handArray = controller.getCurrentUserTable().getHand();
-		if (controller.isOnline())
+		if (controller.isOnline() && controller.getGameState() != GameState.ONLINE_OBSERVER
+			&& controller.getGameState() != GameState.OFFLINE_OBSERVER) {
 			handArray = controller.getUserUserTable(controller.getOnlineCurrentUser()).getHand();
+		}
 
 		for (Card card : handArray)
 			addCardToHBox(card, hand);
@@ -200,6 +203,11 @@ public class GameGraphics {
 	public boolean checkActionOnline() {
 		if (controller.isOnline() && controller.getOnlineCurrentUser() != controller.getMatchTable().getTurn()) {
 			showErrorToast("It's not your turn");
+			return true;
+		}
+
+		if (controller.getGameState() == GameState.ONLINE_OBSERVER || controller.getGameState() == GameState.OFFLINE_OBSERVER) {
+			showErrorToast("You are observer!");
 			return true;
 		}
 
