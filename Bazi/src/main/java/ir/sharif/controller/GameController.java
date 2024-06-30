@@ -669,9 +669,7 @@ public class GameController {
         GameGraphics.getInstance().showWinner(gameWinner);
 
         if(gameState == GameState.ONLINE_PLAYER){
-            if(UserService.getInstance().getCurrentUser().getUsername().equals(
-                    GameService.getInstance().getMatchTable().getUser(0).getUsername()
-            )) {
+            if(getOnlineCurrentUser() == 0) {
                 User winner = null;
                 if(gameWinner != -1) winner = GameService.getInstance().getMatchTable().getUser(gameWinner);
                 sendGameHistories(winner);
@@ -681,6 +679,7 @@ public class GameController {
     }
 
     public void sendGameHistories(User winner){
+	    System.err.println("game finished: " + winner);
         GameHistory gameHistory = new GameHistory(GameService.getInstance().getMatchTable().getUser(0),
                 GameService.getInstance().getMatchTable().getUser(1),
                 winner,

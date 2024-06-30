@@ -133,6 +133,7 @@ public class GameHandler {
         GameRecord gameRecord = liveGames.get(token);
         liveGames.remove(token);
 
+	    System.err.println("fuckkk: " + gson.toJson(finishGameMessage));
         Database.getInstance().addGameRecord(gameRecord);
         Database.getInstance().addGameHistories(gameHistory);
         return new ServerMessage(ResultCode.ACCEPT, "game finished successfully");
