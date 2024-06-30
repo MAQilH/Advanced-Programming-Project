@@ -2,9 +2,11 @@ package ir.sharif.model.server;
 
 import ir.sharif.model.User;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class GameRecord {
+public class GameRecord implements Serializable {
+    private static final long serialVersionUID = 1L;
     private User user1, user2;
     private String gameToken;
     private boolean gameIsPrivate;
