@@ -68,49 +68,57 @@ public class GameController {
                 }
             });
             thread.start();
-        } else {
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    ArrayList<String> newAction = GameService.getInstance().getNewActions();
-                    GameService.getInstance().setActionLock(true);
-                    for (String action : newAction) {
-                        runne(action);
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    GameService.getInstance().increaseBufferReading(newAction.size());
-                }
-            });
-            thread.start();
         }
     }
 
+	public void offlineRunner(){
+		Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				ArrayList<String> newAction = GameService.getInstance().getNewActions();
+				GameService.getInstance().setActionLock(true);
+				for (String action : newAction) {
+					System.err.println("khar----" + action);
+					runne(action);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						throw new RuntimeException(e);
+					}
+				}
+				GameService.getInstance().increaseBufferReading(newAction.size());
+			}
+		});
+
+		thread.start();
+	}
+
     public void runne(String action){
+		CommandResult result = null;
         Matcher matcher;
         if((matcher = Regex.VETO_CARD.getMatcher(action)).matches()){
             String username = matcher.group("username");
-            if(username.equals(UserService.getInstance().getCurrentUser().getUsername())) return;
-            vetoCard(Integer.parseInt(matcher.group("number")));
+            if(gameState != GameState.OFFLINE_OBSERVER && username.equals(UserService.getInstance().getCurrentUser().getUsername())) return;
+            result = vetoCard(Integer.parseInt(matcher.group("number")));
         } else if((matcher = Regex.PASS_TURN.getMatcher(action)).matches()){
             String username = matcher.group("username");
-            if(username.equals(UserService.getInstance().getCurrentUser().getUsername())) return;
-            passTurn();
+            if(gameState != GameState.OFFLINE_OBSERVER && username.equals(UserService.getInstance().getCurrentUser().getUsername())) return;
+            result = passTurn();
         } else if((matcher = Regex.EXECUTE_LEADER.getMatcher(action)).matches()){
             String username = matcher.group("username");
-            if(username.equals(UserService.getInstance().getCurrentUser().getUsername())) return;
-            commanderPowerPlay();
+            if(gameState != GameState.OFFLINE_OBSERVER && username.equals(UserService.getInstance().getCurrentUser().getUsername())) return;
+            result = commanderPowerPlay();
         } else if((matcher = Regex.PLACE_CARD.getMatcher(action)).matches()){
             String username = matcher.group("username");
-            if(username.equals(UserService.getInstance().getCurrentUser().getUsername())) return;
+            if(gameState != GameState.OFFLINE_OBSERVER && username.equals(UserService.getInstance().getCurrentUser().getUsername())) return;
             int index = Integer.parseInt(matcher.group("index"));
             int pos = Integer.parseInt(matcher.group("pos"));
             Card card = GameService.getInstance().getMatchTable().getCurrentUserTable().getHand().get(index);
-            placeCard(card, pos);
+            result = placeCard(card, pos);
         }
+
+	    System.err.println("khaar2: " + action);
+	    System.err.println("Result: " + result.message());
     }
 
     public CardPosition getCardPositionByRowNumber(int rowNumber) {
