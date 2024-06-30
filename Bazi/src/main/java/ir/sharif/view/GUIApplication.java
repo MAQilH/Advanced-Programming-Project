@@ -9,6 +9,7 @@ import ir.sharif.model.SecurityQuestion;
 import ir.sharif.model.User;
 import ir.sharif.model.game.CardTypes;
 import ir.sharif.model.game.DeckInfo;
+import ir.sharif.model.server.TwoFactorAuth;
 import ir.sharif.service.BackgroundMusicService;
 import ir.sharif.service.GameService;
 import ir.sharif.service.UserService;
@@ -29,6 +30,12 @@ public class GUIApplication extends Application {
 
     @Override
 	public void start(Stage primaryStage) throws Exception {
+	    //System.err.println(TwoFactorAuth.getInstance().sendAuthCode("sohsoh84@gmail.com"));
+		test(primaryStage);
+	    runLobby();
+	}
+
+	public void test(Stage primaryStage) {
 		ViewLoader.setStage(primaryStage);
 		Font.loadFont(getClass().getResource("/fonts/KingsCross.ttf").toExternalForm(), 10);
 		Font.loadFont(getClass().getResource("/fonts/Ancient.ttf").toExternalForm(), 10);
@@ -41,7 +48,7 @@ public class GUIApplication extends Application {
 		BackgroundMusicService.getInstance().playMusic();
 		new RegisterController().register("sohsoh", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "sohsoh", "sohsoh84@gmail.com");
 		new RegisterController().register("guest", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "guest", "aqil@gmail.com");
-		new RegisterController().register("aqil", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "sohsoh", "sohsoh84@gmail.com");
+		new RegisterController().register("aqil", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "aqil", "sohsoh84@gmail.com");
 		//ViewLoader.newScene("pregame");
 		//		PreGameController preGameController = new PreGameController();
 //		System.err.println(preGameController.createGame("guest").statusCode());
@@ -55,8 +62,8 @@ public class GUIApplication extends Application {
 //		ViewLoader.newScene("game");
 
 		addAFriendRequest();
-		ViewLoader.newScene("main");
-        runLobby();
+//		ViewLoader.newScene("main");
+//		runLobby();
 	}
 
 	void addAFriendRequest() {
@@ -136,7 +143,7 @@ public class GUIApplication extends Application {
     }
 
 	public static void main(String[] args) {
-        username = args[0];
-		launch();
+		username = args[0];
+	   launch();
 	}
 }

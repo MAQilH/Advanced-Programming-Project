@@ -20,6 +20,15 @@ import java.util.regex.Matcher;
 public class GameController {
     private final MatchTable matchTable;
 
+	public boolean isOnline() {
+		return matchTable.getGameToken() != null;
+	}
+
+	public int getOnlineCurrentUser() {
+		return UserService.getInstance().getCurrentUser().getUsername()
+			.equals(getMatchTable().getUser(0).getUsername()) ? 0 : 1;
+	}
+
     public GameController() {
         this.matchTable = GameService.getInstance().getMatchTable();
         startGame();
@@ -434,6 +443,7 @@ public class GameController {
         if(isVetoeTurn()) {
             return new CommandResult(ResultCode.FAILED, "Can't play in vetoe round");
         }
+
         return leaderExecute();
     }
 
