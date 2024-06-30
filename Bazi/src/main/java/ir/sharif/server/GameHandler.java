@@ -126,14 +126,13 @@ public class GameHandler {
 
     public synchronized ServerMessage finishGame(FinishGameMessage finishGameMessage) {
         String token = finishGameMessage.getGameToken();
-        GameHistory gameHistory = new GameHistory();
+        GameHistory gameHistory = finishGameMessage.getGameHistory();
         if(!liveGames.containsKey(token)){
             return new ServerMessage(ResultCode.FAILED, "game with this token not exist");
         }
         GameRecord gameRecord = liveGames.get(token);
         liveGames.remove(token);
 
-	    System.err.println("fuckkk: " + gson.toJson(finishGameMessage));
         Database.getInstance().addGameRecord(gameRecord);
         Database.getInstance().addGameHistories(gameHistory);
         return new ServerMessage(ResultCode.ACCEPT, "game finished successfully");

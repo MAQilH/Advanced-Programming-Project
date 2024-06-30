@@ -26,6 +26,9 @@ public class Database {
 
     public void addGameHistories(GameHistory gameHistory){
         Storage storage = Storage.loadStorage();
+	    System.err.println("fuckkkkkk");
+	    System.err.println(gameHistory.getGameToken());
+	    System.err.println(gameHistory.getUser1()   );
         storage.getGameHistories().add(gameHistory);
         Storage.saveStorage(storage);
     }

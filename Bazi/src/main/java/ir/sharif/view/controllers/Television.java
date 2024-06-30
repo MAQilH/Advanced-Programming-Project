@@ -73,8 +73,9 @@ public class Television {
 	}
 
 	public String getLabelForGameHistory(GameHistory history) {
-		String user1Label = history.getUser1().getUsername() + "(" + history.getRoundScores().getFirst() + ")";
-		String user2Label = history.getUser2().getUsername() + "(" + history.getRoundScores().getLast() + ")";
+		System.err.println("fuckkkk: " + history.getGameToken());
+		String user1Label = history.getUser1().getUsername() + "(" + history.getRoundResult().getFirst() + ")";
+		String user2Label = history.getUser2().getUsername() + "(" + history.getRoundResult().getSecond() + ")";
 		if (history.getGameToken() != null) user1Label = "<" + history.getGameToken().substring(0, 3) + "> " + user1Label;
 		return user1Label + " vs " + user2Label;
 	}

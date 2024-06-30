@@ -259,7 +259,6 @@ public class TCPServerWorker extends Thread {
 	        ReactService.getInstance().addReact(((ReactMessage) msg).getReact());
 			sendSuccess("React added");
         } else if (msg instanceof AllReactsMessage) {
-	        System.err.println("getting all reacts: " + ((AllReactsMessage) msg).getBufferSize());
 			sendSuccess(gsonAgent.toJson(ReactService.getInstance().getAllReacts(((AllReactsMessage) msg).getBufferSize())));
         } else if(msg instanceof StartNewGameMessage){
 	        StartNewGameMessage startNewGameMessage = (StartNewGameMessage) msg;
