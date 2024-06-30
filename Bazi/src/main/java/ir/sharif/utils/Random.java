@@ -70,4 +70,12 @@ public class Random {
 		}
 		return hashCode;
 	}
+
+	public static String randomAuthCode() {
+		java.util.Random random = new java.util.Random();
+		String result = String.valueOf(getRandomInt(0, 1000000));
+		while (result.length() < 6)
+			result = "0".concat(result);
+		return result;
+	}
 }

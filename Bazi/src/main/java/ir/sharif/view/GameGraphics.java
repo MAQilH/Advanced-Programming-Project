@@ -5,9 +5,11 @@ import ir.sharif.controller.GameController;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.React;
+import ir.sharif.model.User;
 import ir.sharif.model.game.Card;
 import ir.sharif.model.game.LeaderType;
 import ir.sharif.service.GameService;
+import ir.sharif.service.UserService;
 import ir.sharif.view.game.CardGraphics;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
@@ -80,6 +82,7 @@ public class GameGraphics {
 		passButton = (Button) getChildrenById("passButton");
 
 		passButton.setOnMouseClicked(event -> {
+			if (checkActionOnline()) return;
 			controller.passTurn();
 		});
 
@@ -101,6 +104,10 @@ public class GameGraphics {
 					showErrorToast("It's not your turn");
 					return;
 				}
+
+				if (checkActionOnline())
+					return;
+
 				CommandResult result = controller.commanderPowerPlay();
 				if (result.statusCode() == ResultCode.ACCEPT) {
 					showToast("Commander power played");
@@ -182,8 +189,21 @@ public class GameGraphics {
 
 	public void showCurrentUserHand() {
 		hand.getChildren().clear();
-		for (Card card : controller.getCurrentUserTable().getHand())
+		ArrayList<Card> handArray = controller.getCurrentUserTable().getHand();
+		if (controller.isOnline())
+			handArray = controller.getUserUserTable(controller.getOnlineCurrentUser()).getHand();
+
+		for (Card card : handArray)
 			addCardToHBox(card, hand);
+	}
+
+	public boolean checkActionOnline() {
+		if (controller.isOnline() && controller.getOnlineCurrentUser() != controller.getMatchTable().getTurn()) {
+			showErrorToast("It's not your turn");
+			return true;
+		}
+
+		return false;
 	}
 
 	public void updatePowerLabels() {
@@ -385,6 +405,9 @@ public class GameGraphics {
 					row.setOnDragExited(e -> row.setBackground(Background.fill(Color.rgb(1, 1, 0, 0.3))));
 
 					row.setOnDragDropped(e -> {
+						if (checkActionOnline())
+							return;
+
 						int rowNumber = Integer.parseInt(row.getId().substring(3));
 						CommandResult result = controller.placeCard(card, rowNumber);
 						if (result.statusCode() == ResultCode.ACCEPT) {
@@ -435,6 +458,7 @@ public class GameGraphics {
 	public void setOnMouseClickFunctionality(CardGraphics cardGraphics, HBox hbox) {
 		cardGraphics.setOnMouseClicked(event -> {
 				if (hbox == hand && controller.isVetoeTurn()) {
+					if (checkActionOnline()) return;
 					ArrayList<Card> hand = controller.getCurrentUserTable().getHand();
 					CommandResult result = controller.vetoCard(hand.indexOf(cardGraphics.getCard()));
 					if (result.statusCode() == ResultCode.ACCEPT) {

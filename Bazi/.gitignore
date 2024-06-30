@@ -39,4 +39,5 @@ build/
 /.DS_Store
 *.ser
 
+src/main/resources/gmail.properties
 storage.stg
