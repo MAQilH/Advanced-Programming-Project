@@ -90,7 +90,8 @@ public class Lobby {
 
 	private void handleFriendClick(String item) {
 		TCPClient client = new TCPClient();
-		String gameToken = client.gameRequest(UserService.getInstance().getCurrentUser(), item);
+		// TODO: handle private and public game
+		String gameToken = client.gameRequest(UserService.getInstance().getCurrentUser(), item, false);
 		if (gameToken == null) errorLabel.setText("Error in game request");
 		else {
 			errorLabel.setText("Game request sent to " + item);

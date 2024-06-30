@@ -5,10 +5,12 @@ import ir.sharif.model.game.CardTypes;
 
 public class StartNewGameMessage extends ClientMessage{
     private User user1, user2;
-    public StartNewGameMessage(User user1, User user2){
+    private boolean isPrivate;
+    public StartNewGameMessage(User user1, User user2, boolean isPrivate){
         this.type = ClientMessageType.START_NEW_GAME_MESSAGE;
         this.user1 = user1;
         this.user2 = user2;
+        this.isPrivate = isPrivate;
     }
 
     public User getUser1() {
@@ -25,5 +27,9 @@ public class StartNewGameMessage extends ClientMessage{
 
     public void setUser2(User user2) {
         this.user2 = user2;
+    }
+
+    public boolean isPrivate() {
+        return isPrivate;
     }
 }

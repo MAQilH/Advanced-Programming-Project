@@ -72,7 +72,7 @@ public class GUIApplication extends Application {
         User aqil = UserService.getInstance().getUserByUsername("aqil");
         User liqa = UserService.getInstance().getUserByUsername("liqa");
         TCPClient tcpClient = new TCPClient();
-        String realToken = tcpClient.gameRequest(aqil, "liqa");
+        String realToken = tcpClient.gameRequest(aqil, "liqa", false);
         String token;
         Thread thread = new Thread(new Runnable() {
             @Override

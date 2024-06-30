@@ -12,12 +12,15 @@ public class GameHistory implements Serializable {
     private ArrayList<Pair<Integer, Integer>> roundScores;
     private User winner;
 
-	public GameHistory(User user1, User user2, User winner, ArrayList<Pair<Integer, Integer>> roundScores) {
+	private String gameToken;
+
+	public GameHistory(User user1, User user2, User winner, ArrayList<Pair<Integer, Integer>> roundScores, String gameToken) {
 		this.user1 = user1;
 		this.user2 = user2;
 		this.date = new Date();
 		this.roundScores = roundScores;
 		this.winner = winner;
+		this.gameToken = gameToken;
 	}
 
 	public GameHistory() {
@@ -61,6 +64,10 @@ public class GameHistory implements Serializable {
 
 	public void setUser2(User user2) {
 		this.user2 = user2;
+	}
+
+	public String getGameToken(){
+		return gameToken;
 	}
 
 }

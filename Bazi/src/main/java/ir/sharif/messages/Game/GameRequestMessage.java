@@ -8,7 +8,9 @@ public class GameRequestMessage extends ClientMessage {
     private User user;
     private String receiver;
 
-    public GameRequestMessage(User user, String receiver) {
+    private boolean isPrivate;
+
+    public GameRequestMessage(User user, String receiver, boolean isPrivate) {
         this.user = user;
         this.receiver = receiver;
         this.type = ClientMessageType.GAME_REQUEST_MESSAGE;
@@ -20,5 +22,9 @@ public class GameRequestMessage extends ClientMessage {
 
     public String getReceiver() {
         return receiver;
+    }
+
+    public boolean isPrivate() {
+        return isPrivate;
     }
 }

@@ -207,15 +207,15 @@ public class TCPClient {
         }
     }
 
-    public String startNewGame(User user1, User user2){ // return gameId
-        StartNewGameMessage startNewGameMessage = new StartNewGameMessage(user1, user2);
+    public String startNewGame(User user1, User user2, boolean isPrivate){ // return gameId
+        StartNewGameMessage startNewGameMessage = new StartNewGameMessage(user1, user2, isPrivate);
         ServerMessage response =  sendMessage(startNewGameMessage);
         if(response != null && response.getStatusCode() == ResultCode.ACCEPT) return response.getAdditionalInfo();
         return null;
     }
 
-    public String gameRequest(User user, String receiverUsername){
-        GameRequestMessage gameRequestMessage = new GameRequestMessage(user, receiverUsername);
+    public String gameRequest(User user, String receiverUsername, boolean isPrivate){
+        GameRequestMessage gameRequestMessage = new GameRequestMessage(user, receiverUsername, isPrivate);
         ServerMessage response = sendMessage(gameRequestMessage);
         if(response.getStatusCode() == ResultCode.FAILED){
             System.err.println(response.getAdditionalInfo());

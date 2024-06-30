@@ -45,14 +45,14 @@ public class GameHandler {
     public synchronized ServerMessage startNewGame(StartNewGameMessage startNewGameMessage) {
         Database database = Database.getInstance();
 
-        GameRecord gameRecord = new GameRecord(startNewGameMessage.getUser1(), startNewGameMessage.getUser2(), Random.generateNewToken());
+        GameRecord gameRecord = new GameRecord(startNewGameMessage.getUser1(), startNewGameMessage.getUser2(), Random.generateNewToken(), startNewGameMessage.isPrivate());
         database.addGameRecord(gameRecord);
         return new ServerMessage(ResultCode.ACCEPT, "game added successfully");
     }
 
     public synchronized ServerMessage gameRequest(GameRequestMessage gameRequestMessage) {
         String token = Random.generateNewToken();
-        GameRecord gameRecord = new GameRecord(gameRequestMessage.getUser(), null, token);
+        GameRecord gameRecord = new GameRecord(gameRequestMessage.getUser(), null, token, gameRequestMessage.isPrivate());
         pendingGames.put(token, gameRecord);
         queuedGame.put(gameRequestMessage.getReceiver(), token);
         return new ServerMessage(
