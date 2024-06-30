@@ -56,7 +56,7 @@ public class GameController {
                     ArrayList<String> newAction = GameService.getInstance().getNewActions();
                     GameService.getInstance().setActionLock(true);
                     for (String action : newAction) {
-                        run(action);
+                        runne(action);
                     }
                     if(gameState != GameState.ONLINE_OBSERVER) GameService.getInstance().setActionLock(false);
                     GameService.getInstance().increaseBufferReading(newAction.size());
@@ -69,6 +69,7 @@ public class GameController {
             });
             thread.start();
         } else {
+<<<<<<< HEAD
             ArrayList<String> newAction = GameService.getInstance().getNewActions();
 			GameService.getInstance().setActionLock(true);
             for (String action : newAction) {
@@ -77,13 +78,29 @@ public class GameController {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
+=======
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ArrayList<String> newAction = GameService.getInstance().getNewActions();
+                    GameService.getInstance().setActionLock(true);
+                    for (String action : newAction) {
+                        runne(action);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    GameService.getInstance().increaseBufferReading(newAction.size());
+>>>>>>> e96b6d8c5455caa41d3b17570c8ca59189c407b6
                 }
-            }
-            GameService.getInstance().increaseBufferReading(newAction.size());
+            });
+            thread.start();
         }
     }
 
-    public void run(String action){
+    public void runne(String action){
         Matcher matcher;
         if((matcher = Regex.VETO_CARD.getMatcher(action)).matches()){
             String username = matcher.group("username");

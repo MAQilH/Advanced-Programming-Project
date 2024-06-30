@@ -143,11 +143,12 @@ public class GameHandler {
         int buffer = getActionsMessage.getBuffer();
         String token = getActionsMessage.getGameToken();
 
+        GameRecord gameRecord;
         if(!liveGames.containsKey(token)){
-            return new ServerMessage(ResultCode.FAILED, "game with this token not exist");
+            gameRecord = Database.getInstance().getGameRecordWithId(token);
+        } else {
+            gameRecord = liveGames.get(token);
         }
-
-        GameRecord gameRecord = liveGames.get(token);
         ArrayList<String> newActions = new ArrayList<>();
         for (int newActionIndex = buffer; newActionIndex < gameRecord.getCommands().size(); newActionIndex++) {
             newActions.add(gameRecord.getCommands().get(newActionIndex));
