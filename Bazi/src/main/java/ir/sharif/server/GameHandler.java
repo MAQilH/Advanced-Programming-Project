@@ -41,7 +41,7 @@ public class GameHandler {
 
     HashMap<String, String> queuedGame = new HashMap<>(); // key username, value gameToken
     HashMap<String, GameRecord> pendingGames = new HashMap<>(); // key gameToken, value gameRecord
-    HashMap<String, GameRecord> liveGames = new HashMap<>(); // key gameToken, value gameRecord
+	HashMap<String, GameRecord> liveGames = new HashMap<>(); // key gameToken, value gameRecord
 
     public synchronized ServerMessage startNewGame(StartNewGameMessage startNewGameMessage) {
         Database database = Database.getInstance();

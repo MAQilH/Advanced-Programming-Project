@@ -111,4 +111,8 @@ public class Lobby {
 		controller.startOnlineGame(record);
 		ViewLoader.newScene("game");
 	}
+
+	public void back(MouseEvent mouseEvent) {
+		ViewLoader.newScene("main");
+	}
 }

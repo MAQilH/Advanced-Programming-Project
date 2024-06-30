@@ -56,4 +56,8 @@ public class Main {
 	public void rankingPress(MouseEvent mouseEvent) {
 		ViewLoader.newScene("ranking");
 	}
+
+	public void televisionPress(MouseEvent mouseEvent) {
+		ViewLoader.newScene("television");
+	}
 }

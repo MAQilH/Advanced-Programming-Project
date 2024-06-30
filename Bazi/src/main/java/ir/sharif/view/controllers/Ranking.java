@@ -3,6 +3,7 @@ package ir.sharif.view.controllers;
 
 import ir.sharif.client.TCPClient;
 import ir.sharif.model.User;
+import ir.sharif.service.GameHistoryService;
 import ir.sharif.service.UserService;
 import ir.sharif.view.ViewLoader;
 import javafx.application.Platform;
@@ -55,7 +56,7 @@ public class Ranking {
 		for (User user : allUsers) {
 			TCPClient client = new TCPClient();
 			// TODO: add ranks
-			ranks.put(user, 1);
+			ranks.put(user, GameHistoryService.getInstance().getUserRank(user.getUsername()));
 			isOnline.put(user, client.getUserStatus(user.getUsername()));
 		}
 

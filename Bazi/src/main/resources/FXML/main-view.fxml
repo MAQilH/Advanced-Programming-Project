@@ -47,11 +47,24 @@
                 </VBox.margin>
             </HBox>
 
-            <Button mnemonicParsing="false" onMouseClicked="#logoutPress" text="Log Out">
-                <HBox.margin>
+            <HBox alignment="CENTER" prefHeight="96.0" prefWidth="300.0" spacing="10.0">
+                <children>
+                    <Button mnemonicParsing="false" onMouseClicked="#televisionPress" text="Television">
+                        <HBox.margin>
+                            <Insets />
+                        </HBox.margin>
+                    </Button>
+
+                    <Button mnemonicParsing="false" onMouseClicked="#logoutPress" text="Log Out">
+                        <HBox.margin>
+                            <Insets />
+                        </HBox.margin>
+                    </Button>
+                </children>
+                <VBox.margin>
                     <Insets />
-                </HBox.margin>
-            </Button>
+                </VBox.margin>
+            </HBox>
             <Label fx:id="errorLabel" styleClass="error-label" />
         </children>
     </VBox>
