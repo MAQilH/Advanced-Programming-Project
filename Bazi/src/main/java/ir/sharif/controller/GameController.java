@@ -68,24 +68,6 @@ public class GameController {
                 }
             });
             thread.start();
-        } else {
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    ArrayList<String> newAction = GameService.getInstance().getNewActions();
-                    GameService.getInstance().setActionLock(true);
-                    for (String action : newAction) {
-                        runne(action);
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    GameService.getInstance().increaseBufferReading(newAction.size());
-                }
-            });
-            thread.start();
         }
     }
 

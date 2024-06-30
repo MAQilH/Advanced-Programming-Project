@@ -15,8 +15,11 @@ public class Storage implements Serializable {
     private ArrayList<GameRecord> gameRecords = new ArrayList<>();
 
     public static Storage loadStorage(){
-        Storage storage = (Storage) FileSaver.loadObject("storage.stg");
-        if(storage == null) {
+        Storage storage;
+        try {
+            storage = (Storage) FileSaver.loadObject("storage.stg");
+            if(storage == null) storage = new Storage();
+        } catch (Exception e){
             storage = new Storage();
         }
         return storage;
