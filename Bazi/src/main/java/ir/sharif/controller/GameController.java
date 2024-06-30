@@ -70,7 +70,7 @@ public class GameController {
             thread.start();
         } else {
             ArrayList<String> newAction = GameService.getInstance().getNewActions();
-            GameService.getInstance().setActionLock(true);
+			GameService.getInstance().setActionLock(true);
             for (String action : newAction) {
                 run(action);
                 try {
