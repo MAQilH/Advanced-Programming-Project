@@ -2,7 +2,6 @@ package ir.sharif.service;
 
 import ir.sharif.model.User;
 import ir.sharif.service.storage.Database;
-import ir.sharif.service.storage.Storage;
 
 import java.util.ArrayList;
 
@@ -55,7 +54,6 @@ public class UserService {
     }
 
     public ArrayList<User> getUsers(){
-        System.out.println(Storage.loadStorage().getUsers().size());
-        return Storage.loadStorage().getUsers();
+        return Database.getInstance().getUsers();
     }
 }

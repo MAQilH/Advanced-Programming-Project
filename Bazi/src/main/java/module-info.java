@@ -16,8 +16,9 @@ module Bazi {
 	requires com.google.gson;
 	requires org.json;
 	requires jakarta.mail;
+    requires java.sql;
 
-	exports ir.sharif.server to jakarta.mail;
+    exports ir.sharif.server to jakarta.mail;
 	exports ir.sharif.view to javafx.graphics, com.google.gson;
 	exports ir.sharif.view.controllers to javafx.fxml;
 	exports ir.sharif.model to com.google.gson;
