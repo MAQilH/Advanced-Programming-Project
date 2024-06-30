@@ -82,6 +82,9 @@ public class GameHandler {
         String token = gameAcceptRequestMessage.getGameToken();
         User user2 = gameAcceptRequestMessage.getUser();
         System.err.println(token);
+        if(!pendingGames.containsKey(token)){
+            return new ServerMessage(ResultCode.NOT_FOUND, "game with this token not exist");
+        }
         GameRecord gameRecord = pendingGames.get(token);
         pendingGames.remove(token);
         queuedGame.remove(user2.getUsername());
