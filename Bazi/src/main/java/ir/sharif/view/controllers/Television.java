@@ -109,6 +109,11 @@ public class Television {
 	}
 
 	private void handlePastGamesClick(String item) {
+		GameHistory history = pastGamesMap.get(item);
+		GameService.getInstance().setMatchTable(new MatchTable(history.getUser1(), history.getUser2(),
+			history.getGameToken()));
+		GameService.getInstance().createController(GameState.OFFLINE_OBSERVER);
+		ViewLoader.newScene("game");
 	}
 
 	private synchronized void handleLiveGameClick(String item) {
