@@ -5,6 +5,7 @@ import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.GameHistory;
 import ir.sharif.model.GameState;
+import ir.sharif.model.User;
 import ir.sharif.model.game.*;
 import ir.sharif.model.game.abilities.*;
 import ir.sharif.service.GameService;
@@ -668,14 +669,28 @@ public class GameController {
         GameGraphics.getInstance().showWinner(gameWinner);
 
         if(gameState == GameState.ONLINE_PLAYER){
-
+            if(UserService.getInstance().getCurrentUser().getUsername().equals(
+                    GameService.getInstance().getMatchTable().getUser(0).getUsername()
+            )) {
+                User winner = null;
+                if(gameWinner != -1) winner = GameService.getInstance().getMatchTable().getUser(gameWinner);
+                sendGameHistories(winner);
+            }
         }
-
         // TODO: return winner to the graphical controller
     }
 
-    public GameHistory createGameHistories(){
-        return null;
+    public void sendGameHistories(User winner){
+        GameHistory gameHistory = new GameHistory(GameService.getInstance().getMatchTable().getUser(0),
+                GameService.getInstance().getMatchTable().getUser(1),
+                winner,
+                new ArrayList<>(), GameService.getInstance().getMatchTable().getGameToken());
+
+        TCPClient tcpClient = new TCPClient();
+        CommandResult result = tcpClient.finishGame(gameHistory, gameHistory.getGameToken());
+        if(result.statusCode() != ResultCode.ACCEPT){
+            System.err.println("error: " + result.message());
+        }
     }
 
     private int getRoundWinner(){
