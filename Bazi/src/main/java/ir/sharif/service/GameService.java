@@ -4,6 +4,7 @@ import ir.sharif.client.TCPClient;
 import ir.sharif.controller.GameController;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
+import ir.sharif.model.GameState;
 import ir.sharif.model.game.MatchTable;
 import ir.sharif.view.controllers.Game;
 
@@ -34,9 +35,9 @@ public class GameService {
         this.matchTable = matchTable;
     }
 
-	public void createController() {
+	public void createController(GameState gameState) {
         bufferReading = 0;
-		controller = new GameController();
+		controller = new GameController(gameState);
 	}
 
 	public GameController getController() {

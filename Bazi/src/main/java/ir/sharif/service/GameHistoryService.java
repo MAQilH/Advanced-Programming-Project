@@ -42,6 +42,11 @@ public class GameHistoryService {
         return userHistory;
     }
 
+    public ArrayList<GameHistory> getGameHistories(){
+        TCPClient tcpClient = new TCPClient();
+        return tcpClient.getGameHistories();
+    }
+
     public int getUserRank(String username){
         ArrayList<User> users = UserService.getInstance().getUsers();
         HashMap<User, Integer> numberOfWins = new HashMap<>();

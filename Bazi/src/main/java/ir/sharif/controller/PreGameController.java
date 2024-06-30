@@ -3,6 +3,7 @@ package ir.sharif.controller;
 import ir.sharif.enums.Menus;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
+import ir.sharif.model.GameState;
 import ir.sharif.model.User;
 import ir.sharif.model.game.*;
 import ir.sharif.model.server.GameRecord;
@@ -267,7 +268,7 @@ public class PreGameController {
 	public void startOnlineGame(GameRecord record) {
 		AppService.getInstance().setCurrentMenu(Menus.GameMenu);
 		GameService.getInstance().setMatchTable(new MatchTable(record.getUser1(), record.getUser2(), record.getGameToken()));
-		GameService.getInstance().createController();
+		GameService.getInstance().createController(GameState.ONLINE_PLAYER);
 	}
 
     public DeckInfo getDeck(){

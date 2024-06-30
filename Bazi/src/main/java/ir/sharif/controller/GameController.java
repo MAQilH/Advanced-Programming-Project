@@ -3,6 +3,8 @@ package ir.sharif.controller;
 import ir.sharif.client.TCPClient;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
+import ir.sharif.model.GameHistory;
+import ir.sharif.model.GameState;
 import ir.sharif.model.game.*;
 import ir.sharif.model.game.abilities.*;
 import ir.sharif.service.GameService;
@@ -20,8 +22,11 @@ import java.util.regex.Matcher;
 public class GameController {
     private final MatchTable matchTable;
 
+    private GameState gameState;
+
+
 	public boolean isOnline() {
-		return matchTable.getGameToken() != null;
+		return gameState == GameState.ONLINE_OBSERVER || gameState == GameState.ONLINE_PLAYER;
 	}
 
 	public int getOnlineCurrentUser() {
@@ -29,33 +34,48 @@ public class GameController {
 			.equals(getMatchTable().getUser(0).getUsername()) ? 0 : 1;
 	}
 
-    public GameController() {
+    public GameController(GameState gameState) {
         this.matchTable = GameService.getInstance().getMatchTable();
         startGame();
-
-        if(GameService.getInstance().getMatchTable().getGameToken() != null){
+        this.gameState = gameState;
+        if(gameState != GameState.OFFLINE_PLAYER){
             runOnlineMode();
         }
     }
 
     private void runOnlineMode() {
-        Thread thread = new Thread(() -> {
-            while (true){
-                ArrayList<String> newAction = GameService.getInstance().getNewActions();
-                GameService.getInstance().setActionLock(true);
-                for (String action : newAction) {
-                    run(action);
+        if(gameState == GameState.ONLINE_OBSERVER || gameState == GameState.ONLINE_PLAYER){
+            if(gameState == GameState.ONLINE_OBSERVER) GameService.getInstance().setActionLock(true);
+            Thread thread = new Thread(() -> {
+                while (true){
+                    ArrayList<String> newAction = GameService.getInstance().getNewActions();
+                    GameService.getInstance().setActionLock(true);
+                    for (String action : newAction) {
+                        run(action);
+                    }
+                    if(gameState != GameState.ONLINE_OBSERVER) GameService.getInstance().setActionLock(false);
+                    GameService.getInstance().increaseBufferReading(newAction.size());
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-                GameService.getInstance().setActionLock(false);
-                GameService.getInstance().increaseBufferReading(newAction.size());
+            });
+            thread.start();
+        } else {
+            ArrayList<String> newAction = GameService.getInstance().getNewActions();
+            GameService.getInstance().setActionLock(true);
+            for (String action : newAction) {
+                run(action);
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
-        });
-        thread.start();
+            GameService.getInstance().increaseBufferReading(newAction.size());
+        }
     }
 
     public void run(String action){
@@ -642,7 +662,16 @@ public class GameController {
         else if(matchTable.getUserTable(0).getLife() > matchTable.getUserTable(1).getLife()) gameWinner = 0;
         else gameWinner = 1;
         GameGraphics.getInstance().showWinner(gameWinner);
+
+        if(gameState == GameState.ONLINE_PLAYER){
+
+        }
+
         // TODO: return winner to the graphical controller
+    }
+
+    public GameHistory createGameHistories(){
+        return null;
     }
 
     private int getRoundWinner(){

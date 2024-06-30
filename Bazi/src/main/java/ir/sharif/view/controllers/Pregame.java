@@ -4,6 +4,7 @@ import eu.hansolo.tilesfx.Command;
 import ir.sharif.controller.PreGameController;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
+import ir.sharif.model.GameState;
 import ir.sharif.model.game.*;
 import ir.sharif.service.GameService;
 import ir.sharif.view.ViewLoader;
@@ -287,7 +288,7 @@ public class Pregame {
 		result = pregameController.startGame();
 		if (result.statusCode() == ResultCode.ACCEPT) {
 			errorLabel.setText("game started successfully");
-			GameService.getInstance().createController();
+			GameService.getInstance().createController(GameState.OFFLINE_PLAYER);
 			ViewLoader.newScene("game");
 		} else {
 			errorLabel.setText(result.message());

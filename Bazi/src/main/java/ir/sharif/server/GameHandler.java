@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.messages.FinishGameMessage;
 import ir.sharif.messages.Game.*;
+import ir.sharif.messages.GetLiveGamesMessage;
 import ir.sharif.messages.ServerMessage;
 import ir.sharif.messages.StartNewGameMessage;
 import ir.sharif.model.GameHistory;
@@ -39,9 +40,9 @@ public class GameHandler {
 
 
     HashMap<String, String> queuedGame = new HashMap<>(); // key username, value gameToken
-
     HashMap<String, GameRecord> pendingGames = new HashMap<>(); // key gameToken, value gameRecord
     HashMap<String, GameRecord> liveGames = new HashMap<>(); // key gameToken, value gameRecord
+
     public synchronized ServerMessage startNewGame(StartNewGameMessage startNewGameMessage) {
         Database database = Database.getInstance();
 
@@ -52,6 +53,7 @@ public class GameHandler {
 
     public synchronized ServerMessage gameRequest(GameRequestMessage gameRequestMessage) {
         String token = Random.generateNewToken();
+        System.err.println(token);
         GameRecord gameRecord = new GameRecord(gameRequestMessage.getUser(), null, token, gameRequestMessage.isPrivate());
         pendingGames.put(token, gameRecord);
         queuedGame.put(gameRequestMessage.getReceiver(), token);
@@ -79,6 +81,7 @@ public class GameHandler {
     public synchronized ServerMessage gameAcceptRequest(GameAcceptRequestMessage gameAcceptRequestMessage) {
         String token = gameAcceptRequestMessage.getGameToken();
         User user2 = gameAcceptRequestMessage.getUser();
+        System.err.println(token);
         GameRecord gameRecord = pendingGames.get(token);
         pendingGames.remove(token);
         queuedGame.remove(user2.getUsername());
@@ -147,5 +150,14 @@ public class GameHandler {
             newActions.add(gameRecord.getCommands().get(newActionIndex));
         }
         return new ServerMessage(ResultCode.ACCEPT, gson.toJson(newActions));
+    }
+
+
+    public synchronized ServerMessage getLiveGames(GetLiveGamesMessage getLiveGamesMessage){
+        ArrayList<GameRecord> result = new ArrayList<>();
+        liveGames.forEach((key, value) -> {
+            result.add(value);
+        });
+        return new ServerMessage(ResultCode.ACCEPT, gson.toJson(result));
     }
 }

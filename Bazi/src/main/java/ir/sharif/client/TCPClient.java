@@ -319,4 +319,14 @@ public class TCPClient {
          ServerMessage response = sendMessage(new SetUserStatusMessage(username, status));
          return new CommandResult(response.getStatusCode(), response.getAdditionalInfo());
      }
+
+     public ArrayList<GameRecord> getLiveGames(){
+        ServerMessage response = sendMessage(new GetLiveGamesMessage());
+        if(response.getStatusCode() != ResultCode.ACCEPT){
+            System.err.println("error: " + response.getAdditionalInfo());
+            return new ArrayList<>();
+        }
+         Type type = new TypeToken<ArrayList<GameRecord>>(){}.getType();
+         return gsonAgent.fromJson(response.getAdditionalInfo(), type);
+     }
 }

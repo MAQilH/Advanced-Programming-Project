@@ -160,6 +160,8 @@ public class TCPServerWorker extends Thread {
 					return gsonAgent.fromJson(clientStr, SetUserStatusMessage.class);
 				case GET_ACTIONS_MESSAGE:
 					return gsonAgent.fromJson(clientStr, GetActionsMessage.class);
+				case GET_LIVE_GAMES_MESSAGE:
+					return gsonAgent.fromJson(clientStr, GetLiveGamesMessage.class);
                 default:
                     System.err.println("wtf: " + clientStr);
                     return null;
@@ -292,6 +294,9 @@ public class TCPServerWorker extends Thread {
 		} else if(msg instanceof SetUserStatusMessage){
 			SetUserStatusMessage setUserStatusMessage = (SetUserStatusMessage) msg;
 			sendMessage(userHandler.setUserStatus(setUserStatusMessage));
+		} else if(msg instanceof GetLiveGamesMessage){
+			GetLiveGamesMessage getLiveGamesMessage = (GetLiveGamesMessage) msg;
+			sendMessage(gameHandler.getLiveGames(getLiveGamesMessage));
 		}
 		else {
 	        System.err.println("invalid client command :)");
