@@ -298,8 +298,9 @@ public class TCPClient {
 
      public ArrayList<String> getActions(int buffer, String gameToken){
         ServerMessage response = sendMessage(new GetActionsMessage(buffer, gameToken));
+	     System.err.println("kiram to proje");
         if(response.getStatusCode() != ResultCode.ACCEPT){
-            System.err.println(response.getAdditionalInfo());
+            System.err.println("kir khar: " + response.getAdditionalInfo());
             return new ArrayList<>();
         }
          Type token = new TypeToken<ArrayList<String>>() {}.getType();

@@ -69,6 +69,7 @@ public class GameGraphics {
 	public void initialize(Pane pane) {
 		System.err.println(pane.getChildren());
 		this.pane = pane;
+		System.err.println("kir2: " + GameService.getInstance().getController());
 		controller = GameService.getInstance().getController();
 
 		for (int i = 0; i < 13; i++)
@@ -125,6 +126,9 @@ public class GameGraphics {
 			Label nickname = (Label) getChildrenById("user" + String.valueOf(i + 1) + "nick");
 			nickname.setText(controller.getMatchTable().getUser(i).getNickname());
 		}
+
+		if (controller.getGameState() == GameState.OFFLINE_OBSERVER)
+			controller.offlineRunner();
 	}
 
 	public void startGame() {
