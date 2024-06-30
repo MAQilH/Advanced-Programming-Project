@@ -33,7 +33,7 @@
 
             <Button text="Random Game" onMouseClicked="#random"/>
 
-            <Button text="back" onMouseClicked="#back"/>
+            <Button fx:id="acceptButton" text="back" onMouseClicked="#back"/>
             <Label fx:id="errorLabel" styleClass="error-label" />
         </children>
     </VBox>

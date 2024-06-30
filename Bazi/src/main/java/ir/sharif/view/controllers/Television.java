@@ -3,9 +3,11 @@ package ir.sharif.view.controllers;
 import ir.sharif.client.TCPClient;
 import ir.sharif.model.GameHistory;
 import ir.sharif.model.GameState;
+import ir.sharif.model.game.MatchTable;
 import ir.sharif.model.server.GameRecord;
 import ir.sharif.service.GameService;
 import ir.sharif.view.ViewLoader;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -73,41 +75,46 @@ public class Television {
 	public String getLabelForGameHistory(GameHistory history) {
 		String user1Label = history.getUser1().getUsername() + "(" + history.getRoundScores().getFirst() + ")";
 		String user2Label = history.getUser2().getUsername() + "(" + history.getRoundScores().getLast() + ")";
-		if (history.getGameToken() != null) user1Label = "<" + history.getGameToken().substring(0, 3) + ">" + user1Label;
+		if (history.getGameToken() != null) user1Label = "<" + history.getGameToken().substring(0, 3) + "> " + user1Label;
 		return user1Label + " vs " + user2Label;
 	}
 
 	public String getLabelForLiveGame(GameRecord record) {
 		String user1Label = record.getUser1().getUsername();
 		String user2Label = record.getUser2().getUsername();
-		return record.getGameToken().substring(0, 3) + user1Label + " vs " + user2Label;
+		return record.getGameToken().substring(0, 3) + " " + user1Label + " vs " + user2Label;
 	}
 
-	public void update() {
-		pastGamesMap.clear();
-		pastGames.getItems().clear();
-		liveGamesMap.clear();
-		liveGames.getItems().clear();;
-		TCPClient client = new TCPClient();
-		ArrayList<GameHistory> histories = client.getGameHistories();
-		for (GameHistory history : histories) {
-			String label = getLabelForGameHistory(history);
-			pastGames.getItems().add(label);
-			pastGamesMap.put(label, history);
-		}
+	public synchronized void update() {
+		Platform.runLater(() -> {
+			pastGamesMap.clear();
+			pastGames.getItems().clear();
+			liveGamesMap.clear();
+			liveGames.getItems().clear();;
+			TCPClient client = new TCPClient();
+			ArrayList<GameHistory> histories = client.getGameHistories();
+			for (GameHistory history : histories) {
+				String label = getLabelForGameHistory(history);
+				pastGames.getItems().add(label);
+				pastGamesMap.put(label, history);
+			}
 
-		ArrayList<GameRecord> records = client.getLiveGames();
-		for (GameRecord record : records) {
-			String label = getLabelForLiveGame(record);
-			liveGames.getItems().add(label);
-			liveGamesMap.put(label, record);
-		}
+			ArrayList<GameRecord> records = client.getLiveGames();
+			for (GameRecord record : records) {
+				String label = getLabelForLiveGame(record);
+				liveGames.getItems().add(label);
+				liveGamesMap.put(label, record);
+			}
+		});
 	}
 
 	private void handlePastGamesClick(String item) {
 	}
 
-	private void handleLiveGameClick(String item) {
+	private synchronized void handleLiveGameClick(String item) {
+		GameRecord record = liveGamesMap.get(item);
+		GameService.getInstance().setMatchTable(new MatchTable(record.getUser1(), record.getUser2(),
+			record.getGameToken()));
 		GameService.getInstance().createController(GameState.ONLINE_OBSERVER);
 		ViewLoader.newScene("game");
 	}

@@ -22,7 +22,11 @@ import java.util.regex.Matcher;
 public class GameController {
     private final MatchTable matchTable;
 
-    private GameState gameState;
+    private final GameState gameState;
+
+	public GameState getGameState() {
+		return gameState;
+	}
 
 
 	public boolean isOnline() {
