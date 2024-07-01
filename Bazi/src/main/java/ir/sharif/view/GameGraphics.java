@@ -52,6 +52,8 @@ public class GameGraphics {
 	private Label deadLabel[] = new Label[2];
 	private Label deckLabel[] = new Label[2];
 
+	private CardGraphics selectedGradGraphics = null;
+
 
 	private GameGraphics() {}
 
@@ -515,6 +517,10 @@ public class GameGraphics {
 					} else {
 						showErrorToast(result.message());
 					}
+				} else {
+					if (selectedGradGraphics != null) selectedGradGraphics.stopAnimation();
+					selectedGradGraphics = cardGraphics;
+					selectedGradGraphics.playAnimation();
 				}
 			}
 		);

@@ -5,6 +5,8 @@ import ir.sharif.model.game.abilities.Berserker;
 import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.utils.Random;
 import ir.sharif.view.ViewLoader;
+import javafx.animation.ScaleTransition;
+import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -14,8 +16,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.io.InputStream;
 
@@ -152,5 +158,50 @@ public class CardGraphics extends Pane {
 
 	public void updatePower() {
 		powerLabel.setText(String.valueOf(card.calculatePower()));
+	}
+
+	public void playAnimation() {
+		Path neonRectangle = new Path();
+
+		// Define the corners of the rectangle
+		MoveTo moveTo = new MoveTo(0, 0);
+		LineTo line1 = new LineTo(this.getWidth(), 0);
+		MoveTo moveTo2 = new MoveTo(this.getWidth(), 0);
+		LineTo line2 = new LineTo(this.getWidth(), this.getHeight());
+		MoveTo moveTo3 = new MoveTo(this.getWidth(), this.getHeight());
+		LineTo line3 = new LineTo(0, this.getHeight());
+		MoveTo moveTo4 = new MoveTo(0, this.getHeight());
+		LineTo line4 = new LineTo(0, 0);
+
+		// Add the corners to the Path
+		neonRectangle.getElements().add(moveTo);
+		neonRectangle.getElements().add(line1);
+		neonRectangle.getElements().add(moveTo2);
+		neonRectangle.getElements().add(line2);
+		neonRectangle.getElements().add(moveTo3);
+		neonRectangle.getElements().add(line3);
+		neonRectangle.getElements().add(moveTo4);
+		neonRectangle.getElements().add(line4);
+
+		// Set the stroke color to neon and the stroke width to make it look like a neon light
+		neonRectangle.setStroke(Color.web("#966919"));
+		neonRectangle.setStrokeWidth(3);
+
+		// Create a ScaleTransition for the neon rectangle
+		ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(1), neonRectangle);
+		scaleTransition.setByX(0.1);
+		scaleTransition.setByY(0.1);
+		scaleTransition.setCycleCount(Timeline.INDEFINITE);
+		scaleTransition.setAutoReverse(true);
+
+		// Start the ScaleTransition
+		scaleTransition.play();
+
+		// Add the neon rectangle to the CardGraphics
+		this.getChildren().add(neonRectangle);
+	}
+
+	public void stopAnimation() {
+		this.getChildren().removeIf(node -> node instanceof Path);
 	}
 }
