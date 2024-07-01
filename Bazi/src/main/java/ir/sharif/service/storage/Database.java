@@ -25,9 +25,23 @@ public class Database {
         gson = new GsonBuilder().create();
         try {
             connection = DriverManager.getConnection(DATABASE_URL, DATABASE_USERNAME, DATABASE_PASSWORD);
+            createTables();
             System.err.println("Database connected successfully");
         } catch (SQLException e) {
             System.err.println("error: Database doesnt connect");
+            e.printStackTrace();
+        }
+    }
+
+    private void createTables(){
+        String createUsersTableSql = "CREATE TABLE IF NOT EXISTS USERS (username VARCHAR(255), object TEXT)";
+        String createGameHistoriesTableSql = "CREATE TABLE IF NOT EXISTS GAME_HISTORIES (game_token VARCHAR(255), object TEXT)";
+        String createGameRecordsTableSql = "CREATE TABLE IF NOT EXISTS GAME_RECORDS (game_token VARCHAR(255), object TEXT)";
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(createUsersTableSql);
+            statement.execute(createGameHistoriesTableSql);
+            statement.execute(createGameRecordsTableSql);
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
