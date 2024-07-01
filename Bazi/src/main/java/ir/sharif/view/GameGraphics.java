@@ -8,6 +8,7 @@ import ir.sharif.model.GameState;
 import ir.sharif.model.React;
 import ir.sharif.model.User;
 import ir.sharif.model.game.Card;
+import ir.sharif.model.game.Faction;
 import ir.sharif.model.game.LeaderType;
 import ir.sharif.service.GameService;
 import ir.sharif.service.UserService;
@@ -47,6 +48,10 @@ public class GameGraphics {
 	private Label userPowerLabels[] = new Label[2];
 	private ImageView leaderGraphics[] = new ImageView[2];
 	private ArrayList<HBox> validRows;
+	private ImageView userDeckImages[][] = new ImageView[2][2];
+	private Label deadLabel[] = new Label[2];
+	private Label deckLabel[] = new Label[2];
+
 
 	private GameGraphics() {}
 
@@ -100,6 +105,8 @@ public class GameGraphics {
 			LeaderType leaderType = LeaderType.getLeaderType(controller.getUserUserTable(i).getLeader().getName());
 			System.err.println(leaderType.toString());
 			leaderGraphics[i].setImage(new Image(getClass().getResourceAsStream("/images/leader/" + leaderType.toString() + ".jpg")));
+			deadLabel[i] = (Label) getChildrenById("dead" + String.valueOf(i + 1));
+			deckLabel[i] = (Label) getChildrenById("deck" + String.valueOf(i + 1));
 			int finalI = i;
 			leaderGraphics[i].setOnMouseClicked(event -> {
 				if (controller.getMatchTable().getTurn() != finalI) {
@@ -129,6 +136,26 @@ public class GameGraphics {
 
 		if (controller.getGameState() == GameState.OFFLINE_OBSERVER)
 			controller.offlineRunner();
+
+		try {
+			for (int i = 0; i < 2; i++) {
+				Faction faction = controller.getUserUserTable(i).getFaction();
+				for (int j = 0; j < 2; j++) {
+					userDeckImages[i][j] = (ImageView) getChildrenById("user" + String.valueOf(i + 1) + "im" + String.valueOf(j + 1));
+					userDeckImages[i][j].setImage(new Image(getClass().getResourceAsStream("/images/factions/" + getFactionImageName(faction))));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private String getFactionImageName(Faction faction) {
+		if (faction == Faction.MONSTERS) return "monsters.jpg";
+		if (faction == Faction.NILFGAARDIAN_EMPIRE) return "nilfgaard.jpg";
+		if (faction == Faction.NORTHEN_REALMS) return "realms.jpg";
+		if (faction == Faction.SCOIATAEL) return "scoiatael.jpg";
+		else return "skellige.jpg";
 	}
 
 	public void startGame() {
@@ -268,6 +295,7 @@ public class GameGraphics {
 	}
 
 	public void showToastWithClass(String text, boolean isError) {
+		if (controller.getGameState() == GameState.OFFLINE_OBSERVER) return;
 		Label toastLabel = new Label(text);
 		toastLabel.getStyleClass().add(isError ? "error-toast" : "title-label");
 
@@ -303,7 +331,15 @@ public class GameGraphics {
 			showCurrentUserHand();
 			updateCardsInRows();
 			updatePowerLabels();
+			updateCardCounts();
 		});
+	}
+
+	private void updateCardCounts() {
+		for (int i = 0; i < 2; i++) {
+			deckLabel[i].setText(String.valueOf(controller.getUserUserTable(i).getDeck().size()));
+			deadLabel[i].setText(String.valueOf(controller.getUserUserTable(i).getDiscardPile().size()));
+		}
 	}
 
 	private void updateCardsInRows() {
