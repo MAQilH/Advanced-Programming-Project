@@ -22,7 +22,7 @@ public class SonOfMedell implements Ability {
         }
         if(totalPower <= 10) return;
         ArrayList<Card> toBeDeleted = new ArrayList<>();
-        for(Card card: opponentTable.getSiege().getCards()){
+        for(Card card: opponentTable.getRanged().getCards()){
             if(card.isHero()) continue;
             if(card.calculatePower() == maxPower){
                 toBeDeleted.add(card);

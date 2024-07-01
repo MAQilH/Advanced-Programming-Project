@@ -4,7 +4,7 @@ import ir.sharif.model.game.abilities.*;
 
 public enum CardTypes {
 
-    MARDOEME("Mardoeme", -1, 3, CardPosition.SPELL, new Mardroeme(), Faction.SKELLIGE, false),
+    MARDOEME("Mardoeme", 0, 3, CardPosition.SPELL, new Mardroeme(), Faction.SKELLIGE, false),
     BERSERKER("Berserker", 4, 1, CardPosition.CLOSE_COMBAT_UNIT, new Berserker(), Faction.SKELLIGE, false),
     VIDKAARL("Vidkaarl", 14, 1, CardPosition.CLOSE_COMBAT_UNIT, new MoraleBoost(), Faction.SKELLIGE, false),
     SVANRIGE("Svanrige", 4, 1, CardPosition.CLOSE_COMBAT_UNIT, null, Faction.SKELLIGE, false),
