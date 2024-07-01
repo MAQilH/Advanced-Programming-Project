@@ -1,6 +1,9 @@
 package ir.sharif.view.gui.terminal;
 
+import ir.sharif.controller.GameController;
 import ir.sharif.model.CommandResult;
+import ir.sharif.service.GameService;
+import ir.sharif.view.GameGraphics;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
@@ -41,8 +44,45 @@ public class TerminalGUI {
 		inputField.setStyle("-fx-control-inner-background:#1d1d1d; -fx-font-family: Monospaced; -fx-highlight-fill: dodgerblue; -fx-highlight-text-fill: white; -fx-text-fill: lime; -fx-prompt-text-fill: #aaaaaa;"); // Mac terminal style
 		inputField.setOnAction(event -> {
 			String input = inputField.getText();
-			// TODO: Process the input and display the output in the outputArea
-			// For now, we just echo the input
+			if (input.equals("cheats")) {
+				writeOutput("cheats:");
+				writeOutput("1- instant win");
+				writeOutput("2- instant lose");
+				writeOutput("3- add card to hand");
+				writeOutput("4- remove opponent's cards");
+				writeOutput("5- add life");
+				writeOutput("6- clear weather");
+				writeOutput("7- leader execution");
+			}
+
+			try {
+				if (input.length() == 6 && input.startsWith("cheat")) {
+					int cheatCode = Integer.parseInt(input.substring(5));
+					GameController controller = GameService.getInstance().getController();
+					if (cheatCode == 1) {
+						controller.instantWinCheat(controller.getMatchTable().getTurn());
+					} else if (cheatCode == 2) {
+						controller.instantLoseCheat(controller.getMatchTable().getTurn());
+					} else if (cheatCode == 3) {
+						controller.addCardToHandCheat(controller.getMatchTable().getTurn());
+					} else if (cheatCode == 4) {
+						controller.removeOpponentHandCheat();
+					} else if (cheatCode == 5) {
+						controller.addLifeCheat(controller.getMatchTable().getTurn());
+					} else if (cheatCode == 6) {
+						controller.clearWeatherCheat();
+					} else  if (cheatCode == 7) {
+						controller.leaderExecutionCheat(controller.getMatchTable().getTurn());
+					} else {
+						writeOutput("Invalid cheat code");
+					}
+
+					GameGraphics.getInstance().loadModel();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			outputArea.appendText("> " + input + "\n");
 			inputField.clear();
 		});
