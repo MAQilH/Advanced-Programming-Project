@@ -143,7 +143,9 @@ public class GUIApplication extends Application {
     }
 
 	public static void main(String[] args) {
-		username = args[0];
-	   launch();
+		//username = args[0];
+	   String felan = TwoFactorAuth.getInstance().sendAuthCode("sohsoh84@gmail.com");
+		System.err.println(felan);
+		//launch();
 	}
 }
