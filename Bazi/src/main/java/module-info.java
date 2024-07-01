@@ -44,4 +44,6 @@ module Bazi {
 	opens ir.sharif.messages.react to com.google.gson;
     opens ir.sharif.messages.Game to com.google.gson;
 	opens ir.sharif.model.server to com.google.gson;
+    exports ir.sharif.messages.tournament to com.google.gson;
+    opens ir.sharif.messages.tournament to com.google.gson;
 }

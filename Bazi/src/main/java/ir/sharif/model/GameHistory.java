@@ -5,22 +5,23 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class GameHistory implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class GameHistory {
     private User user1, user2;
     private Date date;
     private ArrayList<Pair<Integer, Integer>> roundScores;
     private User winner;
 
 	private String gameToken;
+	private String tournamentToken;
 
-	public GameHistory(User user1, User user2, User winner, ArrayList<Pair<Integer, Integer>> roundScores, String gameToken) {
+	public GameHistory(User user1, User user2, User winner, ArrayList<Pair<Integer, Integer>> roundScores, String gameToken, String tournamentToken) {
 		this.user1 = user1;
 		this.user2 = user2;
 		this.date = new Date();
 		this.roundScores = roundScores;
 		this.winner = winner;
 		this.gameToken = gameToken;
+		this.tournamentToken = tournamentToken;
 	}
 
 	public GameHistory() {
@@ -70,4 +71,11 @@ public class GameHistory implements Serializable {
 		return gameToken;
 	}
 
+	public String getTournamentToken() {
+		return tournamentToken;
+	}
+
+	public void setTournamentToken(String tournamentToken) {
+		this.tournamentToken = tournamentToken;
+	}
 }

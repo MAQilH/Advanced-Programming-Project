@@ -112,7 +112,7 @@ public class Television {
 	private void handlePastGamesClick(String item) {
 		GameHistory history = pastGamesMap.get(item);
 		GameService.getInstance().setMatchTable(new MatchTable(history.getUser1(), history.getUser2(),
-			history.getGameToken()));
+			history.getGameToken(), history.getTournamentToken()));
 		GameService.getInstance().createController(GameState.OFFLINE_OBSERVER);
 		ViewLoader.newScene("game");
 	}
@@ -120,7 +120,7 @@ public class Television {
 	private synchronized void handleLiveGameClick(String item) {
 		GameRecord record = liveGamesMap.get(item);
 		GameService.getInstance().setMatchTable(new MatchTable(record.getUser1(), record.getUser2(),
-			record.getGameToken()));
+			record.getGameToken(), record.getTournamentToken()));
 		GameService.getInstance().createController(GameState.ONLINE_OBSERVER);
 		ViewLoader.newScene("game");
 	}

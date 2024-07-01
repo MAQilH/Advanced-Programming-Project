@@ -260,14 +260,14 @@ public class PreGameController {
         }
 
         AppService.getInstance().setCurrentMenu(Menus.GameMenu);
-        GameService.getInstance().setMatchTable(new MatchTable(UserService.getInstance().getCurrentUser(), enemy, null));
+        GameService.getInstance().setMatchTable(new MatchTable(UserService.getInstance().getCurrentUser(), enemy, null, null));
 
         return new CommandResult(ResultCode.ACCEPT, "game started successfully");
     }
 
 	public void startOnlineGame(GameRecord record) {
 		AppService.getInstance().setCurrentMenu(Menus.GameMenu);
-		GameService.getInstance().setMatchTable(new MatchTable(record.getUser1(), record.getUser2(), record.getGameToken()));
+		GameService.getInstance().setMatchTable(new MatchTable(record.getUser1(), record.getUser2(), record.getGameToken(), null));
 		GameService.getInstance().createController(GameState.ONLINE_PLAYER);
 	}
 

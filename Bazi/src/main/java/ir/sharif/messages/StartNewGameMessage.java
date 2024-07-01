@@ -6,11 +6,13 @@ import ir.sharif.model.game.CardTypes;
 public class StartNewGameMessage extends ClientMessage{
     private User user1, user2;
     private boolean isPrivate;
-    public StartNewGameMessage(User user1, User user2, boolean isPrivate){
+    private String tournamentToken;
+    public StartNewGameMessage(User user1, User user2, boolean isPrivate, String tournamentToken){
         this.type = ClientMessageType.START_NEW_GAME_MESSAGE;
         this.user1 = user1;
         this.user2 = user2;
         this.isPrivate = isPrivate;
+        this.tournamentToken = tournamentToken;
     }
 
     public User getUser1() {
@@ -31,5 +33,9 @@ public class StartNewGameMessage extends ClientMessage{
 
     public boolean isPrivate() {
         return isPrivate;
+    }
+
+    public String getTournamentToken() {
+        return tournamentToken;
     }
 }
