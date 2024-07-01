@@ -45,7 +45,7 @@ public class GameService {
 	}
 
     public CommandResult sendAction(String action){
-        if(actionLock) return new CommandResult(ResultCode.FAILED, "you cant send action");
+        if(controller.getGameState() != GameState.ONLINE_PLAYER || actionLock) return new CommandResult(ResultCode.FAILED, "you cant send action");
         action += " -username " + UserService.getInstance().getCurrentUser().getUsername();
         TCPClient tcpClient = new TCPClient();
         CommandResult result = tcpClient.gameAction(action, matchTable.getGameToken());

@@ -95,7 +95,7 @@ public class Ranking {
 		}
 
 		GameService.getInstance().setMatchTable(new MatchTable(lastOnlineGame.getUser1(), lastOnlineGame.getUser2(),
-			lastOnlineGame.getGameToken()));
+			lastOnlineGame.getGameToken(), null));
 		GameService.getInstance().createController(GameState.OFFLINE_OBSERVER);
 		ViewLoader.newScene("game");
 	}

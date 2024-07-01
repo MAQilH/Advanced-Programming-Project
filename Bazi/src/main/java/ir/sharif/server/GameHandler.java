@@ -45,16 +45,20 @@ public class GameHandler {
 
     public synchronized ServerMessage startNewGame(StartNewGameMessage startNewGameMessage) {
         Database database = Database.getInstance();
+        String gameToken = Random.generateNewToken();
 
-        GameRecord gameRecord = new GameRecord(startNewGameMessage.getUser1(), startNewGameMessage.getUser2(), Random.generateNewToken(), startNewGameMessage.isPrivate());
-        database.addGameRecord(gameRecord);
-        return new ServerMessage(ResultCode.ACCEPT, "game added successfully");
+        GameRecord gameRecord = new GameRecord(startNewGameMessage.getUser1(), startNewGameMessage.getUser2(),
+                gameToken, startNewGameMessage.getTournamentToken(), startNewGameMessage.isPrivate());
+
+        liveGames.put(gameToken, gameRecord);
+
+        return new ServerMessage(ResultCode.ACCEPT, gameToken);
     }
 
     public synchronized ServerMessage gameRequest(GameRequestMessage gameRequestMessage) {
         String token = Random.generateNewToken();
         System.err.println(token);
-        GameRecord gameRecord = new GameRecord(gameRequestMessage.getUser(), null, token, gameRequestMessage.isPrivate());
+        GameRecord gameRecord = new GameRecord(gameRequestMessage.getUser(), null, token, null, gameRequestMessage.isPrivate());
         pendingGames.put(token, gameRecord);
         queuedGame.put(gameRequestMessage.getReceiver(), token);
         return new ServerMessage(

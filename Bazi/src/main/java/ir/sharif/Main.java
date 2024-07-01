@@ -9,18 +9,19 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
-    class First{
+class First{
         private Integer integer = 34;
 
         public First(){
         }
 
-        private void print(){
+        public void print(){
             System.out.println(integer);
         }
 
-        private void setInteger(int x){
+        public void setInteger(int x){
             integer = x;
         }
 
@@ -32,14 +33,19 @@ import java.util.Date;
 
 public class Main {
     public static void main(String[] args) {
-        First first = new First();
-        System.out.println(first.hashCode());
-        System.out.println(Random.generateNewToken());
 
-        ArrayList<Card> arrayList = new ArrayList<>();
-        arrayList.add(CardTypes.ARACHAS.getInstance());
-        arrayList.add(CardTypes.DOL_BLATHANNA_ARCHER.getInstance());
-        arrayList.add(CardTypes.MARDOEME.getInstance());
-//        System.out.println(Random.getRandFromArrayList(arrayList).getName());
+        HashMap<Integer, First> hashMap = new HashMap<>();
+        ArrayList<First> arrayList = new ArrayList<>();
+        hashMap.put(2, new First());
+        First first = hashMap.get(2);
+        first.setInteger(56);
+        first.print();
+        hashMap.get(2).print();
+
+        arrayList.add(new First());
+        First sec = arrayList.get(0);
+        sec.print();
+        sec.setInteger(4);
+        arrayList.get(0).print();
     }
 }

@@ -9,15 +9,17 @@ public class GameRecord implements Serializable {
     private static final long serialVersionUID = 1L;
     private User user1, user2;
     private String gameToken;
+    private String tournamentToken;
     private boolean gameIsPrivate;
     ArrayList<String> commands;
 
-    public GameRecord(User user1, User user2, String gameToken, boolean gameIsPrivate){
+    public GameRecord(User user1, User user2, String gameToken, String tournamentToken, boolean gameIsPrivate){
         this.user1 = user1;
         this.user2 = user2;
         this.gameToken = gameToken;
         this.gameIsPrivate = gameIsPrivate;
         commands = new ArrayList<>();
+        this.tournamentToken = tournamentToken;
     }
 
     public User getUser1() {
@@ -50,5 +52,9 @@ public class GameRecord implements Serializable {
 
     public void setCommands(ArrayList<String> commands) {
         this.commands = commands;
+    }
+
+    public String getTournamentToken() {
+        return tournamentToken;
     }
 }

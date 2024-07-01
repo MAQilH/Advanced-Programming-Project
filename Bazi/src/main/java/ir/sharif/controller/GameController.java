@@ -719,7 +719,9 @@ public class GameController {
         GameHistory gameHistory = new GameHistory(GameService.getInstance().getMatchTable().getUser(0),
                 GameService.getInstance().getMatchTable().getUser(1),
                 winner,
-                new ArrayList<>(), GameService.getInstance().getMatchTable().getGameToken());
+                new ArrayList<>(), GameService.getInstance().getMatchTable().getGameToken(),
+                GameService.getInstance().getMatchTable().getTournamentToken()
+        );
 
         TCPClient tcpClient = new TCPClient();
         CommandResult result = tcpClient.finishGame(gameHistory, gameHistory.getGameToken());

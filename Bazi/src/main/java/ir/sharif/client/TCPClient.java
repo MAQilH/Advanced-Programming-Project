@@ -208,8 +208,8 @@ public class TCPClient {
         }
     }
 
-    public String startNewGame(User user1, User user2, boolean isPrivate){ // return gameId
-        StartNewGameMessage startNewGameMessage = new StartNewGameMessage(user1, user2, isPrivate);
+    public String startNewGame(User user1, User user2, boolean isPrivate, String tournamentToken){ // return gameId
+        StartNewGameMessage startNewGameMessage = new StartNewGameMessage(user1, user2, isPrivate, tournamentToken);
         ServerMessage response =  sendMessage(startNewGameMessage);
         if(response != null && response.getStatusCode() == ResultCode.ACCEPT) return response.getAdditionalInfo();
         return null;
