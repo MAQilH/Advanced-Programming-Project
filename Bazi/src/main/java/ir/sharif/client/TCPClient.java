@@ -330,4 +330,6 @@ public class TCPClient {
          Type type = new TypeToken<ArrayList<GameRecord>>(){}.getType();
          return gsonAgent.fromJson(response.getAdditionalInfo(), type);
      }
+
+
 }

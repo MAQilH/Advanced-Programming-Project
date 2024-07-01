@@ -155,8 +155,6 @@ public class GameHandler {
         }
         return new ServerMessage(ResultCode.ACCEPT, gson.toJson(newActions));
     }
-
-
     public synchronized ServerMessage getLiveGames(GetLiveGamesMessage getLiveGamesMessage){
         ArrayList<GameRecord> result = new ArrayList<>();
         liveGames.forEach((key, value) -> {

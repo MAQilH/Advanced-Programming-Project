@@ -14,8 +14,7 @@ import ir.sharif.view.controllers.Game;
 import java.util.ArrayList;
 
 public class GameHistoryHandler {
-
-    Gson gson;
+    private Gson gson;
 
     GameHistoryHandler() {
         GsonBuilder builder = new GsonBuilder();
