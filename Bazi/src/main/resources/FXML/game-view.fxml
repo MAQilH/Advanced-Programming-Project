@@ -22,8 +22,8 @@
        <HBox fx:id="row5" alignment="CENTER" layoutX="519.0" layoutY="513.0" maxHeight="85.0" maxWidth="590.0" minHeight="85.0" minWidth="590.0" spacing="5" />
        <HBox fx:id="hand" alignment="CENTER" layoutX="419.0" layoutY="611.0" maxHeight="100.0" maxWidth="687.0" minHeight="100.0" minWidth="687.0" spacing="5" />
       <Button fx:id="passButton" layoutX="1162.0" layoutY="339.0" mnemonicParsing="false" text="Pass" />
-      <HBox fx:id="health1" layoutX="109.0" layoutY="493.0" prefHeight="71.0" prefWidth="157.0" />
-      <HBox fx:id="health2" layoutX="105.0" layoutY="185.0" prefHeight="71.0" prefWidth="157.0" />
+      <HBox fx:id="health1" alignment="CENTER" layoutX="109.0" layoutY="493.0" prefHeight="71.0" prefWidth="157.0" />
+      <HBox fx:id="health2" alignment="CENTER" layoutX="105.0" layoutY="185.0" prefHeight="71.0" prefWidth="157.0" />
        <HBox fx:id="row6" alignment="CENTER" layoutX="416.0" prefHeight="100.0" prefWidth="97.0" spacing="5" />
        <HBox fx:id="row7" alignment="CENTER" layoutX="415.0" layoutY="98.0" prefHeight="100.0" prefWidth="97.0" spacing="5" />
        <HBox fx:id="row8" alignment="CENTER" layoutX="414.0" layoutY="194.0" prefHeight="100.0" prefWidth="97.0" spacing="5" />
