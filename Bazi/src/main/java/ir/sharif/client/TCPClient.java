@@ -268,8 +268,8 @@ public class TCPClient {
         return gsonAgent.fromJson(response.getAdditionalInfo(), GameRecord.class);
     }
 
-	public CommandResult sendReaction(String sender, String message) {
-		sendMessage(new ReactMessage(sender, message));
+	public CommandResult sendReaction(String sender, String message, Pair<Double, Double> position) {
+		sendMessage(new ReactMessage(sender, message, position));
 		if (lastServerMessage.wasSuccessfull()) {
 			return new CommandResult(ResultCode.ACCEPT, "react sent successfully");
 		} else {

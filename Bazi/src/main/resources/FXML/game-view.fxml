@@ -21,9 +21,13 @@
        <HBox fx:id="row4" alignment="CENTER" layoutX="517.0" layoutY="415.0" maxHeight="85.0" maxWidth="590.0" minHeight="85.0" minWidth="590.0" spacing="5" />
        <HBox fx:id="row5" alignment="CENTER" layoutX="519.0" layoutY="513.0" maxHeight="85.0" maxWidth="590.0" minHeight="85.0" minWidth="590.0" spacing="5" />
        <HBox fx:id="hand" alignment="CENTER" layoutX="419.0" layoutY="611.0" maxHeight="100.0" maxWidth="687.0" minHeight="100.0" minWidth="687.0" spacing="5" />
-      <Button fx:id="passButton" layoutX="1162.0" layoutY="339.0" mnemonicParsing="false" text="Pass" />
+      <Button fx:id="passButton" layoutX="1143.0" layoutY="725.0" mnemonicParsing="false" text="Pass" />
       <HBox fx:id="health1" alignment="CENTER" layoutX="109.0" layoutY="493.0" prefHeight="71.0" prefWidth="157.0" />
       <HBox fx:id="health2" alignment="CENTER" layoutX="105.0" layoutY="185.0" prefHeight="71.0" prefWidth="157.0" />
+       <ImageView fx:id="user2im2" fitHeight="100.0" fitWidth="80.0" layoutX="1260.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true" />
+       <ImageView fx:id="user2im1" fitHeight="100.0" fitWidth="80.0" layoutX="1132.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true" />
+       <ImageView fx:id="user1im2" fitHeight="100.0" fitWidth="80.0" layoutX="1260.0" layoutY="611.0" pickOnBounds="true" preserveRatio="true" />
+       <ImageView fx:id="user1im1" fitHeight="100.0" fitWidth="80.0" layoutX="1132.0" layoutY="611.0" pickOnBounds="true" preserveRatio="true" />
        <HBox fx:id="row6" alignment="CENTER" layoutX="416.0" prefHeight="100.0" prefWidth="97.0" spacing="5" />
        <HBox fx:id="row7" alignment="CENTER" layoutX="415.0" layoutY="98.0" prefHeight="100.0" prefWidth="97.0" spacing="5" />
        <HBox fx:id="row8" alignment="CENTER" layoutX="414.0" layoutY="194.0" prefHeight="100.0" prefWidth="97.0" spacing="5" />
@@ -43,10 +47,6 @@
       <ImageView fx:id="leader0" fitHeight="100.0" fitWidth="74.0" layoutX="105.0" layoutY="609.0" pickOnBounds="true" preserveRatio="true" />
       <Label fx:id="user1nick" alignment="CENTER" layoutX="206.0" layoutY="100.0" prefHeight="17.0" prefWidth="136.0" text="power1" />
       <Label fx:id="user2nick" alignment="CENTER" layoutX="198.0" layoutY="651.0" prefHeight="17.0" prefWidth="136.0" text="power1" />
-      <ImageView fx:id="user2im2" fitHeight="100.0" fitWidth="80.0" layoutX="1260.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="user2im1" fitHeight="100.0" fitWidth="80.0" layoutX="1132.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="user1im2" fitHeight="100.0" fitWidth="80.0" layoutX="1260.0" layoutY="611.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="user1im1" fitHeight="100.0" fitWidth="80.0" layoutX="1132.0" layoutY="611.0" pickOnBounds="true" preserveRatio="true" />
       <Label fx:id="dead2" alignment="CENTER" layoutX="1128.0" layoutY="159.0" prefHeight="17.0" prefWidth="80.0" text="Label" />
       <Label fx:id="deck2" alignment="CENTER" layoutX="1260.0" layoutY="159.0" prefHeight="17.0" prefWidth="80.0" text="Label" />
       <Label fx:id="dead1" alignment="CENTER" layoutX="1128.0" layoutY="581.0" prefHeight="17.0" prefWidth="80.0" text="Label" />

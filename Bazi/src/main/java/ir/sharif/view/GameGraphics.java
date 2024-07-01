@@ -6,17 +6,16 @@ import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.GameState;
 import ir.sharif.model.React;
-import ir.sharif.model.User;
 import ir.sharif.model.game.Card;
 import ir.sharif.model.game.Faction;
 import ir.sharif.model.game.LeaderType;
 import ir.sharif.service.GameService;
-import ir.sharif.service.UserService;
 import ir.sharif.view.game.CardGraphics;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
@@ -35,6 +34,7 @@ import javafx.util.Duration;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GameGraphics {
 	private Pane pane;
@@ -150,6 +150,13 @@ public class GameGraphics {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		pane.setOnMouseClicked(event -> {
+			if (selectedGradGraphics != null) {
+				selectedGradGraphics.stopAnimation();
+				selectedGradGraphics = null;
+			}
+		});
 	}
 
 	private String getFactionImageName(Faction faction) {
@@ -183,6 +190,7 @@ public class GameGraphics {
 						Thread.sleep(1000);
 						ArrayList<React> reacts = client.getAllReacts(buffer);
 						for (React react : reacts) {
+							AtomicBoolean isPng = new AtomicBoolean(false);
 							Platform.runLater(() -> {
 								if (react.getMessage().contains(".png")) {
 									ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream("/images/reacts/" + react.getMessage())));
@@ -190,8 +198,14 @@ public class GameGraphics {
 									imageView.setFitHeight(100);
 
 									pane.getChildren().add(imageView);
-									imageView.setY(pane.getHeight() - 100);
-									imageView.setX(pane.getWidth() / 2 - 50);
+									if (react.getPosition() == null) {
+										imageView.layoutXProperty().bind(pane.widthProperty().subtract(imageView.fitWidthProperty()).divide(2));
+										imageView.layoutYProperty().bind(pane.heightProperty().subtract(imageView.fitHeightProperty()).divide(2));
+									} else {
+										imageView.layoutXProperty().bind(Bindings.createDoubleBinding(() -> react.getPosition().getFirst() - 50));
+										imageView.layoutYProperty().bind(Bindings.createDoubleBinding(() -> react.getPosition().getSecond() - 55));
+									}
+
 									// move the react from bottom to top and fade it in 6 seconds
 									TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(6), imageView);
 									translateTransition.setByY(-1000);
@@ -201,10 +215,30 @@ public class GameGraphics {
 									fadeTransition.setFromValue(1.0);
 									fadeTransition.setToValue(0.0);
 									fadeTransition.play();
-									showToast(react.getSender() + " reacted with ");
-								} else {
-									showToast(react.getSender() + " reacted: " + react.getMessage());
+									isPng.set(true);
 								}
+
+								String text = react.getSender() + (isPng.get() ? "" : ": " + react.getMessage());
+								Label reactLabel = new Label(text);
+								// move the react label and fade it just like the image view
+								if (react.getPosition() == null) {
+									reactLabel.layoutXProperty().bind(pane.widthProperty().subtract(reactLabel.widthProperty()).divide(2));
+									reactLabel.layoutYProperty().bind(pane.heightProperty().subtract(reactLabel.heightProperty())
+										.divide(2).add(isPng.get() ? 55 : 0));
+								} else {
+									reactLabel.layoutXProperty().bind(Bindings.createDoubleBinding(() -> react.getPosition().getFirst()).subtract(reactLabel.widthProperty().divide(2)));
+									reactLabel.layoutYProperty().bind(Bindings.createDoubleBinding(() -> react.getPosition().getSecond() + (isPng.get() ? 55 : 0)));
+								}
+
+								reactLabel.setOpacity(0.0);
+								pane.getChildren().add(reactLabel);
+								TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(6), reactLabel);
+								translateTransition.setByY(-1000);
+								translateTransition.play();
+								FadeTransition fadeTransition = new FadeTransition(Duration.seconds(6), reactLabel);
+								fadeTransition.setFromValue(1.0);
+								fadeTransition.setToValue(0.0);
+								fadeTransition.play();
 							});
 						}
 
@@ -306,11 +340,11 @@ public class GameGraphics {
 		toastLabel.setOpacity(0.0);
 		pane.getChildren().add(toastLabel);
 
-		FadeTransition fadeIn = new FadeTransition(Duration.seconds(2), toastLabel);
+		FadeTransition fadeIn = new FadeTransition(Duration.seconds(1.5), toastLabel);
 		fadeIn.setFromValue(0.0);
 		fadeIn.setToValue(1.0);
 		fadeIn.setOnFinished((e) -> {
-			FadeTransition fadeOut = new FadeTransition(Duration.seconds(2), toastLabel);
+			FadeTransition fadeOut = new FadeTransition(Duration.seconds(1.5), toastLabel);
 			fadeOut.setFromValue(1.0);
 			fadeOut.setToValue(0.0);
 			fadeOut.setOnFinished((e2) -> pane.getChildren().remove(toastLabel));
@@ -521,6 +555,7 @@ public class GameGraphics {
 					if (selectedGradGraphics != null) selectedGradGraphics.stopAnimation();
 					selectedGradGraphics = cardGraphics;
 					selectedGradGraphics.playAnimation();
+					event.consume();
 				}
 			}
 		);
@@ -555,5 +590,9 @@ public class GameGraphics {
 				break;
 			}
 		}
+	}
+
+	public CardGraphics getSelectedCardGraphics() {
+		return selectedGradGraphics;
 	}
 }

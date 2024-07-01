@@ -45,7 +45,7 @@ public class GUIApplication extends Application {
 		ViewLoader.newScene("start");
 		//Pane pane = (Pane) (ViewLoader.getStage().getScene().getRoot());
 		//pane.getChildren().add(new CardGraphics(CardTypes.KAYRAN.getInstance(), 0.5));
-		BackgroundMusicService.getInstance().playMusic();
+//		BackgroundMusicService.getInstance().playMusic();
 		new RegisterController().register("sohsoh", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "sohsoh", "sohsoh84@gmail.com");
 		new RegisterController().register("guest", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "guest", "aqil@gmail.com");
 		new RegisterController().register("aqil", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "aqil", "sohsoh84@gmail.com");
