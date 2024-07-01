@@ -28,10 +28,10 @@ public class TwoFactorAuth {
 			userPass.load(getClass().getResourceAsStream("/gmail.properties"));
 			Properties prop = new Properties();
 			prop.put("mail.smtp.host", "smtp.gmail.com");
-			prop.put("mail.smtp.port", "465");
+			prop.put("mail.smtp.port", "587");
 			prop.put("mail.smtp.auth", "true");
-			prop.put("mail.smtp.socketFactory.port", "465");
-			prop.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+			prop.put("mail.smtp.starttls.enable", true);
+			prop.put("mail.smtp.ssl.trust", "smtp.gmail.com");
 
 
 
@@ -39,12 +39,12 @@ public class TwoFactorAuth {
 				new jakarta.mail.Authenticator() {
 					protected PasswordAuthentication getPasswordAuthentication() {
 						return new PasswordAuthentication(userPass.getProperty("gmail.username"),
-							userPass.getProperty("gmail.password"));
+							userPass.getProperty("gmail.apppassword"));
 					}
 				});
 
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(userPass.getProperty("gmail.username") + "@gmail.com"));
+			message.setFrom(new InternetAddress(userPass.getProperty("gmail.username")));
 			message.setRecipient(
 				Message.RecipientType.TO,
 				InternetAddress.parse(emailAddress)[0]
