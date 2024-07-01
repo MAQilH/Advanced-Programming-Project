@@ -12,6 +12,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -22,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.function.Function;
 
@@ -47,25 +50,56 @@ public class ChatGUI {
 
         Thread updateChatThread = new Thread(() -> {
             while (true) {
+				final int previousSize = messageBox.getChildren().stream()
+					.filter(node -> node instanceof TextArea).toArray().length;
+				final int previousReactSize = messageBox.getChildren().stream()
+					.filter(node -> node instanceof ImageView).toArray().length;
+
                 ArrayList<Message> messages = tcpClient.getMessages();
-                System.err.println(messages);
+				final int reactSize = messages.stream().filter(Message::getReact).toArray().length;
+
                 if (messages != null) {
                     Platform.runLater(() -> {
-                        if (messages.size() == messageBox.getChildren().size())
+                        if (messages.size() == previousSize && reactSize == previousReactSize)
                             return;
                         messageBox.getChildren().clear();
+
+						int index = 0;
                         for (Message message : messages) {
-                            TextArea messageArea = new TextArea(message.getSenderUsername() + ":  " +
-                                    message.getMessage() + "\n");
+                            TextArea messageArea = new TextArea(message.getSenderUsername() + "(on "
+	                            + message.getDate()
+	                            + "):\n " + message.getMessage());
                             messageArea.setEditable(false);
                             messageArea.setWrapText(true);
                             messageArea.setOnMouseEntered(event -> messageArea.setStyle("-fx-opacity: 0.7;"));
                             messageArea.setOnMouseExited(event -> messageArea.setStyle("-fx-opacity: 1.0;"));
+	                        int finalIndex = index;
+	                        messageArea.setOnMouseClicked(event -> {
+								if (event.getClickCount() == 2) {
+									TCPClient client = new TCPClient();
+									client.reactToMessage(finalIndex);
+								}
+							});
+
+							index++;
                             messageArea.setPrefRowCount(4);
                             messageBox.getChildren().add(messageArea);
+
+							if (message.getReact()) {
+								ImageView likeImageView = new ImageView();
+								likeImageView.setImage(new Image(getClass().getResourceAsStream("/icons/like.png")));
+								likeImageView.setFitHeight(20);
+								likeImageView.setFitWidth(20);
+								messageBox.getChildren().add(likeImageView);
+							}
                         }
-                    });
+
+					});
                 }
+
+				Platform.runLater(() -> {
+					scrollPane.setVvalue(1.0);
+				});
 
                 try {
                     Thread.sleep(1000);
@@ -86,7 +120,7 @@ public class ChatGUI {
         inputField.setOnKeyPressed(event -> {
             if (event.getCode() != KeyCode.ENTER) return;
             String input = inputField.getText();
-            tcpClient.sendChatMessage(input, UserService.getInstance().getCurrentUser().getUsername());
+            tcpClient.sendChatMessage(UserService.getInstance().getCurrentUser().getUsername(), input);
             inputField.clear();
         });
 

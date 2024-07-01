@@ -25,4 +25,8 @@ public class ChatService {
 	public void addMessage(Message message) {
 		messages.add(message);
 	}
+
+	public void addReact(int messageId) {
+		messages.get(messageId).addReact();
+	}
 }

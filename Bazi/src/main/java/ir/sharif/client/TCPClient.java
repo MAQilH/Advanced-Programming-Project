@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.messages.*;
 import ir.sharif.messages.Game.*;
+import ir.sharif.messages.chat.ReactToMessage;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.Message;
 import ir.sharif.model.User;
@@ -332,4 +333,7 @@ public class TCPClient {
      }
 
 
+	public void reactToMessage(int index) {
+		ServerMessage response = sendMessage(new ReactToMessage(index));
+	}
 }
