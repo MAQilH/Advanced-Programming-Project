@@ -1,6 +1,7 @@
 package ir.sharif.model.game;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class UserTable {
     private final Leader leader;
@@ -209,4 +210,9 @@ public class UserTable {
     public void setLife(int x) {
         life = x;
     }
+
+	public ArrayList<Card> getDiscardPile() {
+		return outOfPlays;
+	}
+
 }

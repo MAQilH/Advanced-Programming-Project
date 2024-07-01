@@ -1,9 +1,11 @@
 package ir.sharif.view.controllers;
 
+import ir.sharif.controller.LoginController;
 import ir.sharif.controller.RegisterController;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.SecurityQuestion;
+import ir.sharif.service.UserService;
 import ir.sharif.utils.Random;
 import ir.sharif.view.ViewLoader;
 import javafx.fxml.FXML;
@@ -53,7 +55,8 @@ public class Signup {
 			securityAnswerTextField.getText());
 		CommandResult commandResult = controller.register(username, password, password2, question, nickname, email);
 		if (commandResult.statusCode() == ResultCode.ACCEPT) {
-			ViewLoader.newScene("start");
+			new LoginController().login(username, password, true);
+			ViewLoader.newScene("email-verification");
 		} else {
 			errorLabel.setText(commandResult.message());
 		}

@@ -99,7 +99,13 @@ public class Lobby {
 	}
 
 	public void random(MouseEvent mouseEvent) {
-
+		TCPClient client = new TCPClient();
+		String gameToken = client.gameRequest(UserService.getInstance().getCurrentUser(), null, false);
+		if (gameToken == null) errorLabel.setText("Error in game request");
+		else {
+			errorLabel.setText("Game request sent to random player");
+			lastGameCreated = gameToken;
+		}
 	}
 
 	public void acceptGame(MouseEvent mouseEvent) {

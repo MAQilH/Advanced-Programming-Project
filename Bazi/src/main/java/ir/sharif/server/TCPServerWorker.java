@@ -162,7 +162,9 @@ public class TCPServerWorker extends Thread {
 					return gsonAgent.fromJson(clientStr, GetActionsMessage.class);
 				case GET_LIVE_GAMES_MESSAGE:
 					return gsonAgent.fromJson(clientStr, GetLiveGamesMessage.class);
-                default:
+	            case REACT_TO_MESSAGE:
+					return gsonAgent.fromJson(clientStr, ReactToMessage.class);
+				default:
                     System.err.println("wtf: " + clientStr);
                     return null;
             }
@@ -296,8 +298,11 @@ public class TCPServerWorker extends Thread {
 		} else if(msg instanceof GetLiveGamesMessage){
 			GetLiveGamesMessage getLiveGamesMessage = (GetLiveGamesMessage) msg;
 			sendMessage(gameHandler.getLiveGames(getLiveGamesMessage));
-		}
-		else {
+		} else if (msg instanceof ReactToMessage) {
+			ReactToMessage reactToMessage = (ReactToMessage) msg;
+			ChatService.getInstance().addReact(reactToMessage.getMessageId());
+			sendSuccess("react Added");
+        } else {
 	        System.err.println("invalid client command :)");
             sendFailure("Invalid message type");
         }
