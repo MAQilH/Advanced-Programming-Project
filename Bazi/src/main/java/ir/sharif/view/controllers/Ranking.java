@@ -2,12 +2,17 @@ package ir.sharif.view.controllers;
 
 
 import ir.sharif.client.TCPClient;
+import ir.sharif.model.GameHistory;
+import ir.sharif.model.GameState;
 import ir.sharif.model.User;
+import ir.sharif.model.game.MatchTable;
 import ir.sharif.service.GameHistoryService;
+import ir.sharif.service.GameService;
 import ir.sharif.service.UserService;
 import ir.sharif.view.ViewLoader;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
@@ -18,6 +23,8 @@ import java.util.HashMap;
 public class Ranking {
 	@FXML
 	ListView<String> ranking;
+	@FXML
+	Label errorLabel;
 
 	@FXML
 	public void initialize() {
@@ -67,13 +74,30 @@ public class Ranking {
 		Platform.runLater(() -> {
 			ranking.getItems().clear();
 			for (User user : allUsers) {
-				ranking.getItems().add(ranks.get(user) + ". " + user.getUsername() + " -" +
+				ranking.getItems().add(ranks.get(user) + ". " + user.getUsername() + "(" + GameHistoryService.getInstance().getHighestScore(user.getUsername()) + ")" + " -" +
 					(isOnline.get(user) ? "Online" : "Offline") + "-");
 			}
 		});
 	}
 
 	private void handleFriendClick(String item) {
+		GameHistoryService service = GameHistoryService.getInstance();
+		ArrayList<GameHistory> histories = service.getUserHistory(item);
+		GameHistory lastOnlineGame = null;
+		for (GameHistory history : histories) {
+			if (history.getGameToken() != null)
+				lastOnlineGame = history;
+		}
+
+		if (lastOnlineGame == null) {
+			errorLabel.setText("No online game found for the user");
+			return;
+		}
+
+		GameService.getInstance().setMatchTable(new MatchTable(lastOnlineGame.getUser1(), lastOnlineGame.getUser2(),
+			lastOnlineGame.getGameToken()));
+		GameService.getInstance().createController(GameState.OFFLINE_OBSERVER);
+		ViewLoader.newScene("game");
 	}
 
 	public void back(MouseEvent mouseEvent) {

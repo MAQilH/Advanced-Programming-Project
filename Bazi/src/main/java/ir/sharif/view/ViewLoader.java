@@ -5,6 +5,7 @@ import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.view.gui.terminal.TerminalGUI;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -45,8 +46,11 @@ public class ViewLoader {
 		else
 			scene.getStylesheets().add(ViewLoader.class.getResource("/CSS/game.css").toExternalForm());
 
+		System.err.println(scene.getCursor());
 		System.out.println(scene.getStylesheets());
 		Pane pane = (Pane) scene.getRoot();
+		pane.setCursor(new ImageCursor(new Image(ViewLoader.class.getResourceAsStream("/icons/cursor.png"))));
+		pane.setOnMouseEntered(event -> pane.setCursor(new ImageCursor(new Image(ViewLoader.class.getResourceAsStream("/icons/cursor.png")))));
 
 		double width = -1;
 		double height = -1;
