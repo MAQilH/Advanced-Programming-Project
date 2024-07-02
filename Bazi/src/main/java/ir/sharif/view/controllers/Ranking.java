@@ -17,6 +17,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 
+import javax.swing.text.View;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -25,6 +26,8 @@ public class Ranking {
 	ListView<String> ranking;
 	@FXML
 	Label errorLabel;
+
+	HashMap<String, String> usernameMap = new HashMap<>();
 
 	@FXML
 	public void initialize() {
@@ -43,7 +46,7 @@ public class Ranking {
 
 		update();
 		Thread thread = new Thread(() -> {
-			while (true) {
+			while (ViewLoader.getViewName().equals("ranking")) {
 				update();
 				try {
 					Thread.sleep(1000);
@@ -72,17 +75,20 @@ public class Ranking {
 		});
 
 		Platform.runLater(() -> {
+			usernameMap.clear();
 			ranking.getItems().clear();
 			for (User user : allUsers) {
-				ranking.getItems().add(ranks.get(user) + ". " + user.getUsername() + "(" + GameHistoryService.getInstance().getHighestScore(user.getUsername()) + ")" + " -" +
-					(isOnline.get(user) ? "Online" : "Offline") + "-");
+				String s = ranks.get(user) + ". " + user.getUsername() + "(" + GameHistoryService.getInstance().getHighestScore(user.getUsername()) + ")" + " -" +
+					(isOnline.get(user) ? "Online" : "Offline") + "-";
+				usernameMap.put(s, user.getUsername());
+				ranking.getItems().add(s);
 			}
 		});
 	}
 
 	private void handleFriendClick(String item) {
 		GameHistoryService service = GameHistoryService.getInstance();
-		ArrayList<GameHistory> histories = service.getUserHistory(item);
+		ArrayList<GameHistory> histories = service.getUserHistory(usernameMap.get(item));
 		GameHistory lastOnlineGame = null;
 		for (GameHistory history : histories) {
 			if (history.getGameToken() != null)

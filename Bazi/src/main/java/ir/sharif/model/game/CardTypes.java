@@ -99,7 +99,7 @@ public enum CardTypes {
     CYNTHIA("Cynthia", 4, 1, CardPosition.RANGED_UNIT, null, Faction.NILFGAARDIAN_EMPIRE, false),
     ETOLIAN_AUXILIARY_ARCHERS("Etolian Auxiliary Archers", 1, 2, CardPosition.RANGED_UNIT, new Medic(), Faction.NILFGAARDIAN_EMPIRE, false),
     LETHO_OF_GULET("Letho of Gulet", 10, 1, CardPosition.CLOSE_COMBAT_UNIT, null, Faction.NILFGAARDIAN_EMPIRE, false),
-    MENNO_COEHOORN_2("Menno Coehoorn", 10, 1, CardPosition.CLOSE_COMBAT_UNIT, new Medic(), Faction.NILFGAARDIAN_EMPIRE, false),
+    MENNO_COEHOORN_2("Menno Coehoorn", 10, 1, CardPosition.CLOSE_COMBAT_UNIT, new Medic(), Faction.NILFGAARDIAN_EMPIRE, true),
     MORTEISEN("Morteisen", 3, 1, CardPosition.CLOSE_COMBAT_UNIT, null, Faction.NILFGAARDIAN_EMPIRE, false),
     NAUSICAA_CAVALRY_RIDER("Nausicaa Cavalry Rider", 2, 3, CardPosition.CLOSE_COMBAT_UNIT, new TightBond(), Faction.NILFGAARDIAN_EMPIRE, false),
     RAINFARN("Rainfarn", 4, 1, CardPosition.CLOSE_COMBAT_UNIT, null, Faction.NILFGAARDIAN_EMPIRE, false),
@@ -127,8 +127,8 @@ public enum CardTypes {
     PLAGUE_MAIDEN("Plague Maiden", 5, 1, CardPosition.CLOSE_COMBAT_UNIT, null, Faction.MONSTERS, false),
     VAMPIRE_KATAKAN("Vampire: Katakan", 5, 1, CardPosition.CLOSE_COMBAT_UNIT, new Muster(), Faction.MONSTERS, false),
     WEREWOLF("Werewolf", 5, 1, CardPosition.CLOSE_COMBAT_UNIT, null, Faction.MONSTERS, false),
-    ARACHAS("Arachas", 4, 3, CardPosition.CLOSE_COMBAT_UNIT, new Muster(), Faction.MONSTERS, false),
-    BOTCHLING("Botchling", 4, 1, CardPosition.CLOSE_COMBAT_UNIT, null, Faction.MONSTERS, false),
+    ARACHAS("Arachas", 6, 3, CardPosition.CLOSE_COMBAT_UNIT, new Muster(), Faction.MONSTERS, false),
+    BOTCHLING("Botchling", 1, 1, CardPosition.CLOSE_COMBAT_UNIT, new Muster(), Faction.MONSTERS, false),
     VAMPIRE_BRUXA("Vampire: Bruxa", 4, 1, CardPosition.CLOSE_COMBAT_UNIT, new Muster(), Faction.MONSTERS, false),
     VAMPIRE_EKIMMARA("Vampire: Ekimmara", 4, 1, CardPosition.CLOSE_COMBAT_UNIT, new Muster(), Faction.MONSTERS, false),
     VAMPIRE_FLEDER("Vampire: Fleder", 4, 1, CardPosition.CLOSE_COMBAT_UNIT, new Muster(), Faction.MONSTERS, false),
@@ -138,7 +138,7 @@ public enum CardTypes {
     ENDREGA("Endrega", 2, 1, CardPosition.RANGED_UNIT, null, Faction.MONSTERS, false),
     FOGLET("Foglet", 2, 1, CardPosition.CLOSE_COMBAT_UNIT, null, Faction.MONSTERS, false),
     GARGOYLE("Gargoyle", 2, 1, CardPosition.RANGED_UNIT, null, Faction.MONSTERS, false),
-    HARPY("Harpy", 2, 1, CardPosition.AGILE_UNIT, null, Faction.MONSTERS, false),
+    HARPY("Harpy", 2, 1, CardPosition.AGILE_UNIT, new Transformers(), Faction.MONSTERS, false),
     NEKKER("Nekker", 2, 3, CardPosition.CLOSE_COMBAT_UNIT, new Muster(), Faction.MONSTERS, false),
     WYVERN("Wyvern", 2, 1, CardPosition.RANGED_UNIT, null, Faction.MONSTERS, false),
     GHOUL("Ghoul", 1, 3, CardPosition.CLOSE_COMBAT_UNIT, new Muster(), Faction.MONSTERS, false),
@@ -160,9 +160,9 @@ public enum CardTypes {
     TRISS_MERIGOLD("Triss Merigold", 7, 1, CardPosition.CLOSE_COMBAT_UNIT, null, null, true),
     VESEMIR("Vesemir", 6, 1, CardPosition.CLOSE_COMBAT_UNIT, null, null, false),
     VILLENTRETENMERTH("Villentretenmerth", 7, 1, CardPosition.CLOSE_COMBAT_UNIT, new Scorch(), null, false),
-    YENNEFER_OF_VENGERBERG("Yennefer of Vengerberg", 7, 1, CardPosition.RANGED_UNIT, new Medic(), null, false),
+    YENNEFER_OF_VENGERBERG("Yennefer of Vengerberg", 7, 1, CardPosition.RANGED_UNIT, new Medic(), null, true),
     ZOLTAN_CHIVAY("Zoltan Chivay", 5, 1, CardPosition.CLOSE_COMBAT_UNIT, null, null, false),
-    COW("Cow", 2, 1, CardPosition.RANGED_UNIT, new Transformers(), null, false);
+    COW("Cow", 0, 1, CardPosition.RANGED_UNIT, new Transformers(), null, false);
 
 
 
@@ -223,4 +223,12 @@ public enum CardTypes {
     public Card getInstance() {
         return new Card(name, power, noOfCards, cardPosition, ability, faction, isHero);
     }
+
+	public String getCardLMImageAddress() {
+		Card card = getInstance();
+		String faction = (card.getFaction() == null ? "neutral" : card.getFaction().toString().toLowerCase());
+		if (faction.equals("nilfgaardian_empire")) faction = "nilfgaard";
+		if (faction.equals("northen_realms")) faction = "realms";
+		return "/images/lm/" + faction + "_" + CardTypes.getCardType(card.getName()).toString().toLowerCase() + ".jpg";
+	}
 }

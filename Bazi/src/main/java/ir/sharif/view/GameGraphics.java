@@ -6,17 +6,17 @@ import ir.sharif.enums.ResultCode;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.GameState;
 import ir.sharif.model.React;
-import ir.sharif.model.User;
 import ir.sharif.model.game.Card;
+import ir.sharif.model.game.CardTypes;
 import ir.sharif.model.game.Faction;
 import ir.sharif.model.game.LeaderType;
 import ir.sharif.service.GameService;
 import ir.sharif.service.UserService;
 import ir.sharif.view.game.CardGraphics;
-import javafx.animation.FadeTransition;
-import javafx.animation.PauseTransition;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
@@ -31,10 +31,15 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
+import javax.swing.text.View;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GameGraphics {
 	private Pane pane;
@@ -51,6 +56,10 @@ public class GameGraphics {
 	private ImageView userDeckImages[][] = new ImageView[2][2];
 	private Label deadLabel[] = new Label[2];
 	private Label deckLabel[] = new Label[2];
+	private ImageView cardDetails = new ImageView();
+
+	private CardGraphics selectedGradGraphics = null;
+	private Path leaderAnimation = null;
 
 
 	private GameGraphics() {}
@@ -95,6 +104,20 @@ public class GameGraphics {
 
 		leaderGraphics[0] = (ImageView) getChildrenById("leader0");
 		leaderGraphics[1] = (ImageView) getChildrenById("leader1");
+
+		for (int i = 0; i < 2; i++) {
+			int finalI = i;
+			leaderGraphics[i].setOnMouseEntered(event -> {
+				leaderGraphics[finalI].setScaleX(2.2);
+				leaderGraphics[finalI].setScaleY(2.2);
+			});
+
+			leaderGraphics[i].setOnMouseExited(event -> {
+				leaderGraphics[finalI].setScaleX(1);
+				leaderGraphics[finalI].setScaleY(1);
+			});
+		}
+
 		healths[0] = (HBox) getChildrenById("health1");
 		healths[1] = (HBox) getChildrenById("health2");
 
@@ -148,6 +171,16 @@ public class GameGraphics {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		pane.setOnMouseClicked(event -> {
+			if (selectedGradGraphics != null) {
+				selectedGradGraphics.stopAnimation();
+				selectedGradGraphics = null;
+				cardDetails.setImage(null);
+			}
+		});
+
+		cardDetails = (ImageView) getChildrenById("cardDetails");
 	}
 
 	private String getFactionImageName(Faction faction) {
@@ -176,11 +209,12 @@ public class GameGraphics {
 			try {
 				TCPClient client = new TCPClient();
 				int buffer = client.getAllReacts(0).size();
-				while (true) {
+				while (ViewLoader.getViewName().equals("game")) {
 					try {
 						Thread.sleep(1000);
 						ArrayList<React> reacts = client.getAllReacts(buffer);
 						for (React react : reacts) {
+							AtomicBoolean isPng = new AtomicBoolean(false);
 							Platform.runLater(() -> {
 								if (react.getMessage().contains(".png")) {
 									ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream("/images/reacts/" + react.getMessage())));
@@ -188,8 +222,14 @@ public class GameGraphics {
 									imageView.setFitHeight(100);
 
 									pane.getChildren().add(imageView);
-									imageView.setY(pane.getHeight() - 100);
-									imageView.setX(pane.getWidth() / 2 - 50);
+									if (react.getPosition() == null) {
+										imageView.layoutXProperty().bind(pane.widthProperty().subtract(imageView.fitWidthProperty()).divide(2));
+										imageView.layoutYProperty().bind(pane.heightProperty().subtract(imageView.fitHeightProperty()).divide(2));
+									} else {
+										imageView.layoutXProperty().bind(Bindings.createDoubleBinding(() -> react.getPosition().getFirst() - 50));
+										imageView.layoutYProperty().bind(Bindings.createDoubleBinding(() -> react.getPosition().getSecond() - 55));
+									}
+
 									// move the react from bottom to top and fade it in 6 seconds
 									TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(6), imageView);
 									translateTransition.setByY(-1000);
@@ -199,10 +239,30 @@ public class GameGraphics {
 									fadeTransition.setFromValue(1.0);
 									fadeTransition.setToValue(0.0);
 									fadeTransition.play();
-									showToast(react.getSender() + " reacted with ");
-								} else {
-									showToast(react.getSender() + " reacted: " + react.getMessage());
+									isPng.set(true);
 								}
+
+								String text = react.getSender() + (isPng.get() ? "" : ": " + react.getMessage());
+								Label reactLabel = new Label(text);
+								// move the react label and fade it just like the image view
+								if (react.getPosition() == null) {
+									reactLabel.layoutXProperty().bind(pane.widthProperty().subtract(reactLabel.widthProperty()).divide(2));
+									reactLabel.layoutYProperty().bind(pane.heightProperty().subtract(reactLabel.heightProperty())
+										.divide(2).add(isPng.get() ? 55 : 0));
+								} else {
+									reactLabel.layoutXProperty().bind(Bindings.createDoubleBinding(() -> react.getPosition().getFirst()).subtract(reactLabel.widthProperty().divide(2)));
+									reactLabel.layoutYProperty().bind(Bindings.createDoubleBinding(() -> react.getPosition().getSecond() + (isPng.get() ? 55 : 0)));
+								}
+
+								reactLabel.setOpacity(0.0);
+								pane.getChildren().add(reactLabel);
+								TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(6), reactLabel);
+								translateTransition.setByY(-1000);
+								translateTransition.play();
+								FadeTransition fadeTransition = new FadeTransition(Duration.seconds(6), reactLabel);
+								fadeTransition.setFromValue(1.0);
+								fadeTransition.setToValue(0.0);
+								fadeTransition.play();
 							});
 						}
 
@@ -232,7 +292,13 @@ public class GameGraphics {
 	}
 
 	public boolean checkActionOnline() {
-		if (controller.isOnline() && controller.getOnlineCurrentUser() != controller.getMatchTable().getTurn()) {
+		System.err.println("current User: " + UserService.getInstance().getCurrentUser().getUsername());
+		System.err.println("user Turn: " + controller.getMatchTable().getUser(controller.getMatchTable().getTurn()).getUsername());
+		System.err.println("user1: " + controller.getMatchTable().getUser(0).getUsername());
+		System.err.println("user2: " + controller.getMatchTable().getUser(1).getUsername());
+		System.err.println("fucki tar: " + controller.getMatchTable().getTurn());
+		if (controller.isOnline() && controller.getGameState() != GameState.ONLINE_OBSERVER &&
+			controller.getOnlineCurrentUser() != controller.getMatchTable().getTurn()) {
 			showErrorToast("It's not your turn");
 			return true;
 		}
@@ -304,11 +370,11 @@ public class GameGraphics {
 		toastLabel.setOpacity(0.0);
 		pane.getChildren().add(toastLabel);
 
-		FadeTransition fadeIn = new FadeTransition(Duration.seconds(2), toastLabel);
+		FadeTransition fadeIn = new FadeTransition(Duration.seconds(1.5), toastLabel);
 		fadeIn.setFromValue(0.0);
 		fadeIn.setToValue(1.0);
 		fadeIn.setOnFinished((e) -> {
-			FadeTransition fadeOut = new FadeTransition(Duration.seconds(2), toastLabel);
+			FadeTransition fadeOut = new FadeTransition(Duration.seconds(1.5), toastLabel);
 			fadeOut.setFromValue(1.0);
 			fadeOut.setToValue(0.0);
 			fadeOut.setOnFinished((e2) -> pane.getChildren().remove(toastLabel));
@@ -333,6 +399,20 @@ public class GameGraphics {
 			updatePowerLabels();
 			updateCardCounts();
 		});
+	}
+
+	private void changeLeaderAnimation(ImageView leaderImageView) {
+		if (leaderAnimation != null)
+			pane.getChildren().remove(leaderAnimation);
+
+		Path path = getHeartAnimation(leaderImageView.getFitWidth(), leaderImageView.getFitHeight(), Color.DARKORANGE);
+		leaderAnimation = path;
+		pane.getChildren().add(path);
+		path.setLayoutX(leaderImageView.getLayoutX());
+		path.setLayoutY(leaderImageView.getLayoutY());
+
+		Bounds bounds = path.getBoundsInParent();
+		System.err.println(bounds.getCenterX() + " rrr " + bounds.getCenterY() + " " + bounds.getWidth() + " " + bounds.getHeight());
 	}
 
 	private void updateCardCounts() {
@@ -409,6 +489,40 @@ public class GameGraphics {
 		fadeTransition.play();
 	}
 
+	public static Path getHeartAnimation(double width, double height, Color color) {
+		Path neonRectangle = new Path();
+
+		MoveTo moveTo = new MoveTo(0, 0);
+		LineTo line1 = new LineTo(width, 0);
+		MoveTo moveTo2 = new MoveTo(width, 0);
+		LineTo line2 = new LineTo(width, height);
+		MoveTo moveTo3 = new MoveTo(width, height);
+		LineTo line3 = new LineTo(0, height);
+		MoveTo moveTo4 = new MoveTo(0, height);
+		LineTo line4 = new LineTo(0, 0);
+
+		neonRectangle.getElements().add(moveTo);
+		neonRectangle.getElements().add(line1);
+		neonRectangle.getElements().add(moveTo2);
+		neonRectangle.getElements().add(line2);
+		neonRectangle.getElements().add(moveTo3);
+		neonRectangle.getElements().add(line3);
+		neonRectangle.getElements().add(moveTo4);
+		neonRectangle.getElements().add(line4);
+
+		neonRectangle.setStroke(color);
+		neonRectangle.setStrokeWidth(3);
+
+		ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(1), neonRectangle);
+		scaleTransition.setByX(0.1);
+		scaleTransition.setByY(0.1);
+		scaleTransition.setCycleCount(Timeline.INDEFINITE);
+		scaleTransition.setAutoReverse(true);
+
+		scaleTransition.play();
+		return neonRectangle;
+	}
+
 	public void preTurnLoading() {
 		Platform.runLater(() -> {
 			loadModel();
@@ -417,6 +531,9 @@ public class GameGraphics {
 			} else {
 				showToast("Player " + (controller.getMatchTable().getTurn() + 1) + "'s turn");
 			}
+
+			int turn = controller.getMatchTable().getTurn();
+			changeLeaderAnimation(leaderGraphics[turn]);
 		});
 	}
 
@@ -515,6 +632,17 @@ public class GameGraphics {
 					} else {
 						showErrorToast(result.message());
 					}
+				} else {
+					if (selectedGradGraphics != null) selectedGradGraphics.stopAnimation();
+					selectedGradGraphics = cardGraphics;
+					selectedGradGraphics.playAnimation();
+					try {
+						cardDetails.setImage(new Image(getClass().getResourceAsStream(CardTypes.getCardType(cardGraphics.getCard().getName()).getCardLMImageAddress())));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+					event.consume();
 				}
 			}
 		);
@@ -533,7 +661,7 @@ public class GameGraphics {
 	}
 
 	public void addCardToHBox(Card card, HBox hbox) {
-		CardGraphics cardGraphics = new CardGraphics(card, hbox.getHeight());
+		CardGraphics cardGraphics = new CardGraphics(card, hbox.getHeight(), false);
 		setDragAndDropFunctionality(cardGraphics, hbox);
 		setOnMouseClickFunctionality(cardGraphics, hbox);
 		setOnMouseHoverFunctionality(cardGraphics, hbox);
@@ -549,5 +677,9 @@ public class GameGraphics {
 				break;
 			}
 		}
+	}
+
+	public CardGraphics getSelectedCardGraphics() {
+		return selectedGradGraphics;
 	}
 }

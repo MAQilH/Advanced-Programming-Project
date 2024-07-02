@@ -14,6 +14,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 
+import javax.swing.text.View;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -58,7 +59,7 @@ public class Television {
 		});
 
 		Thread thread = new Thread(() -> {
-			while (true) {
+			while (ViewLoader.getViewName().equals("television")) {
 				update();
 				try {
 					Thread.sleep(2000);

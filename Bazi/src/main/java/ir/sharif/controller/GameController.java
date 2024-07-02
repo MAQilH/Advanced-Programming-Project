@@ -14,6 +14,7 @@ import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.utils.Random;
 import ir.sharif.view.GameGraphics;
 import ir.sharif.view.Regex;
+import ir.sharif.view.ViewLoader;
 import ir.sharif.view.controllers.Game;
 import javafx.css.Match;
 
@@ -51,8 +52,10 @@ public class GameController {
     private void runOnlineMode() {
         if(gameState == GameState.ONLINE_OBSERVER || gameState == GameState.ONLINE_PLAYER){
             if(gameState == GameState.ONLINE_OBSERVER) GameService.getInstance().setActionLock(true);
-            Thread thread = new Thread(() -> {
-                while (true){
+            Thread thread;
+			thread = new Thread(() -> {
+				System.err.println("looooloooo: " + ViewLoader.getViewName());
+                while (ViewLoader.getViewName().equals("game")){
                     ArrayList<String> newAction = GameService.getInstance().getNewActions();
                     GameService.getInstance().setActionLock(true);
                     for (String action : newAction) {
@@ -67,6 +70,7 @@ public class GameController {
                     }
                 }
             });
+
             thread.start();
         }
     }
@@ -81,7 +85,7 @@ public class GameController {
 					System.err.println("khar----" + action);
 					runne(action);
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(1500);
 					} catch (InterruptedException e) {
 						throw new RuntimeException(e);
 					}

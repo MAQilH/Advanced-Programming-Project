@@ -49,7 +49,8 @@ public class Lobby {
 		friends.getItems().addAll(friendsArray);
 
 		Thread gameLobbyThread = new Thread(() -> {
-			while (true) {
+			System.err.println("fuck: " + ViewLoader.getViewName());
+			while (ViewLoader.getViewName().equals("lobby")) {
 				TCPClient client = new TCPClient();
 				String token = client.getQueuedGame(UserService.getInstance().getCurrentUser().getUsername());
 				System.err.println(token);
@@ -68,6 +69,7 @@ public class Lobby {
 						GameRecord record = client.getGameRecord(lastGameCreated);
 						PreGameController controller = new PreGameController();
 						controller.startOnlineGame(record);
+						ViewLoader.setMenuName("game");
 						Platform.runLater(() -> {
 							ViewLoader.newScene("game");
 						});

@@ -99,7 +99,7 @@ public class Pregame {
 	private VBox createCardAdder(CardTypes type) {
 		VBox vBox = new VBox();
 		vBox.setSpacing(10);
-		vBox.getChildren().add(new CardGraphics(type.getInstance(), 300));
+		vBox.getChildren().add(new CardGraphics(type.getInstance(), 300, true));
 
 		HBox hBox = new HBox();
 		hBox.setAlignment(Pos.CENTER);
@@ -129,7 +129,7 @@ public class Pregame {
 
 		HBox lastRow = null;
 		for (CardTypes cardTypes : CardTypes.values()) {
-			if (lastRow == null || lastRow.getChildren().size() == 3) {
+			if (lastRow == null || lastRow.getChildren().size() == 4) {
 				lastRow = new HBox();
 				lastRow.setSpacing(10);
 				lastRow.setAlignment(Pos.CENTER);

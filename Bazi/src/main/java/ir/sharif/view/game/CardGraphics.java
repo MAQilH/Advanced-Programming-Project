@@ -4,7 +4,10 @@ import ir.sharif.model.game.*;
 import ir.sharif.model.game.abilities.Berserker;
 import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.utils.Random;
+import ir.sharif.view.GameGraphics;
 import ir.sharif.view.ViewLoader;
+import javafx.animation.ScaleTransition;
+import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -14,8 +17,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.io.InputStream;
 
@@ -30,9 +37,9 @@ public class CardGraphics extends Pane {
 	private Label powerLabel;
 	private double scale = 1.0;
 
-	public CardGraphics(Card card, double height) {
+	public CardGraphics(Card card, double height, boolean isBase) {
 		this.card = card;
-		this.width = height / Double.parseDouble(ConstantsLoader.getInstance().getProperty("card.scale"));
+		this.width = height / (isBase ? 1.89 : Double.parseDouble(ConstantsLoader.getInstance().getProperty("card.scale")));
 		this.height = height;
 		double initWidth = Double.parseDouble(ConstantsLoader.getInstance().getProperty("card.width"));
 		scale = width / initWidth;
@@ -42,7 +49,17 @@ public class CardGraphics extends Pane {
 		this.setMinHeight(height);
 		this.setMaxHeight(height);
 
-		init();
+		if (!isBase) init();
+		else initBase();
+	}
+
+	private void initBase() {
+		try {
+			setBackground(CardTypes.getCardType(card.getName()).getCardLMImageAddress());
+		} catch (Exception e) {
+			setBackground("/images/old_card.png");
+			System.err.println("fucked up: " + card.getName());
+		}
 	}
 
 	private void init() {
@@ -152,5 +169,14 @@ public class CardGraphics extends Pane {
 
 	public void updatePower() {
 		powerLabel.setText(String.valueOf(card.calculatePower()));
+	}
+
+	public void playAnimation() {
+		this.getChildren().add(GameGraphics.getHeartAnimation(this.getWidth(), this.getHeight(),
+			Color.web("#966919")));
+	}
+
+	public void stopAnimation() {
+		this.getChildren().removeIf(node -> node instanceof Path);
 	}
 }
