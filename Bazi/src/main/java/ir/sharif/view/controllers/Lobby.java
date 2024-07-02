@@ -116,9 +116,8 @@ public class Lobby {
 
 			Thread randomThread = new Thread(() -> {
 				while (ViewLoader.getViewName().equals("lobby")) {
-					System.err.println(gameToken);
 					TCPClient client1 = new TCPClient();
-					User user2 = client1.randomGameIsAccepted(UserService.getInstance().getCurrentUser().getUsername(), lastGameToken);
+					User user2 = client1.randomGameIsAccepted(UserService.getInstance().getCurrentUser().getUsername(), gameToken);
 					if (user2 != null) {
 						User user1 = UserService.getInstance().getCurrentUser();
 						if (user1.getUsername().compareTo(user2.getUsername()) > 0) {
@@ -132,7 +131,7 @@ public class Lobby {
 					}
 
 					try {
-						sleep(1000);
+						Thread.sleep(1000);
 					} catch (InterruptedException e) {
 						throw new RuntimeException(e);
 					}
