@@ -72,6 +72,15 @@ public class GameHandler {
             gameToken = match.getSecond();
             matchedRandom.put(user.getUsername(), user2);
             matchedRandom.put(user2.getUsername(), user);
+
+            if(user.getUsername().compareTo(user2.getUsername()) > 0){
+                User tmp = user;
+                user = user2;
+                user2 = tmp;
+            }
+
+            GameRecord gameRecord = new GameRecord(user, user2, gameToken, null, false);
+            liveGames.put(gameToken, gameRecord);
         }
         System.err.println(user.getUsername() + " sss " + gameToken);
         return new ServerMessage(ResultCode.ACCEPT, gameToken);
@@ -80,7 +89,7 @@ public class GameHandler {
     public synchronized ServerMessage randomGameIsAccepted(RandomGameIsAcceptedMessage randomGameIsAcceptedMessage){
         String username = randomGameIsAcceptedMessage.getUsername();
         String gameToken = randomGameIsAcceptedMessage.getGameToken();
-        System.err.println(username + " sss " + gameToken);
+        System.err.println(username + " sss " + gameToken + "   " +matchedRandom.containsKey(username));
         if(matchedRandom.containsKey(username)){
             User opponentUser = matchedRandom.get(username);
             matchedRandom.remove(username);
