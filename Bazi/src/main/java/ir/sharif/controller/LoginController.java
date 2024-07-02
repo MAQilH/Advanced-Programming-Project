@@ -1,5 +1,7 @@
 package ir.sharif.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import ir.sharif.client.TCPClient;
 import ir.sharif.enums.Menus;
 import ir.sharif.enums.ResultCode;
@@ -8,8 +10,13 @@ import ir.sharif.model.CommandResult;
 import ir.sharif.model.User;
 import ir.sharif.service.AppService;
 import ir.sharif.service.UserService;
+import ir.sharif.utils.FileSaver;
 import ir.sharif.view.Regex;
 import ir.sharif.view.terminal.Menu;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 
 public class LoginController {
     public CommandResult menuEnter(Menus menu) {
@@ -36,9 +43,28 @@ public class LoginController {
         if(!user.getPassword().equals(password))
             return new CommandResult(ResultCode.FAILED, "password is incorrect");
 
-        UserService.getInstance().setStayLoggedIn(stayLoggedIn);
         UserService.getInstance().setCurrentUser(user);
+
+        if(stayLoggedIn){
+                stayLogin();
+        }
+
         return new CommandResult(ResultCode.ACCEPT, "login successful");
+    }
+
+    public void stayLogin(){
+        FileSaver.saveObject(UserService.getInstance().getCurrentUser(), "local_storage.stg");
+    }
+
+    public CommandResult isLogin(){
+        try {
+            User user = (User) FileSaver.loadObject("local_storage.stg");
+            if(user == null) return new CommandResult(ResultCode.FAILED, "user not logged in");
+            UserService.getInstance().setCurrentUser(user);
+            return new CommandResult(ResultCode.ACCEPT, "user logged in");
+        } catch (Exception e) {
+            return  new CommandResult(ResultCode.FAILED, "user not logged in");
+        }
     }
 
     public CommandResult forgotPassword(String username) {

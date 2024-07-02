@@ -9,6 +9,7 @@ import ir.sharif.messages.friends.*;
 import ir.sharif.messages.ServerMessage;
 import ir.sharif.messages.react.AllReactsMessage;
 import ir.sharif.messages.react.ReactMessage;
+import ir.sharif.messages.tournament.*;
 import ir.sharif.model.Message;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.messages.*;
@@ -48,6 +49,7 @@ public class TCPServerWorker extends Thread {
 	private GameHistoryHandler gameHistoryHandler = new GameHistoryHandler();
 	private GameHandler gameHandler;
 	private UserHandler userHandler;
+	private TournamentHandler tournamentHandler;
 
 	private static boolean setupServer(int portNumber, int workerNum) {
 		try {
@@ -67,6 +69,7 @@ public class TCPServerWorker extends Thread {
 
 		gameHandler = GameHandler.getInstance();
 		userHandler = UserHandler.getInstance();
+		tournamentHandler = TournamentHandler.getInstance();
 	}
 
 	public void listen() throws IOException {
@@ -164,6 +167,18 @@ public class TCPServerWorker extends Thread {
 					return gsonAgent.fromJson(clientStr, GetLiveGamesMessage.class);
 	            case REACT_TO_MESSAGE:
 					return gsonAgent.fromJson(clientStr, ReactToMessage.class);
+				case JOIN_PLAYER_MESSAGE:
+					return gsonAgent.fromJson(clientStr, CreateTournamentMessage.class);
+				case READY_PLAYER_MESSAGE:
+					return gsonAgent.fromJson(clientStr, ReadyPlayerMessage.class);
+				case GET_TOURNAMENT_MESSAGE:
+					return gsonAgent.fromJson(clientStr, GetTournamentMessage.class);
+				case GET_OPPONENT_MESSAGE:
+					return gsonAgent.fromJson(clientStr, GetOpponentMessage.class);
+				case RANDOM_GAME_REQUEST_MESSAGE:
+					return gsonAgent.fromJson(clientStr, RandomGameRequestMessage.class);
+				case RANDOM_GAME_IS_ACCEPTED_MESSAGE:
+					return gsonAgent.fromJson(clientStr, RandomGameIsAcceptedMessage.class);
 				default:
                     System.err.println("wtf: " + clientStr);
                     return null;
@@ -302,7 +317,32 @@ public class TCPServerWorker extends Thread {
 			ReactToMessage reactToMessage = (ReactToMessage) msg;
 			ChatService.getInstance().addReact(reactToMessage.getMessageId());
 			sendSuccess("react Added");
-        } else {
+        } else if(msg instanceof CreateTournamentMessage) {
+			CreateTournamentMessage createTournamentMessage = (CreateTournamentMessage) msg;
+			sendMessage(tournamentHandler.createTournament(createTournamentMessage));
+		} else if(msg instanceof JoinPlayerMessage) {
+			JoinPlayerMessage joinPlayerMessage = (JoinPlayerMessage) msg;
+			sendMessage(tournamentHandler.joinTournament(joinPlayerMessage));
+		} else if(msg instanceof ReadyPlayerMessage) {
+			ReadyPlayerMessage readyPlayerMessage = (ReadyPlayerMessage) msg;
+			sendMessage(tournamentHandler.readyPlayer(readyPlayerMessage));
+		} else if(msg instanceof GetTournamentMessage) {
+			GetTournamentMessage getTournamentMessage = (GetTournamentMessage) msg;
+			sendMessage(tournamentHandler.getTournament(getTournamentMessage));
+		} else if(msg instanceof GetTournamentStateMessage) {
+			GetTournamentStateMessage getTournamentStateMessage = (GetTournamentStateMessage) msg;
+			sendMessage(tournamentHandler.getTournamentState(getTournamentStateMessage));
+		} else if(msg instanceof GetOpponentMessage) {
+			GetOpponentMessage getOpponentMessage = (GetOpponentMessage) msg;
+			sendMessage(tournamentHandler.getOpponent(getOpponentMessage));
+		} else if(msg instanceof RandomGameRequestMessage){
+			RandomGameRequestMessage randomGameRequestMessage = (RandomGameRequestMessage) msg;
+			sendMessage(gameHandler.randomGameRequest(randomGameRequestMessage));
+		} else if(msg instanceof RandomGameIsAcceptedMessage){
+			RandomGameIsAcceptedMessage randomGameIsAcceptedMessage = (RandomGameIsAcceptedMessage) msg;
+			sendMessage(gameHandler.randomGameIsAccepted(randomGameIsAcceptedMessage));
+		}
+		else {
 	        System.err.println("invalid client command :)");
             sendFailure("Invalid message type");
         }

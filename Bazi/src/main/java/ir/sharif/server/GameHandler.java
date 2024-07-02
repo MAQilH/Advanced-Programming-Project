@@ -10,8 +10,10 @@ import ir.sharif.messages.GetLiveGamesMessage;
 import ir.sharif.messages.ServerMessage;
 import ir.sharif.messages.StartNewGameMessage;
 import ir.sharif.model.GameHistory;
+import ir.sharif.model.Pair;
 import ir.sharif.model.User;
 import ir.sharif.model.server.GameRecord;
+import ir.sharif.model.server.Tournament;
 import ir.sharif.service.storage.Database;
 import ir.sharif.utils.Random;
 import ir.sharif.view.GameGraphics;
@@ -38,10 +40,12 @@ public class GameHandler {
         return instance;
     }
 
-
     HashMap<String, String> queuedGame = new HashMap<>(); // key username, value gameToken
     HashMap<String, GameRecord> pendingGames = new HashMap<>(); // key gameToken, value gameRecord
 	HashMap<String, GameRecord> liveGames = new HashMap<>(); // key gameToken, value gameRecord
+
+    HashMap<String, User> matchedRandom = new HashMap<>();
+    ArrayList<Pair<User, String>> matchedRandomQueue = new ArrayList<>();
 
     public synchronized ServerMessage startNewGame(StartNewGameMessage startNewGameMessage) {
         Database database = Database.getInstance();
@@ -53,6 +57,33 @@ public class GameHandler {
         liveGames.put(gameToken, gameRecord);
 
         return new ServerMessage(ResultCode.ACCEPT, gameToken);
+    }
+
+    public synchronized ServerMessage randomGameRequest(RandomGameRequestMessage randomGameRequestMessage){
+        User user = randomGameRequestMessage.getUser();
+        String gameToken;
+        if(matchedRandomQueue.isEmpty()){
+            gameToken = Random.generateNewToken();
+            matchedRandomQueue.add(new Pair<>(user, gameToken));
+        } else{
+            Pair<User, String> match = matchedRandomQueue.get(0);
+            matchedRandomQueue.remove(match);
+            User user2 = match.getFirst();
+            gameToken = match.getSecond();
+            matchedRandom.put(user.getUsername(), user2);
+            matchedRandom.put(user2.getUsername(), user);
+        }
+        return new ServerMessage(ResultCode.ACCEPT, gameToken);
+    }
+
+    public synchronized ServerMessage randomGameIsAccepted(RandomGameIsAcceptedMessage randomGameIsAcceptedMessage){
+        String username = randomGameIsAcceptedMessage.getUsername();
+        String gameToken = randomGameIsAcceptedMessage.getGameToken();
+        if(matchedRandom.containsKey(username)){
+            matchedRandom.remove(username);
+            return new ServerMessage(ResultCode.ACCEPT, gson.toJson(matchedRandom.get(username)));
+        }
+        return new ServerMessage(ResultCode.NOT_FOUND, "no opponent founded!");
     }
 
     public synchronized ServerMessage gameRequest(GameRequestMessage gameRequestMessage) {
@@ -139,6 +170,9 @@ public class GameHandler {
 
         Database.getInstance().addGameRecord(gameRecord);
         Database.getInstance().addGameHistories(gameHistory);
+
+        TournamentHandler.getInstance().finishGame(gameHistory);
+
         return new ServerMessage(ResultCode.ACCEPT, "game finished successfully");
     }
 
