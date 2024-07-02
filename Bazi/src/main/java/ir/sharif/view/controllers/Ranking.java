@@ -26,6 +26,8 @@ public class Ranking {
 	@FXML
 	Label errorLabel;
 
+	HashMap<String, String> usernameMap = new HashMap<>();
+
 	@FXML
 	public void initialize() {
 		ranking.setStyle("-fx-background-color: rgba(1, 1, 1, 0.5)");
@@ -72,17 +74,20 @@ public class Ranking {
 		});
 
 		Platform.runLater(() -> {
+			usernameMap.clear();
 			ranking.getItems().clear();
 			for (User user : allUsers) {
-				ranking.getItems().add(ranks.get(user) + ". " + user.getUsername() + "(" + GameHistoryService.getInstance().getHighestScore(user.getUsername()) + ")" + " -" +
-					(isOnline.get(user) ? "Online" : "Offline") + "-");
+				String s = ranks.get(user) + ". " + user.getUsername() + "(" + GameHistoryService.getInstance().getHighestScore(user.getUsername()) + ")" + " -" +
+					(isOnline.get(user) ? "Online" : "Offline") + "-";
+				usernameMap.put(s, user.getUsername());
+				ranking.getItems().add(s);
 			}
 		});
 	}
 
 	private void handleFriendClick(String item) {
 		GameHistoryService service = GameHistoryService.getInstance();
-		ArrayList<GameHistory> histories = service.getUserHistory(item);
+		ArrayList<GameHistory> histories = service.getUserHistory(usernameMap.get(item));
 		GameHistory lastOnlineGame = null;
 		for (GameHistory history : histories) {
 			if (history.getGameToken() != null)

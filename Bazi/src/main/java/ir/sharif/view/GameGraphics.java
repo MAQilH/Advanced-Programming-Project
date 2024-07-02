@@ -268,7 +268,8 @@ public class GameGraphics {
 	}
 
 	public boolean checkActionOnline() {
-		if (controller.isOnline() && controller.getOnlineCurrentUser() != controller.getMatchTable().getTurn()) {
+		if (controller.isOnline() && controller.getGameState() != GameState.ONLINE_OBSERVER &&
+			controller.getOnlineCurrentUser() != controller.getMatchTable().getTurn()) {
 			showErrorToast("It's not your turn");
 			return true;
 		}
