@@ -10,12 +10,12 @@ import ir.sharif.model.game.Card;
 import ir.sharif.model.game.Faction;
 import ir.sharif.model.game.LeaderType;
 import ir.sharif.service.GameService;
+import ir.sharif.service.UserService;
 import ir.sharif.view.game.CardGraphics;
-import javafx.animation.FadeTransition;
-import javafx.animation.PauseTransition;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
@@ -30,8 +30,12 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
+import javax.swing.text.View;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -53,6 +57,7 @@ public class GameGraphics {
 	private Label deckLabel[] = new Label[2];
 
 	private CardGraphics selectedGradGraphics = null;
+	private Path leaderAnimation = null;
 
 
 	private GameGraphics() {}
@@ -97,6 +102,20 @@ public class GameGraphics {
 
 		leaderGraphics[0] = (ImageView) getChildrenById("leader0");
 		leaderGraphics[1] = (ImageView) getChildrenById("leader1");
+
+		for (int i = 0; i < 2; i++) {
+			int finalI = i;
+			leaderGraphics[i].setOnMouseEntered(event -> {
+				leaderGraphics[finalI].setScaleX(2.2);
+				leaderGraphics[finalI].setScaleY(2.2);
+			});
+
+			leaderGraphics[i].setOnMouseExited(event -> {
+				leaderGraphics[finalI].setScaleX(1);
+				leaderGraphics[finalI].setScaleY(1);
+			});
+		}
+
 		healths[0] = (HBox) getChildrenById("health1");
 		healths[1] = (HBox) getChildrenById("health2");
 
@@ -157,6 +176,7 @@ public class GameGraphics {
 				selectedGradGraphics = null;
 			}
 		});
+
 	}
 
 	private String getFactionImageName(Faction faction) {
@@ -185,7 +205,7 @@ public class GameGraphics {
 			try {
 				TCPClient client = new TCPClient();
 				int buffer = client.getAllReacts(0).size();
-				while (true) {
+				while (ViewLoader.getViewName().equals("game")) {
 					try {
 						Thread.sleep(1000);
 						ArrayList<React> reacts = client.getAllReacts(buffer);
@@ -268,6 +288,11 @@ public class GameGraphics {
 	}
 
 	public boolean checkActionOnline() {
+		System.err.println("current User: " + UserService.getInstance().getCurrentUser().getUsername());
+		System.err.println("user Turn: " + controller.getMatchTable().getUser(controller.getMatchTable().getTurn()).getUsername());
+		System.err.println("user1: " + controller.getMatchTable().getUser(0).getUsername());
+		System.err.println("user2: " + controller.getMatchTable().getUser(1).getUsername());
+		System.err.println("fucki tar: " + controller.getMatchTable().getTurn());
 		if (controller.isOnline() && controller.getGameState() != GameState.ONLINE_OBSERVER &&
 			controller.getOnlineCurrentUser() != controller.getMatchTable().getTurn()) {
 			showErrorToast("It's not your turn");
@@ -372,6 +397,20 @@ public class GameGraphics {
 		});
 	}
 
+	private void changeLeaderAnimation(ImageView leaderImageView) {
+		if (leaderAnimation != null)
+			pane.getChildren().remove(leaderAnimation);
+
+		Path path = getHeartAnimation(leaderImageView.getFitWidth(), leaderImageView.getFitHeight(), Color.DARKORANGE);
+		leaderAnimation = path;
+		pane.getChildren().add(path);
+		path.setLayoutX(leaderImageView.getLayoutX());
+		path.setLayoutY(leaderImageView.getLayoutY());
+
+		Bounds bounds = path.getBoundsInParent();
+		System.err.println(bounds.getCenterX() + " rrr " + bounds.getCenterY() + " " + bounds.getWidth() + " " + bounds.getHeight());
+	}
+
 	private void updateCardCounts() {
 		for (int i = 0; i < 2; i++) {
 			deckLabel[i].setText(String.valueOf(controller.getUserUserTable(i).getDeck().size()));
@@ -446,6 +485,40 @@ public class GameGraphics {
 		fadeTransition.play();
 	}
 
+	public static Path getHeartAnimation(double width, double height, Color color) {
+		Path neonRectangle = new Path();
+
+		MoveTo moveTo = new MoveTo(0, 0);
+		LineTo line1 = new LineTo(width, 0);
+		MoveTo moveTo2 = new MoveTo(width, 0);
+		LineTo line2 = new LineTo(width, height);
+		MoveTo moveTo3 = new MoveTo(width, height);
+		LineTo line3 = new LineTo(0, height);
+		MoveTo moveTo4 = new MoveTo(0, height);
+		LineTo line4 = new LineTo(0, 0);
+
+		neonRectangle.getElements().add(moveTo);
+		neonRectangle.getElements().add(line1);
+		neonRectangle.getElements().add(moveTo2);
+		neonRectangle.getElements().add(line2);
+		neonRectangle.getElements().add(moveTo3);
+		neonRectangle.getElements().add(line3);
+		neonRectangle.getElements().add(moveTo4);
+		neonRectangle.getElements().add(line4);
+
+		neonRectangle.setStroke(color);
+		neonRectangle.setStrokeWidth(3);
+
+		ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(1), neonRectangle);
+		scaleTransition.setByX(0.1);
+		scaleTransition.setByY(0.1);
+		scaleTransition.setCycleCount(Timeline.INDEFINITE);
+		scaleTransition.setAutoReverse(true);
+
+		scaleTransition.play();
+		return neonRectangle;
+	}
+
 	public void preTurnLoading() {
 		Platform.runLater(() -> {
 			loadModel();
@@ -454,6 +527,9 @@ public class GameGraphics {
 			} else {
 				showToast("Player " + (controller.getMatchTable().getTurn() + 1) + "'s turn");
 			}
+
+			int turn = controller.getMatchTable().getTurn();
+			changeLeaderAnimation(leaderGraphics[turn]);
 		});
 	}
 

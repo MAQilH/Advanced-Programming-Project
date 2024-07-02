@@ -17,6 +17,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 
+import javax.swing.text.View;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -45,7 +46,7 @@ public class Ranking {
 
 		update();
 		Thread thread = new Thread(() -> {
-			while (true) {
+			while (ViewLoader.getViewName().equals("ranking")) {
 				update();
 				try {
 					Thread.sleep(1000);

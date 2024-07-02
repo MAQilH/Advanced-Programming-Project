@@ -4,6 +4,7 @@ import com.almasb.fxgl.core.View;
 import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.view.gui.terminal.TerminalGUI;
 import javafx.animation.FadeTransition;
+import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
@@ -16,11 +17,14 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ViewLoader {
+	static String viewName = "start";
 	static Stage stage;
-
 	public static void setStage(Stage stage) {
 		ViewLoader.stage = stage;
 	}
@@ -32,7 +36,9 @@ public class ViewLoader {
 	public static Scene newScene;
 	private static boolean isBegin = true;
 
+
 	public static void newScene(String menuName) {
+		viewName = menuName;
 		FXMLLoader fxmlLoader = new FXMLLoader(ViewLoader.class.getResource("/FXML/" + menuName + "-view.fxml"));
 		Scene scene = null;
 		try {
@@ -123,5 +129,13 @@ public class ViewLoader {
 			BackgroundSize.DEFAULT);
 
 		return backgroundImage;
+	}
+
+	public static String getViewName() {
+		return viewName;
+	}
+
+	public static void setMenuName(String name) {
+		viewName = name;
 	}
 }
