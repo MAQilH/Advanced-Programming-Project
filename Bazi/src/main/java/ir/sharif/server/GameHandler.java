@@ -73,12 +73,14 @@ public class GameHandler {
             matchedRandom.put(user.getUsername(), user2);
             matchedRandom.put(user2.getUsername(), user);
         }
+        System.err.println(user.getUsername() + " sss " + gameToken);
         return new ServerMessage(ResultCode.ACCEPT, gameToken);
     }
 
     public synchronized ServerMessage randomGameIsAccepted(RandomGameIsAcceptedMessage randomGameIsAcceptedMessage){
         String username = randomGameIsAcceptedMessage.getUsername();
         String gameToken = randomGameIsAcceptedMessage.getGameToken();
+        System.err.println(username + " sss " + gameToken);
         if(matchedRandom.containsKey(username)){
             matchedRandom.remove(username);
             return new ServerMessage(ResultCode.ACCEPT, gson.toJson(matchedRandom.get(username)));

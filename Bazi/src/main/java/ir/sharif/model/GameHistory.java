@@ -10,7 +10,6 @@ public class GameHistory {
     private Date date;
     private ArrayList<Pair<Integer, Integer>> roundScores;
     private User winner;
-
 	private String gameToken;
 	private String tournamentToken;
 
