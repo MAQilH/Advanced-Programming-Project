@@ -82,8 +82,9 @@ public class GameHandler {
         String gameToken = randomGameIsAcceptedMessage.getGameToken();
         System.err.println(username + " sss " + gameToken);
         if(matchedRandom.containsKey(username)){
+            User opponentUser = matchedRandom.get(username);
             matchedRandom.remove(username);
-            return new ServerMessage(ResultCode.ACCEPT, gson.toJson(matchedRandom.get(username)));
+            return new ServerMessage(ResultCode.ACCEPT, gson.toJson(opponentUser));
         }
         return new ServerMessage(ResultCode.NOT_FOUND, "no opponent founded!");
     }
