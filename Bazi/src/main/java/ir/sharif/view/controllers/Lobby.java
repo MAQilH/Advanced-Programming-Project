@@ -18,6 +18,8 @@ import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
 
+import static java.lang.Thread.sleep;
+
 public class Lobby {
 	@FXML
 	ListView<String> friends;
@@ -83,7 +85,7 @@ public class Lobby {
 				}
 
 				try {
-					Thread.sleep(1000);
+					sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -114,6 +116,7 @@ public class Lobby {
 
 			Thread randomThread = new Thread(() -> {
 				while (ViewLoader.getViewName().equals("lobby")) {
+					System.err.println(gameToken);
 					TCPClient client1 = new TCPClient();
 					User user2 = client1.randomGameIsAccepted(UserService.getInstance().getCurrentUser().getUsername(), lastGameToken);
 					if (user2 != null) {
@@ -127,6 +130,12 @@ public class Lobby {
 						GameService.getInstance().setMatchTable(new MatchTable(user1, user2, lastGameToken, null));
 						GameService.getInstance().createController(GameState.ONLINE_PLAYER);
 					}
+				}
+
+				try {
+					sleep(1000);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
 				}
 			});
 

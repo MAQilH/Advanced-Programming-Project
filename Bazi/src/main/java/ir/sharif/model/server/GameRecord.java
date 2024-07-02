@@ -22,6 +22,10 @@ public class GameRecord implements Serializable {
         this.tournamentToken = tournamentToken;
     }
 
+	public boolean isPrivate() {
+		return gameIsPrivate;
+	}
+
     public User getUser1() {
         return user1;
     }
