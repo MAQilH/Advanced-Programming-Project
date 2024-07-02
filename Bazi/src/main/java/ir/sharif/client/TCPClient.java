@@ -392,7 +392,7 @@ public class TCPClient {
     }
 
 
-    private String randomGameRequest(User user){
+    public String randomGameRequest(User user){
         RandomGameRequestMessage randomGameRequestMessage = new RandomGameRequestMessage(user);
         ServerMessage response = sendMessage(randomGameRequestMessage);
         if(!response.wasSuccessfull()){
@@ -402,7 +402,7 @@ public class TCPClient {
         return response.getAdditionalInfo();
     }
 
-    private User randomGameIsAccepted(String username, String gameToken){
+    public User randomGameIsAccepted(String username, String gameToken){
         RandomGameIsAcceptedMessage randomGameIsAcceptedMessage = new RandomGameIsAcceptedMessage(username, gameToken);
         ServerMessage response = sendMessage(randomGameIsAcceptedMessage);
         if(!response.wasSuccessfull()){

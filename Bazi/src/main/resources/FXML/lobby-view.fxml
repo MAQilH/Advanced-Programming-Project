@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.CheckBox?>
 <Pane prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ir.sharif.view.controllers.Lobby">
 
     <VBox alignment="CENTER" prefHeight="600" prefWidth="800.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
@@ -24,12 +25,14 @@
                 </children>
             </HBox>
 
-            <ScrollPane prefWidth="Infinity">
+            <ScrollPane prefHeight="200" prefWidth="Infinity">
                 <content>
                     <ListView styleClass="transparent-list" fx:id="friends" prefWidth="800">
                     </ListView>
                 </content>
             </ScrollPane>
+
+            <CheckBox fx:id="privateCheck" text="Private Game"/>
 
             <Button text="Random Game" onMouseClicked="#random"/>
 
