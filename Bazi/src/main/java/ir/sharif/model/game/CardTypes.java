@@ -223,4 +223,12 @@ public enum CardTypes {
     public Card getInstance() {
         return new Card(name, power, noOfCards, cardPosition, ability, faction, isHero);
     }
+
+	public String getCardLMImageAddress() {
+		Card card = getInstance();
+		String faction = (card.getFaction() == null ? "neutral" : card.getFaction().toString().toLowerCase());
+		if (faction.equals("nilfgaardian_empire")) faction = "nilfgaard";
+		if (faction.equals("northen_realms")) faction = "realms";
+		return "/images/lm/" + faction + "_" + CardTypes.getCardType(card.getName()).toString().toLowerCase() + ".jpg";
+	}
 }

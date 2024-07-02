@@ -7,6 +7,7 @@ import ir.sharif.model.CommandResult;
 import ir.sharif.model.GameState;
 import ir.sharif.model.React;
 import ir.sharif.model.game.Card;
+import ir.sharif.model.game.CardTypes;
 import ir.sharif.model.game.Faction;
 import ir.sharif.model.game.LeaderType;
 import ir.sharif.service.GameService;
@@ -55,6 +56,7 @@ public class GameGraphics {
 	private ImageView userDeckImages[][] = new ImageView[2][2];
 	private Label deadLabel[] = new Label[2];
 	private Label deckLabel[] = new Label[2];
+	private ImageView cardDetails = new ImageView();
 
 	private CardGraphics selectedGradGraphics = null;
 	private Path leaderAnimation = null;
@@ -174,9 +176,11 @@ public class GameGraphics {
 			if (selectedGradGraphics != null) {
 				selectedGradGraphics.stopAnimation();
 				selectedGradGraphics = null;
+				cardDetails.setImage(null);
 			}
 		});
 
+		cardDetails = (ImageView) getChildrenById("cardDetails");
 	}
 
 	private String getFactionImageName(Faction faction) {
@@ -632,6 +636,12 @@ public class GameGraphics {
 					if (selectedGradGraphics != null) selectedGradGraphics.stopAnimation();
 					selectedGradGraphics = cardGraphics;
 					selectedGradGraphics.playAnimation();
+					try {
+						cardDetails.setImage(new Image(getClass().getResourceAsStream(CardTypes.getCardType(cardGraphics.getCard().getName()).getCardLMImageAddress())));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
 					event.consume();
 				}
 			}
@@ -651,7 +661,7 @@ public class GameGraphics {
 	}
 
 	public void addCardToHBox(Card card, HBox hbox) {
-		CardGraphics cardGraphics = new CardGraphics(card, hbox.getHeight());
+		CardGraphics cardGraphics = new CardGraphics(card, hbox.getHeight(), false);
 		setDragAndDropFunctionality(cardGraphics, hbox);
 		setOnMouseClickFunctionality(cardGraphics, hbox);
 		setOnMouseHoverFunctionality(cardGraphics, hbox);
