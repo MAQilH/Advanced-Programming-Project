@@ -15,6 +15,7 @@ import ir.sharif.service.GameService;
 import ir.sharif.service.UserService;
 import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.view.controllers.Game;
+import ir.sharif.view.controllers.Start;
 import ir.sharif.view.game.CardGraphics;
 import ir.sharif.view.gui.terminal.TerminalGUI;
 import javafx.application.Application;
@@ -30,9 +31,11 @@ public class GUIApplication extends Application {
 
     @Override
 	public void start(Stage primaryStage) throws Exception {
+	    Start.count++;
 	    //System.err.println(TwoFactorAuth.getInstance().sendAuthCode("sohsoh84@gmail.com"));
+//		test(primaryStage);
+//	    runLobby();
 		test(primaryStage);
-	    runLobby();
 	}
 
 	public void test(Stage primaryStage) {
@@ -62,8 +65,8 @@ public class GUIApplication extends Application {
 //		ViewLoader.newScene("game");
 
 		addAFriendRequest();
-//		ViewLoader.newScene("main");
-//		runLobby();
+	//	ViewLoader.newScene("main");
+		runLobby();
 	}
 
 	void addAFriendRequest() {
@@ -126,6 +129,7 @@ public class GUIApplication extends Application {
                 System.err.println("game started by user1");
             }
         });
+
         thread2.start();
 
 

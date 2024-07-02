@@ -3,7 +3,9 @@ package ir.sharif.view.controllers;
 import ir.sharif.client.TCPClient;
 import ir.sharif.controller.GameController;
 import ir.sharif.controller.PreGameController;
+import ir.sharif.model.GameState;
 import ir.sharif.model.User;
+import ir.sharif.model.game.MatchTable;
 import ir.sharif.model.server.GameRecord;
 import ir.sharif.service.GameService;
 import ir.sharif.service.UserService;
@@ -27,6 +29,8 @@ public class Lobby {
 	HBox hbox;
 	@FXML
 	Button acceptButton;
+	@FXML
+	CheckBox privateCheck;
 	private String lastGameToken = null;
 	private String lastGameCreated = null;
 
@@ -92,7 +96,7 @@ public class Lobby {
 	private void handleFriendClick(String item) {
 		TCPClient client = new TCPClient();
 		// TODO: handle private and public game
-		String gameToken = client.gameRequest(UserService.getInstance().getCurrentUser(), item, false);
+		String gameToken = client.gameRequest(UserService.getInstance().getCurrentUser(), item, privateCheck.isSelected());
 		if (gameToken == null) errorLabel.setText("Error in game request");
 		else {
 			errorLabel.setText("Game request sent to " + item);
@@ -102,11 +106,31 @@ public class Lobby {
 
 	public void random(MouseEvent mouseEvent) {
 		TCPClient client = new TCPClient();
-		String gameToken = client.gameRequest(UserService.getInstance().getCurrentUser(), null, false);
+		String gameToken = client.randomGameRequest(UserService.getInstance().getCurrentUser());
 		if (gameToken == null) errorLabel.setText("Error in game request");
 		else {
 			errorLabel.setText("Game request sent to random player");
 			lastGameCreated = gameToken;
+
+			Thread randomThread = new Thread(() -> {
+				while (ViewLoader.getViewName().equals("lobby")) {
+					TCPClient client1 = new TCPClient();
+					User user2 = client1.randomGameIsAccepted(UserService.getInstance().getCurrentUser().getUsername(), lastGameToken);
+					if (user2 != null) {
+						User user1 = UserService.getInstance().getCurrentUser();
+						if (user1.getUsername().compareTo(user2.getUsername()) > 0) {
+							User temp = user1;
+							user1 = user2;
+							user2 = temp;
+						}
+
+						GameService.getInstance().setMatchTable(new MatchTable(user1, user2, lastGameToken, null));
+						GameService.getInstance().createController(GameState.ONLINE_PLAYER);
+					}
+				}
+			});
+
+			randomThread.start();
 		}
 	}
 

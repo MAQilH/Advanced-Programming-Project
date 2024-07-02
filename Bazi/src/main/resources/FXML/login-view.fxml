@@ -10,6 +10,7 @@
 <?import javafx.scene.text.Font?>
 
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.CheckBox?>
 <Pane prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ir.sharif.view.controllers.Login">
 
 <VBox alignment="CENTER" prefHeight="600" prefWidth="800.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
@@ -18,6 +19,7 @@
         </Label>
       <TextField styleClass="ancient" fx:id="usernameTextField" maxWidth="250.0" promptText="Username:" />
       <PasswordField fx:id="passwordTextField" maxWidth="250.0" promptText="Password:" />
+    <CheckBox fx:id="stayLoggedIn" text="Stay Logged In"/>
       <HBox alignment="CENTER" prefHeight="96.0" prefWidth="300.0" spacing="10.0">
          <children>
             <Button styleClass="ancient" mnemonicParsing="false" onMouseClicked="#loginButtonPress" text="Login">
