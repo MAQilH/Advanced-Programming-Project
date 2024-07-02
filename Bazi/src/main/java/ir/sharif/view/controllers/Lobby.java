@@ -126,8 +126,13 @@ public class Lobby {
 							user2 = temp;
 						}
 
-						GameService.getInstance().setMatchTable(new MatchTable(user1, user2, lastGameToken, null));
+						ViewLoader.setMenuName("game");
+						GameService.getInstance().setMatchTable(new MatchTable(user1, user2, gameToken, null));
 						GameService.getInstance().createController(GameState.ONLINE_PLAYER);
+						Platform.runLater(() -> {
+							ViewLoader.newScene("game");
+						});
+						return;
 					}
 
 					try {
