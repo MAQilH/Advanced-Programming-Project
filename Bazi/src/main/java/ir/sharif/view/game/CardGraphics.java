@@ -37,9 +37,9 @@ public class CardGraphics extends Pane {
 	private Label powerLabel;
 	private double scale = 1.0;
 
-	public CardGraphics(Card card, double height) {
+	public CardGraphics(Card card, double height, boolean isBase) {
 		this.card = card;
-		this.width = height / Double.parseDouble(ConstantsLoader.getInstance().getProperty("card.scale"));
+		this.width = height / (isBase ? 1.89 : Double.parseDouble(ConstantsLoader.getInstance().getProperty("card.scale")));
 		this.height = height;
 		double initWidth = Double.parseDouble(ConstantsLoader.getInstance().getProperty("card.width"));
 		scale = width / initWidth;
@@ -49,7 +49,17 @@ public class CardGraphics extends Pane {
 		this.setMinHeight(height);
 		this.setMaxHeight(height);
 
-		init();
+		if (!isBase) init();
+		else initBase();
+	}
+
+	private void initBase() {
+		try {
+			setBackground(CardTypes.getCardType(card.getName()).getCardLMImageAddress());
+		} catch (Exception e) {
+			setBackground("/images/old_card.png");
+			System.err.println("fucked up: " + card.getName());
+		}
 	}
 
 	private void init() {

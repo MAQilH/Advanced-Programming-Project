@@ -51,5 +51,6 @@
       <Label fx:id="deck2" alignment="CENTER" layoutX="1260.0" layoutY="159.0" prefHeight="17.0" prefWidth="80.0" text="Label" />
       <Label fx:id="dead1" alignment="CENTER" layoutX="1128.0" layoutY="581.0" prefHeight="17.0" prefWidth="80.0" text="Label" />
       <Label fx:id="deck1" alignment="CENTER" layoutX="1260.0" layoutY="581.0" prefHeight="17.0" prefWidth="80.0" text="Label" />
+      <ImageView fx:id="cardDetails" fitHeight="331.0" fitWidth="200.0" layoutX="1143.0" layoutY="209.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </Pane>
