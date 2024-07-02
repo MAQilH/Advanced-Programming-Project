@@ -6,6 +6,7 @@ import ir.sharif.utils.ConstantsLoader;
 import ir.sharif.utils.Random;
 import ir.sharif.view.GameGraphics;
 import ir.sharif.view.ViewLoader;
+import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
@@ -178,5 +179,31 @@ public class CardGraphics extends Pane {
 
 	public void stopAnimation() {
 		this.getChildren().removeIf(node -> node instanceof Path);
+	}
+
+	public void playPowerAnimation() {
+//		System.err.println("animation played");
+//		try {
+//			Image image = new Image(getClass().getResource("/icons/anim/"
+//				+ card.getAbility().getClass().getSimpleName() + ".png").toExternalForm());
+//
+//			ImageView imageView = new ImageView(image);
+//			imageView.setFitWidth(width * 2 / 3);
+//			imageView.setFitHeight(width * 2 / 3);
+//
+//			FadeTransition fadeTransition = new FadeTransition(Duration.millis(3000), imageView);
+//			fadeTransition.setFromValue(1.0);
+//			fadeTransition.setToValue(0.0);
+//			fadeTransition.setCycleCount(1);
+//			fadeTransition.setAutoReverse(false);
+//			fadeTransition.play();
+//
+//			this.getChildren().add(imageView);
+//
+//			imageView.setLayoutX(this.getWidth() / 2 + imageView.getFitWidth() / 2);
+//			imageView.setLayoutY(this.getHeight() / 2 + imageView.getFitHeight() / 2);
+//		} catch (Exception e) {
+//			System.err.println("Error loading animation: " + card.getAbility().getClass().getSimpleName());
+//		}
 	}
 }

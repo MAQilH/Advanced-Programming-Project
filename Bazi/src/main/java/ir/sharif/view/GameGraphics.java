@@ -17,6 +17,7 @@ import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
@@ -432,6 +433,7 @@ public class GameGraphics {
 			if(cardsInRow != null && !cardsInRow.isEmpty()) {
 				for (Card card : cardsInRow) {
 					if (!cardsInRowGraphics.contains(card)) {
+						System.err.println("fucking: " + card);
 						addCardToHBox(card, rows[i]);
 					}
 				}
@@ -639,7 +641,7 @@ public class GameGraphics {
 					try {
 						cardDetails.setImage(new Image(getClass().getResourceAsStream(CardTypes.getCardType(cardGraphics.getCard().getName()).getCardLMImageAddress())));
 					} catch (Exception e) {
-						e.printStackTrace();
+
 					}
 
 					event.consume();
@@ -668,6 +670,9 @@ public class GameGraphics {
 
 		hbox.getChildren().add(cardGraphics);
 		updatePowerLabels();
+		if (hbox != hand) {
+			cardGraphics.playPowerAnimation();
+		}
 	}
 
 	public void removeCardFromHBox(Card card, HBox hbox) {
