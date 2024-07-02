@@ -130,12 +130,12 @@ public class Lobby {
 						GameService.getInstance().setMatchTable(new MatchTable(user1, user2, lastGameToken, null));
 						GameService.getInstance().createController(GameState.ONLINE_PLAYER);
 					}
-				}
 
-				try {
-					sleep(1000);
-				} catch (InterruptedException e) {
-					throw new RuntimeException(e);
+					try {
+						sleep(1000);
+					} catch (InterruptedException e) {
+						throw new RuntimeException(e);
+					}
 				}
 			});
 
