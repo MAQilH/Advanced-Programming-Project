@@ -8,7 +8,6 @@ import java.util.ArrayList;
 public class UserService {
     private static UserService instance;
     private User currentUser;
-    private boolean stayLoggedIn;
     private Database database;
     private UserService() {
         database = Database.getInstance();
@@ -35,14 +34,6 @@ public class UserService {
 
     public boolean isUsernameTaken(String username) {
         return getUserByUsername(username) != null;
-    }
-
-    public boolean isStayLoggedIn() {
-        return stayLoggedIn;
-    }
-
-    public void setStayLoggedIn(boolean stayLoggedIn) {
-        this.stayLoggedIn = stayLoggedIn;
     }
 
     public void addUser(User user){

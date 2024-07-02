@@ -1,15 +1,17 @@
 package ir.sharif.client;
 
+import com.almasb.fxgl.net.Server;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ir.sharif.enums.ResultCode;
 import ir.sharif.messages.*;
 import ir.sharif.messages.Game.*;
 import ir.sharif.messages.chat.ReactToMessage;
+import ir.sharif.messages.tournament.*;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.Message;
 import ir.sharif.model.User;
-import ir.sharif.model.server.GameRecord;
+import ir.sharif.model.server.*;
 import ir.sharif.messages.chat.ChatAllMessage;
 import ir.sharif.messages.chat.ChatSendMessage;
 import ir.sharif.messages.friends.AcceptFriendRequestMessage;
@@ -18,6 +20,7 @@ import ir.sharif.messages.friends.PendingFriendRequests;
 import ir.sharif.messages.react.AllReactsMessage;
 import ir.sharif.messages.react.ReactMessage;
 import ir.sharif.model.*;
+import ir.sharif.service.TournamentService;
 import ir.sharif.service.UserService;
 import ir.sharif.utils.ConstantsLoader;
 
@@ -46,6 +49,8 @@ public class TCPClient {
 	public TCPClient() {
 		GsonBuilder builder = new GsonBuilder();
 		this.gsonAgent = builder.create();
+
+
 		this.serverIP = ConstantsLoader.getInstance().getProperty("server.ip");
 		this.serverPort = Integer.parseInt(ConstantsLoader.getInstance().getProperty("server.port"));
 	}
@@ -299,9 +304,8 @@ public class TCPClient {
 
      public ArrayList<String> getActions(int buffer, String gameToken){
         ServerMessage response = sendMessage(new GetActionsMessage(buffer, gameToken));
-	     System.err.println("kiram to proje");
         if(response.getStatusCode() != ResultCode.ACCEPT){
-            System.err.println("kir khar: " + response.getAdditionalInfo());
+            System.err.println(response.getAdditionalInfo());
             return new ArrayList<>();
         }
          Type token = new TypeToken<ArrayList<String>>() {}.getType();
@@ -332,6 +336,81 @@ public class TCPClient {
          return gsonAgent.fromJson(response.getAdditionalInfo(), type);
      }
 
+    public String createTournament(User owner){
+        CreateTournamentMessage createTournamentMessage = new CreateTournamentMessage(owner);
+        ServerMessage response = sendMessage(createTournamentMessage);
+        if(response.getStatusCode() == ResultCode.FAILED){
+            System.err.println(response.getAdditionalInfo());
+            return null;
+        }
+        return response.getAdditionalInfo();
+    }
+
+    public CommandResult joinToTournament(User user, String tournamentToken){
+        JoinPlayerMessage joinPlayerMessage = new JoinPlayerMessage(user, tournamentToken);
+        ServerMessage response = sendMessage(joinPlayerMessage);
+        return new CommandResult(response.getStatusCode(), response.getAdditionalInfo());
+    }
+
+    public CommandResult readyPlayer(String username, boolean ready, String tournamentToken){
+        ReadyPlayerMessage readyPlayerMessage = new ReadyPlayerMessage(username, ready, tournamentToken);
+        ServerMessage response = sendMessage(readyPlayerMessage);
+        return new CommandResult(response.getStatusCode(), response.getAdditionalInfo());
+    }
+
+    public TournamentState getTournamentState(String tournamentToken){
+        GetTournamentStateMessage getTournamentStateMessage = new GetTournamentStateMessage(tournamentToken);
+        ServerMessage response = sendMessage(getTournamentStateMessage);
+        if(!response.wasSuccessfull()){
+            System.err.println(response.getAdditionalInfo());
+            return null;
+        }
+        TournamentState tournamentState = gsonAgent.fromJson(response.getAdditionalInfo(), TournamentState.class);
+        return tournamentState;
+    }
+
+    private Tournament getTournament(String tournamentToken){
+        GetTournamentMessage getTournamentMessage = new GetTournamentMessage(tournamentToken);
+        ServerMessage response = sendMessage(getTournamentMessage);
+        if(!response.wasSuccessfull()){
+            System.err.println(response.getAdditionalInfo());
+            return null;
+        }
+        Tournament tournament = gsonAgent.fromJson(response.getAdditionalInfo(), Tournament.class);
+        return tournament;
+    }
+
+    private TournamentMatchOpponentResult getOpponent(String username, String tournamentToken){
+        GetOpponentMessage getOpponentMessage = new GetOpponentMessage(username, tournamentToken);
+        ServerMessage response = sendMessage(getOpponentMessage);
+        if(!response.wasSuccessfull()){
+            System.err.println(response.getAdditionalInfo());
+            return null;
+        }
+        TournamentMatchOpponentResult result = gsonAgent.fromJson(response.getAdditionalInfo(), TournamentMatchOpponentResult.class);
+        return result;
+    }
+
+
+    private String randomGameRequest(User user){
+        RandomGameRequestMessage randomGameRequestMessage = new RandomGameRequestMessage(user);
+        ServerMessage response = sendMessage(randomGameRequestMessage);
+        if(!response.wasSuccessfull()){
+            System.err.println(response.getAdditionalInfo());
+            return null;
+        }
+        return response.getAdditionalInfo();
+    }
+
+    private User randomGameIsAccepted(String username, String gameToken){
+        RandomGameIsAcceptedMessage randomGameIsAcceptedMessage = new RandomGameIsAcceptedMessage(username, gameToken);
+        ServerMessage response = sendMessage(randomGameIsAcceptedMessage);
+        if(!response.wasSuccessfull()){
+            System.err.println(response.getAdditionalInfo());
+            return null;
+        }
+        return gsonAgent.fromJson(response.getAdditionalInfo(), User.class);
+    }
 
 	public void reactToMessage(int index) {
 		ServerMessage response = sendMessage(new ReactToMessage(index));

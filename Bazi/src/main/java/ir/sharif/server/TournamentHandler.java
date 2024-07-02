@@ -40,7 +40,7 @@ public class TournamentHandler {
         String token = Random.generateNewToken();
         Tournament tournament = new Tournament(owner, token);
         tournaments.put(token, tournament);
-        return new ServerMessage(ResultCode.ACCEPT, "tournament created successfully!");
+        return new ServerMessage(ResultCode.ACCEPT, token);
     }
 
     public ServerMessage joinTournament(JoinPlayerMessage joinPlayerMessage) {
