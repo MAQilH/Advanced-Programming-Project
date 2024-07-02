@@ -2,10 +2,7 @@ package ir.sharif.controller;
 
 import ir.sharif.client.TCPClient;
 import ir.sharif.enums.ResultCode;
-import ir.sharif.model.CommandResult;
-import ir.sharif.model.GameHistory;
-import ir.sharif.model.GameState;
-import ir.sharif.model.User;
+import ir.sharif.model.*;
 import ir.sharif.model.game.*;
 import ir.sharif.model.game.abilities.*;
 import ir.sharif.service.GameService;
@@ -557,22 +554,16 @@ public class GameController {
     }
 
     public void finishTurn(){
-//        System.out.println("TotalTurn :" + matchTable.getTotalTurns() + " RoundNumber: " + matchTable.getRoundNumber() +
-//                " Turn: " + matchTable.getTurn() + " PreviousRoundPassed: " + matchTable.isPreviousRoundPassed() + " isFinishTurn");
         if(!matchTable.isPreviousRoundPassed()){
             matchTable.changeTurn();
             GameGraphics.getInstance().preTurnLoading();
         }
         matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
-        // TODO: call graphic
         GameGraphics.getInstance().loadModel();
     }
 
     public CommandResult passTurn() {
         GameService.getInstance().sendAction("pass turn");
-
-        //System.out.println("TotalTurn :" + matchTable.getTotalTurns() + " RoundNumber: " + matchTable.getRoundNumber() +
-        //" Turn: " + matchTable.getTurn() + " PreviousRoundPassed: " + matchTable.isPreviousRoundPassed() + " isPassTurn");
         matchTable.changeTurn();
         GameGraphics.getInstance().preTurnLoading();//todo: maybe should be deleted
         matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
@@ -588,6 +579,12 @@ public class GameController {
     }
 
     private void finishRound() {
+
+        int firstUserPower = matchTable.getUserTable(0).getPower();
+        int secondUserPower = matchTable.getUserTable(1).getPower();
+
+        matchTable.getRoundScores().add(new Pair<>(firstUserPower, secondUserPower));
+
         int winner = getRoundWinner();
         if(winner != 0) matchTable.getUserTable(0).decreaseLife();
         if(winner != 1) matchTable.getUserTable(1).decreaseLife();
@@ -641,18 +638,11 @@ public class GameController {
                         userTable.addOutOfPlay(card);
                         row.getCards().remove(i);
                     }
-//                    else {
-//                        System.out.println("player " + userIndex + ", row " +
-//                                rowIndex + ". size: " + row.getCards().size() +
-//                                " card: " + card.getName() + " is hero: " + card.isHero());
-//                    }
                 }
                 if(row.getSpell() != null) {
                     userTable.addOutOfPlay(row.getSpell());
                     row.setSpell(null);
                 }
-//                System.out.println("player " + userIndex + ", row " + rowIndex +
-//                        ". size: " + row.getCards().size());
             }
             //deletes cards from the round before
             if(userTable.getFaction() == Faction.NORTHEN_REALMS && winner == userIndex){
@@ -702,6 +692,7 @@ public class GameController {
     }
 
     private void finishGame(){
+
         int gameWinner;
         if(matchTable.getUserTable(0).getLife() == matchTable.getUserTable(1).getLife()) gameWinner = -1;
         else if(matchTable.getUserTable(0).getLife() > matchTable.getUserTable(1).getLife()) gameWinner = 0;
@@ -723,7 +714,8 @@ public class GameController {
         GameHistory gameHistory = new GameHistory(GameService.getInstance().getMatchTable().getUser(0),
                 GameService.getInstance().getMatchTable().getUser(1),
                 winner,
-                new ArrayList<>(), GameService.getInstance().getMatchTable().getGameToken(),
+                matchTable.getRoundScores(),
+                GameService.getInstance().getMatchTable().getGameToken(),
                 GameService.getInstance().getMatchTable().getTournamentToken()
         );
 

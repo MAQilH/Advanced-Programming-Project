@@ -1,5 +1,6 @@
 package ir.sharif.model.game;
 
+import ir.sharif.model.Pair;
 import ir.sharif.model.User;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ public class MatchTable {
     int turn, roundNumber, totalTurns;
     private String gameToken;
     private String tournamentToken;
+    private final ArrayList<Pair<Integer, Integer>> roundScores;
 
     private boolean previousRoundPassed;
 
@@ -28,6 +30,7 @@ public class MatchTable {
         previousRoundPassed = false;
         this.gameToken = gameToken;
         this.tournamentToken = tournamentToken;
+        roundScores = new ArrayList<>();
     }
 
     public int getTurn() {
@@ -131,5 +134,9 @@ public class MatchTable {
 
     public String getTournamentToken() {
         return tournamentToken;
+    }
+
+    public ArrayList<Pair<Integer, Integer>> getRoundScores(){
+        return roundScores;
     }
 }
