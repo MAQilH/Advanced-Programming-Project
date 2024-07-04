@@ -37,7 +37,7 @@
 
             <HBox alignment="CENTER" prefWidth="800" spacing="10">
                 <children>
-                    <Button text="Back" onMouseClicked="#backButtonPress"/>
+                    <Button mnemonicParsing="false" text="Back" onMouseClicked="#backButtonPress"/>
                 </children>
             </HBox>
             <Label fx:id="errorLabel" styleClass="error-label" />

@@ -1,15 +1,11 @@
 package ir.sharif.view.controllers;
 
 import ir.sharif.client.TCPClient;
-import ir.sharif.controller.MainMenuController;
-import ir.sharif.controller.PreGameController;
 import ir.sharif.service.UserService;
 import ir.sharif.view.ViewLoader;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-
-import javax.swing.text.View;
 
 public class Main {
 	@FXML
@@ -59,5 +55,10 @@ public class Main {
 
 	public void televisionPress(MouseEvent mouseEvent) {
 		ViewLoader.newScene("television");
+	}
+
+	public void tournamentPress(MouseEvent mouseEvent) {
+		ViewLoader.setMenuName("tr-lobby");
+		ViewLoader.newScene("tr-lobby");
 	}
 }

@@ -55,6 +55,12 @@
                         </HBox.margin>
                     </Button>
 
+                    <Button mnemonicParsing="false" onMouseClicked="#tournamentPress" text="Tournament">
+                        <HBox.margin>
+                            <Insets />
+                        </HBox.margin>
+                    </Button>
+
                     <Button mnemonicParsing="false" onMouseClicked="#logoutPress" text="Log Out">
                         <HBox.margin>
                             <Insets />
