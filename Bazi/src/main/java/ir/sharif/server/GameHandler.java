@@ -55,6 +55,12 @@ public class GameHandler {
         userInGame.put(startNewGameMessage.getUser1().getUsername(), true);
         userInGame.put(startNewGameMessage.getUser2().getUsername(), true);
 
+        if(startNewGameMessage.getUser1().getUsername().compareTo(startNewGameMessage.getUser2().getUsername()) > 0){
+            User tmp = startNewGameMessage.getUser1();
+            startNewGameMessage.setUser1(startNewGameMessage.getUser2());
+            startNewGameMessage.setUser2(tmp);
+        }
+
         GameRecord gameRecord = new GameRecord(startNewGameMessage.getUser1(), startNewGameMessage.getUser2(),
                 gameToken, startNewGameMessage.getTournamentToken(), startNewGameMessage.isPrivate());
 
