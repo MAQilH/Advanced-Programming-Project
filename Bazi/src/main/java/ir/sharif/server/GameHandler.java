@@ -46,10 +46,14 @@ public class GameHandler {
 
     HashMap<String, User> matchedRandom = new HashMap<>();
     ArrayList<Pair<User, String>> matchedRandomQueue = new ArrayList<>();
+    HashMap<String, Boolean> userInGame = new HashMap<>();
 
     public synchronized ServerMessage startNewGame(StartNewGameMessage startNewGameMessage) {
         Database database = Database.getInstance();
         String gameToken = Random.generateNewToken();
+
+        userInGame.put(startNewGameMessage.getUser1().getUsername(), true);
+        userInGame.put(startNewGameMessage.getUser2().getUsername(), true);
 
         GameRecord gameRecord = new GameRecord(startNewGameMessage.getUser1(), startNewGameMessage.getUser2(),
                 gameToken, startNewGameMessage.getTournamentToken(), startNewGameMessage.isPrivate());
@@ -79,6 +83,8 @@ public class GameHandler {
                 user2 = tmp;
             }
 
+            userInGame.put(user.getUsername(), true);
+            userInGame.put(user2.getUsername(), true);
             GameRecord gameRecord = new GameRecord(user, user2, gameToken, null, false);
             liveGames.put(gameToken, gameRecord);
         }
@@ -99,6 +105,13 @@ public class GameHandler {
     }
 
     public synchronized ServerMessage gameRequest(GameRequestMessage gameRequestMessage) {
+        if(userInGame.getOrDefault(gameRequestMessage.getReceiver(), false)){
+            return new ServerMessage(ResultCode.FAILED, gameRequestMessage.getReceiver() + " is in the middle of a game!");
+        }
+        if(UserHandler.getInstance().getUserStatus().getOrDefault(gameRequestMessage.getReceiver(), false)){
+            return new ServerMessage(ResultCode.FAILED, gameRequestMessage.getReceiver() + " is not available!");
+        }
+
         String token = Random.generateNewToken();
         System.err.println(token);
         GameRecord gameRecord = new GameRecord(gameRequestMessage.getUser(), null, token, null, gameRequestMessage.isPrivate());
@@ -136,6 +149,10 @@ public class GameHandler {
         pendingGames.remove(token);
         queuedGame.remove(user2.getUsername());
         gameRecord.setUser2(user2);
+
+        userInGame.put(gameRecord.getUser1().getUsername(), true);
+        userInGame.put(gameRecord.getUser2().getUsername(), true);
+
         liveGames.put(token, gameRecord);
         return new ServerMessage(ResultCode.ACCEPT, gson.toJson(gameRecord.getUser1()));
     }
@@ -182,6 +199,9 @@ public class GameHandler {
 
         Database.getInstance().addGameRecord(gameRecord);
         Database.getInstance().addGameHistories(gameHistory);
+
+        userInGame.put(gameRecord.getUser1().getUsername(), false);
+        userInGame.put(gameRecord.getUser2().getUsername(), false);
 
         TournamentHandler.getInstance().finishGame(gameHistory);
 

@@ -32,4 +32,8 @@ public class UserHandler {
         userStatus.put(username, status);
         return new ServerMessage(ResultCode.ACCEPT, "user status set successfully");
     }
+
+    public HashMap<String, Boolean> getUserStatus() {
+        return userStatus;
+    }
 }
