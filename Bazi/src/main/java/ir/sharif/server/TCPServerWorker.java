@@ -167,8 +167,10 @@ public class TCPServerWorker extends Thread {
 					return gsonAgent.fromJson(clientStr, GetLiveGamesMessage.class);
 	            case REACT_TO_MESSAGE:
 					return gsonAgent.fromJson(clientStr, ReactToMessage.class);
-				case JOIN_PLAYER_MESSAGE:
+				case CREATE_TOURNAMENT_MESSAGE:
 					return gsonAgent.fromJson(clientStr, CreateTournamentMessage.class);
+				case JOIN_PLAYER_MESSAGE:
+					return gsonAgent.fromJson(clientStr, JoinPlayerMessage.class);
 				case READY_PLAYER_MESSAGE:
 					return gsonAgent.fromJson(clientStr, ReadyPlayerMessage.class);
 				case GET_TOURNAMENT_MESSAGE:
