@@ -425,7 +425,7 @@ public class GameGraphics {
 
 	private void updateCardsInRows() {
 		for (int i = 0; i < 13; i++) {
-			ArrayList<Card> cardsInRow = controller.getMatchTable().getCardsByPosition(i);
+			ArrayList<Card> cardsInRow = GameService.getInstance().getMatchTable().getCardsByPosition(i);
 			ArrayList<Card> cardsInRowGraphics = new ArrayList<>();
 			for (Node node : rows[i].getChildren())
 				cardsInRowGraphics.add(((CardGraphics) node).getCard());
