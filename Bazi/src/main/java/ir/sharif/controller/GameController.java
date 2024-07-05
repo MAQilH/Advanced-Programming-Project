@@ -452,6 +452,11 @@ public class GameController {
         int player = matchTable.getTurn();
         int rowNumber = graphicRowToLogicRow(pos);
         matchTable.getUserTable(player).getRowByNumber(rowNumber).setSpell(card);
+        if(card.getAbility() instanceof Decoy) {
+            Row row = matchTable.getUserTable(player).getRowByNumber(rowNumber);
+            Card cardToBeBack = Random.getRandFromArrayListCard(row.getCards());
+            card.getAbility().execute(row, cardToBeBack);
+        }
         if (card.getAbility() instanceof Mardroeme) {
             Row row = matchTable.getUserTable(player).getRowByNumber(rowNumber);
             card.getAbility().execute(row);
