@@ -7,6 +7,7 @@ import ir.sharif.enums.ResultCode;
 import ir.sharif.messages.*;
 import ir.sharif.messages.Game.*;
 import ir.sharif.messages.chat.ReactToMessage;
+import ir.sharif.messages.friends.FriendRequestRejectMessage;
 import ir.sharif.messages.tournament.*;
 import ir.sharif.model.CommandResult;
 import ir.sharif.model.Message;
@@ -343,6 +344,7 @@ public class TCPClient {
             System.err.println(response.getAdditionalInfo());
             return null;
         }
+
         return response.getAdditionalInfo();
     }
 
@@ -369,7 +371,7 @@ public class TCPClient {
         return tournamentState;
     }
 
-    private Tournament getTournament(String tournamentToken){
+    public Tournament getTournament(String tournamentToken){
         GetTournamentMessage getTournamentMessage = new GetTournamentMessage(tournamentToken);
         ServerMessage response = sendMessage(getTournamentMessage);
         if(!response.wasSuccessfull()){
@@ -380,7 +382,7 @@ public class TCPClient {
         return tournament;
     }
 
-    private TournamentMatchOpponentResult getOpponent(String username, String tournamentToken){
+    public TournamentMatchOpponentResult getOpponent(String username, String tournamentToken){
         GetOpponentMessage getOpponentMessage = new GetOpponentMessage(username, tournamentToken);
         ServerMessage response = sendMessage(getOpponentMessage);
         if(!response.wasSuccessfull()){
@@ -414,5 +416,9 @@ public class TCPClient {
 
 	public void reactToMessage(int index) {
 		ServerMessage response = sendMessage(new ReactToMessage(index));
+	}
+
+	public void rejectFriend(String fromUsername, String targetUsername) {
+		ServerMessage response = sendMessage(new FriendRequestRejectMessage(fromUsername, targetUsername));
 	}
 }

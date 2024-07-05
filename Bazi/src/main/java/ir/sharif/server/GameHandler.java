@@ -199,10 +199,17 @@ public class GameHandler {
         } else {
             gameRecord = liveGames.get(token);
         }
+
         ArrayList<String> newActions = new ArrayList<>();
-        for (int newActionIndex = buffer; newActionIndex < gameRecord.getCommands().size(); newActionIndex++) {
-            newActions.add(gameRecord.getCommands().get(newActionIndex));
-        }
+
+		try {
+			for (int newActionIndex = buffer; newActionIndex < gameRecord.getCommands().size(); newActionIndex++) {
+				newActions.add(gameRecord.getCommands().get(newActionIndex));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
         return new ServerMessage(ResultCode.ACCEPT, gson.toJson(newActions));
     }
     public synchronized ServerMessage getLiveGames(GetLiveGamesMessage getLiveGamesMessage){

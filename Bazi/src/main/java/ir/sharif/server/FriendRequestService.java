@@ -61,4 +61,13 @@ public class FriendRequestService {
 
 		return result;
 	}
+
+	public void rejectFriend(String fromUsername, String targetUsername) {
+		for (Pair<String, String> friendRequest : friendRequests) {
+			if (friendRequest.getFirst().equals(fromUsername) && friendRequest.getSecond().equals(targetUsername)) {
+				friendRequests.remove(friendRequest);
+				return;
+			}
+		}
+	}
 }

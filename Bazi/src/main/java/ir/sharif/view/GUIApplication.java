@@ -64,7 +64,7 @@ public class GUIApplication extends Application {
 //		GameService.getInstance().createController();
 //		ViewLoader.newScene("game");
 
-		addAFriendRequest();
+		//addAFriendRequest();
 	//	ViewLoader.newScene("main");
 		runLobby();
 	}

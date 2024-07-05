@@ -9,6 +9,7 @@ public class UserService {
     private static UserService instance;
     private User currentUser;
     private Database database;
+	private String tournamentToken = null;
     private UserService() {
         database = Database.getInstance();
     }
@@ -47,4 +48,12 @@ public class UserService {
     public ArrayList<User> getUsers(){
         return Database.getInstance().getUsers();
     }
+
+	public void setTournamentToken(String tournamentToken) {
+		this.tournamentToken = tournamentToken;
+	}
+
+	public String getTournamentToken() {
+		return tournamentToken;
+	}
 }

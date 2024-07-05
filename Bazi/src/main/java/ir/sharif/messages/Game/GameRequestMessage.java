@@ -13,6 +13,7 @@ public class GameRequestMessage extends ClientMessage {
     public GameRequestMessage(User user, String receiver, boolean isPrivate) {
         this.user = user;
         this.receiver = receiver;
+		this.isPrivate = isPrivate;
         this.type = ClientMessageType.GAME_REQUEST_MESSAGE;
     }
 

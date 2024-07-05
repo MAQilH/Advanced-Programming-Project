@@ -20,6 +20,7 @@ public class Tournament {
         this.owner = owner;
         this.tournamentToken = tournamentToken;
         tournamentState = TournamentState.PENDDING;
+		matchedOpponent = new HashMap<>();
     }
 
     public ArrayList<TournamentPlayer> getPlayers() {
@@ -36,10 +37,6 @@ public class Tournament {
 
     public void setOwner(User owner) {
         this.owner = owner;
-    }
-
-    public User getWinner() {
-        return winner;
     }
 
     public void setWinner(User winner) {
@@ -82,4 +79,11 @@ public class Tournament {
         return matchedOpponent;
     }
 
+	public User getWinner() {
+		return winner;
+	}
+
+	public ArrayList<GameHistory> getHistories() {
+		return gameHistories;
+	}
 }

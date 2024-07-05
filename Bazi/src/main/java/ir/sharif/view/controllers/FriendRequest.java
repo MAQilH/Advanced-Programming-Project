@@ -41,6 +41,12 @@ public class FriendRequest {
 			ListCell<String> cell = new ListCell<>();
 			cell.textProperty().bind(cell.itemProperty());
 			cell.setOnMouseClicked(event -> {
+				if (!cell.isEmpty() && event.isShiftDown()) {
+					client.rejectFriend(cell.getItem(), userService.getCurrentUser().getUsername());
+					System.err.println("reject called");
+					update();
+				}
+
 				if (!cell.isEmpty() && event.getClickCount() == 2) {
 					handleFriendClick(cell.getItem());
 				}

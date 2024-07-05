@@ -116,7 +116,7 @@ public class TCPServerWorker extends Thread {
     private ClientMessage extractClientMessage(String clientStr) {
         try {
             ClientMessage clientMessage = gsonAgent.fromJson(clientStr, ClientMessage.class);
-            switch (clientMessage.getType()) {
+			switch (clientMessage.getType()) {
                 case CHAT_SEND_MESSAGE:
                     return gsonAgent.fromJson(clientStr, ChatSendMessage.class);
                 case LOGIN_MESSAGE:
@@ -181,6 +181,10 @@ public class TCPServerWorker extends Thread {
 					return gsonAgent.fromJson(clientStr, RandomGameRequestMessage.class);
 				case RANDOM_GAME_IS_ACCEPTED_MESSAGE:
 					return gsonAgent.fromJson(clientStr, RandomGameIsAcceptedMessage.class);
+				case GET_TOURNAMENT_STATE_MESSAGE:
+					return gsonAgent.fromJson(clientStr, GetTournamentStateMessage.class);
+				case FRIEND_REQUEST_REJECT_MESSAGE:
+					return gsonAgent.fromJson(clientStr, FriendRequestRejectMessage.class);
 				default:
                     System.err.println("wtf: " + clientStr);
                     return null;
@@ -343,8 +347,13 @@ public class TCPServerWorker extends Thread {
 		} else if(msg instanceof RandomGameIsAcceptedMessage){
 			RandomGameIsAcceptedMessage randomGameIsAcceptedMessage = (RandomGameIsAcceptedMessage) msg;
 			sendMessage(gameHandler.randomGameIsAccepted(randomGameIsAcceptedMessage));
+		} else if (msg instanceof FriendRequestRejectMessage) {
+			FriendRequestService.getInstance().rejectFriend(((FriendRequestRejectMessage) msg).getFromUsername(),
+				((FriendRequestRejectMessage) msg).getTargetUsername());
+            sendSuccess("Friend request rejected");
 		}
 		else {
+	        System.err.println("failed: " + msg);
 	        System.err.println("invalid client command :)");
             sendFailure("Invalid message type");
         }

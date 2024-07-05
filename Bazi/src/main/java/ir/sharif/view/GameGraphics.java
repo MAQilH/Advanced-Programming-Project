@@ -331,7 +331,9 @@ public class GameGraphics {
 		Platform.runLater(() -> {
 			showToast((winner == -1 ? "draw" : "Player " + (winner + 1) + " won the game"));
 			PauseTransition pause = new PauseTransition(Duration.seconds(5));
-			pause.setOnFinished(event -> ViewLoader.newScene("main"));
+			String menuName = controller.getMatchTable().getTournamentToken() == null ? "main" : "tr-main";
+			ViewLoader.setMenuName(menuName);
+			pause.setOnFinished(event -> ViewLoader.newScene(menuName));
 			pause.play();
 		});
 	}

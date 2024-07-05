@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ListView?>
+<Pane prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ir.sharif.view.controllers.GameHistory">
+
+    <VBox alignment="CENTER" prefHeight="600" prefWidth="800.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+        <children>
+            <Label text="Game Histories" styleClass="title-label">
+            </Label>
+
+            <ScrollPane minHeight="350" prefWidth="Infinity">
+                <content>
+                    <ListView minHeight="350"  styleClass="transparent-list" fx:id="histories" prefWidth="800">
+                    </ListView>
+                </content>
+            </ScrollPane>
+
+            <Button mnemonicParsing="false" onMouseClicked="#back" text="Back"/>
+
+        </children>
+    </VBox>
+</Pane>

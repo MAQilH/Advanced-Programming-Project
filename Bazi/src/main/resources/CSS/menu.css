@@ -147,34 +147,36 @@
 }
 
 .check-box {
-    -fx-background-color: rgba(60, 63, 65, 0.1);
-    -fx-border-color: #4a4d50;
-    -fx-border-radius: 20;
-    -fx-background-radius: 20;
-    -fx-padding: 10;
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
-    -fx-font-family: 'Comic Sans MS', cursive, sans-serif;
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 );
+    -fx-font-size: 20px; /* Increase the font size */
+    -fx-text-fill: #B8860B; /* Change the text color to gold */
+    -fx-font-family: 'Ancient'; /* Change the font family */
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 ); /* Add a shadow effect */
+    -fx-background-color: transparent; /* Transparent background */
+    -fx-padding: 10px; /* Padding around the text */
+    -fx-border-radius: 5px; /* Rounded corners */
+    -fx-background-radius: 5px; /* Rounded corners for the background */
+    -fx-text-fill: #B8860B; /* Gold text color */
 }
 
 .check-box:hover {
-    -fx-background-color: #ff6347;
-    -fx-text-fill: #ffffff;
+    -fx-background-color: #B8860B; /* Gold background when hovered */
+    -fx-text-fill: #ffffff; /* White text color when hovered */
 }
 
-.checkbox:selected {
+.check-box:selected {
+    /* This will change the color of the text next to the checkbox */
     -fx-text-fill: #ffffff; /* White text color */
-    -fx-background-color: #ff6347; /* Tomato background */
 }
 
-.checkbox:selected .box,
-.checkbox:indeterminate .box {
-    -fx-background-color: #ff6347; /* Tomato box color */
+.check-box:selected .box,
+.check-box:indeterminate .box {
+    /* This will change the color of the box of the checkbox */
+    -fx-background-color: #B8860B; /* Gold box color */
 }
 
-.checkbox:selected .mark,
-.checkbox:indeterminate .mark {
+.check-box:selected .mark,
+.check-box:indeterminate .mark {
+    /* This will change the color of the tick in the checkbox */
     -fx-background-color: #ffffff; /* White tick color */
 }
 

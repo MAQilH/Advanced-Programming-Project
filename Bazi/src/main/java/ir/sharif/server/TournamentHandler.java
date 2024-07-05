@@ -129,7 +129,10 @@ public class TournamentHandler {
 
         Tournament tournament = tournaments.get(token);
 
-        if(tournament.getMatchedOpponent().getOrDefault(username, null) != null){
+		if (tournament.getMatchedOpponent() == null || tournament.getTournamentState() != TournamentState.STARTED)
+			return new ServerMessage(ResultCode.NOT_FOUND, "no opponent found!");
+
+		if(tournament.getMatchedOpponent().getOrDefault(username, null) != null){
             return new ServerMessage(ResultCode.ACCEPT, gson.toJson(tournament.getMatchedOpponent().get(username)));
         }
 

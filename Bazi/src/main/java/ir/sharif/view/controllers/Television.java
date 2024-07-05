@@ -113,8 +113,10 @@ public class Television {
 	private void handlePastGamesClick(String item) {
 		GameHistory history = pastGamesMap.get(item);
 		try {
-			if (new TCPClient().getGameRecord(history.getGameToken()).isPrivate())
+			if (new TCPClient().getGameRecord(history.getGameToken()).isPrivate()) {
 				errorLabel.setText("Game is private");
+				return;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
