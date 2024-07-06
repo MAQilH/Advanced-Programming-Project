@@ -52,7 +52,9 @@ public class GUIApplication extends Application {
 		new RegisterController().register("sohsoh", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "sohsoh", "sohsoh84@gmail.com");
 		new RegisterController().register("guest", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "guest", "aqil@gmail.com");
 		new RegisterController().register("aqil", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "aqil", "sohsoh84@gmail.com");
-		//ViewLoader.newScene("pregame");
+        new RegisterController().register("liqa", "Soheil@84", "Soheil@84", new SecurityQuestion("fuck", "fuck"), "aqil", "sohsoh84@gmail.com");
+
+        //ViewLoader.newScene("pregame");
 		//		PreGameController preGameController = new PreGameController();
 //		System.err.println(preGameController.createGame("guest").statusCode());
 //		System.err.println(preGameController.loadDeck("test").statusCode());

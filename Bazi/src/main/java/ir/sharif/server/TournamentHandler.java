@@ -124,6 +124,8 @@ public class TournamentHandler {
         String token = getOpponentMessage.getTournamentToken();
         String username = getOpponentMessage.getUsername();
 
+        System.err.println(username + " " + token);
+
         if(!tournaments.containsKey(token))
             return new ServerMessage(ResultCode.NOT_FOUND, "doesnt exist such tournaments");
 
@@ -145,7 +147,9 @@ public class TournamentHandler {
         int minDist = Integer.MAX_VALUE;
         TournamentPlayer candidateOpponent = null;
         for (TournamentPlayer player : tournament.getQueuedPlayer()) {
-            if(player == currentPlayer) continue;
+            if(player.getUser().getUsername().equals(currentPlayer.getUser().getUsername())) continue;
+            if(tournament.getMatchedOpponent().getOrDefault(player.getUser().getUsername(), null) != null) continue;
+
             int dist = Math.abs(player.getRate() - currentPlayer.getRate());
             if(dist < minDist){
                 minDist = dist;
