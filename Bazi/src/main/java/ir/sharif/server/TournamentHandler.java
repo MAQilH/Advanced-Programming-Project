@@ -35,7 +35,7 @@ public class TournamentHandler {
         return instance;
     }
 
-    public ServerMessage createTournament(CreateTournamentMessage createTournamentMessage) {
+    public synchronized ServerMessage createTournament(CreateTournamentMessage createTournamentMessage) {
         User owner = createTournamentMessage.getOwner();
         String token = Random.generateNewToken();
         Tournament tournament = new Tournament(owner, token);
@@ -43,7 +43,7 @@ public class TournamentHandler {
         return new ServerMessage(ResultCode.ACCEPT, token);
     }
 
-    public ServerMessage joinTournament(JoinPlayerMessage joinPlayerMessage) {
+    public synchronized ServerMessage joinTournament(JoinPlayerMessage joinPlayerMessage) {
         String token = joinPlayerMessage.getTournamentToken();
         User user = joinPlayerMessage.getUser();
 
@@ -63,7 +63,7 @@ public class TournamentHandler {
         return new ServerMessage(ResultCode.ACCEPT, "player joined successfully!");
     }
 
-    public ServerMessage readyPlayer(ReadyPlayerMessage readyPlayerMessage){
+    public synchronized ServerMessage readyPlayer(ReadyPlayerMessage readyPlayerMessage){
         String token = readyPlayerMessage.getTournamentToken();
         String username = readyPlayerMessage.getUsername();
 
@@ -93,7 +93,7 @@ public class TournamentHandler {
         return new ServerMessage(ResultCode.ACCEPT, "ready state change successfully");
     }
 
-    public TournamentPlayer findTournamentPlayerWithUsername(String username, ArrayList<TournamentPlayer> players){
+    public synchronized TournamentPlayer findTournamentPlayerWithUsername(String username, ArrayList<TournamentPlayer> players){
         for (TournamentPlayer player : players) {
             if(player.getUser().getUsername().equals(username))
                 return player;
@@ -101,7 +101,7 @@ public class TournamentHandler {
         return null;
     }
 
-    public ServerMessage getTournament(GetTournamentMessage getTournamentMessage){
+    public synchronized ServerMessage getTournament(GetTournamentMessage getTournamentMessage){
         String token = getTournamentMessage.getTournamentToken();
 
         if(!tournaments.containsKey(token))
@@ -111,7 +111,7 @@ public class TournamentHandler {
     }
 
 
-    public ServerMessage getTournamentState(GetTournamentStateMessage getTournamentStateMessage){
+    public synchronized ServerMessage getTournamentState(GetTournamentStateMessage getTournamentStateMessage){
         String token = getTournamentStateMessage.getTournamentToken();
 
         if(!tournaments.containsKey(token))
@@ -120,7 +120,7 @@ public class TournamentHandler {
         return new ServerMessage(ResultCode.ACCEPT, gson.toJson(tournaments.get(token).getTournamentState()));
     }
 
-    public ServerMessage getOpponent(GetOpponentMessage getOpponentMessage){
+    public synchronized ServerMessage getOpponent(GetOpponentMessage getOpponentMessage){
         String token = getOpponentMessage.getTournamentToken();
         String username = getOpponentMessage.getUsername();
 
@@ -170,7 +170,7 @@ public class TournamentHandler {
         return new ServerMessage(ResultCode.ACCEPT, gson.toJson(tournament.getMatchedOpponent().get(username)));
     }
 
-    public void finishGame(GameHistory gameHistory){
+    public synchronized void finishGame(GameHistory gameHistory){
         String token = gameHistory.getTournamentToken();
         if(token == null || !tournaments.containsKey(token)) return;
 
