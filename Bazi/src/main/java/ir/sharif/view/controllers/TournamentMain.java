@@ -27,13 +27,6 @@ public class TournamentMain {
 	@FXML
 	public void initialize() {
 		stateLabel.setText("Waiting for users to join");
-	}
-
-	public void ready(MouseEvent mouseEvent) {
-		TCPClient client = new TCPClient();
-		client.readyPlayer(UserService.getInstance().getCurrentUser().getUsername(), true,
-			UserService.getInstance().getTournamentToken());
-
 		Thread updateThread = new Thread(() -> {
 			while (ViewLoader.getViewName().equals("tr-main")) {
 				Platform.runLater(() -> {
@@ -80,6 +73,12 @@ public class TournamentMain {
 		});
 
 		updateThread.start();
-		
+	}
+
+	public void ready(MouseEvent mouseEvent) {
+		TCPClient client = new TCPClient();
+		client.readyPlayer(UserService.getInstance().getCurrentUser().getUsername(), true,
+			UserService.getInstance().getTournamentToken());
+
 	}
 }
