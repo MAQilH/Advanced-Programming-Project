@@ -18,7 +18,11 @@ module Bazi {
 	requires jakarta.mail;
     requires java.sql;
 
-    exports ir.sharif.server to jakarta.mail;
+	requires junit;
+
+
+
+	exports ir.sharif.server to jakarta.mail;
 	exports ir.sharif.view to javafx.graphics, com.google.gson;
 	exports ir.sharif.view.controllers to javafx.fxml;
 	exports ir.sharif.model to com.google.gson;
@@ -46,4 +50,7 @@ module Bazi {
 	opens ir.sharif.model.server to com.google.gson;
     exports ir.sharif.messages.tournament to com.google.gson;
     opens ir.sharif.messages.tournament to com.google.gson;
+
+	exports ir.sharif.tests to junit;
+	opens ir.sharif.tests to junit;
 }

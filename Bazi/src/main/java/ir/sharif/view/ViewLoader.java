@@ -12,6 +12,9 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -25,6 +28,14 @@ import java.util.TimerTask;
 public class ViewLoader {
 	static String viewName = "start";
 	static Stage stage;
+	private static Media media = new Media(ViewLoader.class.getResource("/background.mp4").toExternalForm());
+	private static MediaPlayer mediaPlayer = new MediaPlayer(media);
+	{
+		mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+		mediaPlayer.setAutoPlay(true);
+		mediaPlayer.play();
+	}
+
 	public static void setStage(Stage stage) {
 		ViewLoader.stage = stage;
 	}
