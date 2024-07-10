@@ -10,9 +10,9 @@ public class GameTest {
 	public void setUp() {
 		PreGameController controller = new PreGameController();
 		controller.createGame("guest");
-		controller.loadDeck("test");
+		controller.loadDeck("sk");
 		controller.changeTurn();
-		controller.loadDeck("test");
+		controller.loadDeck("sk");
 		controller.startGame();
 	}
 

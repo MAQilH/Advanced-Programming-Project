@@ -28,13 +28,13 @@ import java.util.TimerTask;
 public class ViewLoader {
 	static String viewName = "start";
 	static Stage stage;
-	private static Media media = new Media(ViewLoader.class.getResource("/background.mp4").toExternalForm());
-	private static MediaPlayer mediaPlayer = new MediaPlayer(media);
-	{
-		mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-		mediaPlayer.setAutoPlay(true);
-		mediaPlayer.play();
-	}
+	//private static Media media = new Media(ViewLoader.class.getResource("/background.mp4").toExternalForm());
+	//private static MediaPlayer mediaPlayer = new MediaPlayer(media);
+//	{
+//		mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+//		mediaPlayer.setAutoPlay(true);
+//		mediaPlayer.play();
+//	}
 
 	public static void setStage(Stage stage) {
 		ViewLoader.stage = stage;
