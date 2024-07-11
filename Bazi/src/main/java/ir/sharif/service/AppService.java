@@ -1,5 +1,7 @@
 package ir.sharif.service;
 
+import ir.sharif.enums.ResultCode;
+import ir.sharif.model.CommandResult;
 import ir.sharif.view.terminal.Menu;
 import ir.sharif.enums.Menus;
 
@@ -11,8 +13,9 @@ public class AppService {
         currentMenu = Menus.RegisterMenu;
     }
 
-	public void setCurrentMenu(Menus menu) {
+	public CommandResult setCurrentMenu(Menus menu) {
 		currentMenu = menu;
+        return new CommandResult(ResultCode.ACCEPT, "menu changed");
 	}
 
     public static AppService getInstance() {
