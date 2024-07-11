@@ -31,11 +31,18 @@ public class GUIApplication extends Application {
 
     @Override
 	public void start(Stage primaryStage) throws Exception {
-	    Start.count++;
+	    //Start.count++;
 	    //System.err.println(TwoFactorAuth.getInstance().sendAuthCode("sohsoh84@gmail.com"));
 //		test(primaryStage);
 //	    runLobby();
-		test(primaryStage);
+	//	test(primaryStage);
+	    ViewLoader.setStage(primaryStage);
+	    Font.loadFont(getClass().getResource("/fonts/KingsCross.ttf").toExternalForm(), 10);
+	    Font.loadFont(getClass().getResource("/fonts/Ancient.ttf").toExternalForm(), 10);
+
+	    //BackgroundMusicService.getInstance().playMusic();
+	    primaryStage.setTitle(ConstantsLoader.getInstance().getProperty("app.title"));
+	    ViewLoader.newScene("start");
 	}
 
 	public void test(Stage primaryStage) {
@@ -149,7 +156,7 @@ public class GUIApplication extends Application {
     }
 
 	public static void main(String[] args) {
-		username = args[0];
+		//username = args[0];
 	  // String felan = TwoFactorAuth.getInstance().sendAuthCode("sohsoh84@gmail.com");
 	//	System.err.println(felan);
 		launch();

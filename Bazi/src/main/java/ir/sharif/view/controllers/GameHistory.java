@@ -19,13 +19,17 @@ public class GameHistory {
 
 		histories.setStyle("-fx-background-color: transparent;");
 		for (ir.sharif.model.GameHistory history : userHistories) {
-			String data = "Date: " + history.getDate() + "\n" +
-				"winner: " + history.getWinner().getUsername() + "\n" +
-				"user1: " + history.getUser1().getUsername() + "\n" +
-				"user2: " + history.getUser2().getUsername() + "\n" +
-				"result: " + history.getRoundResult().getFirst() + " \\ " + history.getRoundResult().getSecond() + "\n";
+			try {
+				String data = "Date: " + history.getDate() + "\n" +
+					"winner: " + history.getWinner().getUsername() + "\n" +
+					"user1: " + history.getUser1().getUsername() + "\n" +
+					"user2: " + history.getUser2().getUsername() + "\n" +
+					"result: " + history.getRoundResult().getFirst() + " \\ " + history.getRoundResult().getSecond() + "\n";
 
-			histories.getItems().add(data);
+				histories.getItems().add(data);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

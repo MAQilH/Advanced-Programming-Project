@@ -22,8 +22,17 @@ public class TwoFactorAuth {
 	}
 
 	public String sendAuthCode(String emailAddress) {
-		Properties userPass = new Properties();
 		String authCode = Random.randomAuthCode();
+		sendEmail("Your authentication code is: " + authCode, emailAddress);
+		return authCode;
+	}
+
+	public void sendVerificationLink(String emailAddress) {
+		String link = Random.randomAuthCode();
+	}
+
+	public void sendEmail(String messageText, String emailAddress) {
+		Properties userPass = new Properties();
 		try {
 			userPass.load(getClass().getResourceAsStream("/gmail.properties"));
 			Properties prop = new Properties();
@@ -51,14 +60,12 @@ public class TwoFactorAuth {
 			);
 
 			message.setSubject("Authentication Code for Sharif Gwent");
-			message.setText("Hi, here is your authentication code for gwent game: " + authCode);
+			message.setText(messageText);
 			Transport.send(message);
 			System.err.println("done!");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 
-
-		return authCode;
 	}
 }
