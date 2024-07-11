@@ -1,8 +1,10 @@
 package ir.sharif.view.controllers;
 
+import ir.sharif.client.TCPClient;
 import ir.sharif.server.TwoFactorAuth;
 import ir.sharif.service.UserService;
 import ir.sharif.view.ViewLoader;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -29,6 +31,26 @@ public class Verification {
 		if (code == null) {
 			try {
 				code = TwoFactorAuth.getInstance().sendAuthCode(UserService.getInstance().getCurrentUser().getEmail());
+				Thread checkThread = new Thread(() -> {
+					while (ViewLoader.getViewName().equals("email-verification")) {
+						TCPClient client = new TCPClient();
+						if (client.isAuthorized(code)) {
+							Platform.runLater(() -> {
+								ViewLoader.newScene("main");
+							});
+
+							return;
+						}
+
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							throw new RuntimeException(e);
+						}
+					}
+				});
+
+				checkThread.start();
 				verifyButton.setText("Verify");
 			} catch (Exception e) {
 				errorLabel.setText("Failed to send verification email");

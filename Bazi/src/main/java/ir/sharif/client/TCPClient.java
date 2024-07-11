@@ -421,4 +421,10 @@ public class TCPClient {
 	public void rejectFriend(String fromUsername, String targetUsername) {
 		ServerMessage response = sendMessage(new FriendRequestRejectMessage(fromUsername, targetUsername));
 	}
+
+	public boolean isAuthorized(String token) {
+		ServerMessage response = sendMessage(new AuthMessage(token));
+		if (response.wasSuccessfull()) return true;
+		return false;
+	}
 }

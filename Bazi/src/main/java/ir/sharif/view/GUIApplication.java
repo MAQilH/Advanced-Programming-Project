@@ -18,6 +18,7 @@ public class GUIApplication extends Application {
 
     @Override
 	public void start(Stage primaryStage) throws Exception {
+//	    System.err.println(TwoFactorAuth.getInstance().sendAuthCode("sohsoh84@gmail.com"));
 	    //Start.count++;
 	    //System.err.println(TwoFactorAuth.getInstance().sendAuthCode("sohsoh84@gmail.com"));
 //		test(primaryStage);

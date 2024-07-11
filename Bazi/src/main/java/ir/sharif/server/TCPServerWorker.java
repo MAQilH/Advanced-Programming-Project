@@ -185,6 +185,8 @@ public class TCPServerWorker extends Thread {
 					return gsonAgent.fromJson(clientStr, GetTournamentStateMessage.class);
 				case FRIEND_REQUEST_REJECT_MESSAGE:
 					return gsonAgent.fromJson(clientStr, FriendRequestRejectMessage.class);
+				case AUTH_MESSAGE:
+					return gsonAgent.fromJson(clientStr, AuthMessage.class);
 				default:
                     System.err.println("wtf: " + clientStr);
                     return null;
@@ -351,8 +353,13 @@ public class TCPServerWorker extends Thread {
 			FriendRequestService.getInstance().rejectFriend(((FriendRequestRejectMessage) msg).getFromUsername(),
 				((FriendRequestRejectMessage) msg).getTargetUsername());
             sendSuccess("Friend request rejected");
-		}
-		else {
+		} else if (msg instanceof AuthMessage) {
+			AuthMessage message = (AuthMessage) msg;
+			if (TwoFactorAuth.getInstance().isVerified(message.getToken()))
+				sendSuccess("Authorized");
+			else
+				sendFailure("Unauthorized");
+	    } else {
 	        System.err.println("failed: " + msg);
 	        System.err.println("invalid client command :)");
             sendFailure("Invalid message type");
@@ -361,7 +368,16 @@ public class TCPServerWorker extends Thread {
 
 	public static void main(String[] args) {
 		try {
-			TwoFactorAuth.runVerifier();
+			Thread verifier = new Thread(() -> {
+				try {
+					TwoFactorAuth.runVerifier();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+
+			verifier.start();
+
 			TCPServerWorker.setupServer(Integer.parseInt(ConstantsLoader.getInstance().getProperty("server.port")), 10);
 			for (int i = 0; i < WORKERS; i++) {
 				new TCPServerWorker().start();

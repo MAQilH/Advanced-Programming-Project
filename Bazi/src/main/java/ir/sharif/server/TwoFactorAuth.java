@@ -34,13 +34,11 @@ public class TwoFactorAuth {
 
 	public String sendAuthCode(String emailAddress) {
 		String authCode = Random.randomAuthCode();
-		sendEmail("Your authentication code is: " + authCode, emailAddress);
+		String body = "Your authentication code is: " + authCode + "\n" + "or use link: " + "127.0.0.1:8480/verify?token=" + authCode;
+		sendEmail(body, emailAddress);
 		return authCode;
 	}
 
-	public void sendVerificationLink(String emailAddress) {
-		String link = Random.randomAuthCode();
-	}
 
 	public void sendEmail(String messageText, String emailAddress) {
 		Properties userPass = new Properties();
@@ -75,12 +73,13 @@ public class TwoFactorAuth {
 			Transport.send(message);
 			System.err.println("done!");
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 	}
 
 	public static void runVerifier() throws IOException {
-		HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+		HttpServer server = HttpServer.create(new InetSocketAddress(8480), 0);
 		server.createContext("/verify", new VerifyHandler());
 		server.setExecutor(null);
 		server.start();
@@ -120,11 +119,16 @@ public class TwoFactorAuth {
 		}
 
 		private boolean verifyToken(String token) {
-			return getInstance().verifiedTokens.contains(token);
+			getInstance().verifiedTokens.add(token);
+			return true;
 		}
 	}
 
-	public void isVerified(String token) {
-		verifiedTokens.add(token);
+	public boolean isVerified(String token) {
+		for (String tok : verifiedTokens)
+			if (tok.equals(token))
+				return true;
+
+		return false;
 	}
 }
