@@ -41,6 +41,7 @@ public class Main {
 			return;
 		}
 
+		ViewLoader.setMenuName("lobby");
 		ViewLoader.newScene("lobby");
 	}
 

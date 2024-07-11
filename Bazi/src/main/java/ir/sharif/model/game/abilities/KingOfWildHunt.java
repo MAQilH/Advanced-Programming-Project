@@ -14,7 +14,6 @@ import java.util.ArrayList;
 public class KingOfWildHunt implements Ability {
     @Override
     public void execute(Object... objs) {
-        // TODO: not be random
         UserTable userTable = GameService.getInstance().getMatchTable().getCurrentUserTable();
         ArrayList<Card> nonHeroCards = new ArrayList<>();
         for (Card outOfPlay : userTable.getOutOfPlays()) {

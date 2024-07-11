@@ -50,7 +50,6 @@ public class RegisterController {
             String randomUsername = createRandomUsername(username);
             return new CommandResult(ResultCode.FAILED, "username is already taken\n you can use " + randomUsername);
         }
-        // TODO: email validation
 
 		if (question == null) {
 			return new CommandResult(ResultCode.FAILED, "question is invalid");
@@ -73,10 +72,5 @@ public class RegisterController {
             usernameTaken.append(Random.getRandomInt(0, 9));
         } while(UserService.getInstance().getUserByUsername(usernameTaken.toString()) != null);
         return usernameTaken.toString();
-    }
-
-    public CommandResult pickQuestion(int questionNumber, String answer, String answerConfirm) {
-        // TODO: pick question
-        return null;
     }
 }

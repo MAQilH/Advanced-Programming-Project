@@ -67,16 +67,6 @@ public class LoginController {
         }
     }
 
-    public CommandResult forgotPassword(String username) {
-        // TODO: forget password
-        return null;
-    }
-
-    public CommandResult answerQuestion(int questionNumber, String answer) {
-        // TODO: answer question
-        return null;
-    }
-
     public CommandResult setPassword(String password) {
         if(!Regex.PASSWORD.matches(password))
             return new CommandResult(ResultCode.FAILED, "password is invalid");

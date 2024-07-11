@@ -219,7 +219,6 @@ public class TournamentHandler {
         if(finishTournament) {
             tournament.setWinner(winner.getUser());
             tournament.setTournamentState(TournamentState.FINISHED);
-            // TODO: save to database
         }
     }
 

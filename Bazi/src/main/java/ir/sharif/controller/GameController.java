@@ -328,7 +328,6 @@ public class GameController {
             power += card.calculatePower();
         }
         return power;
-		//TODO: fix it
     }
 
     public int calculateTotalPower(int player) {
@@ -476,7 +475,6 @@ public class GameController {
     }
 
     public CommandResult placeUnitCard(Card card, int pos) {
-        //TODO: execute ability
         int player = matchTable.getTurn();
         int rowNumber = graphicRowToLogicRow(pos);
         Row row = matchTable.getUserTable(player).getRowByNumber(rowNumber);
@@ -499,7 +497,6 @@ public class GameController {
 
     public CommandResult commanderPowerPlay() {
         // Implement the logic for playing the commander's power
-        //TODO: HisImperialMajesty, KingOfWildHunt
         if(isVetoeTurn()) {
             return new CommandResult(ResultCode.FAILED, "Can't play in vetoe round");
         }
@@ -565,7 +562,7 @@ public class GameController {
     public CommandResult passTurn() {
         GameService.getInstance().sendAction("pass turn");
         matchTable.changeTurn();
-        GameGraphics.getInstance().preTurnLoading();//todo: maybe should be deleted
+        GameGraphics.getInstance().preTurnLoading();
         matchTable.setTotalTurns(matchTable.getTotalTurns() + 1);
         if(matchTable.isPreviousRoundPassed()){
             finishRound();
@@ -598,7 +595,6 @@ public class GameController {
     }
 
     private void startRound(int winner){
-        // TODO: call graphical controller for this changes
         matchTable.getWeatherCards().clear();
         ArrayList<Integer> scoiataelUsers = new ArrayList<>();
         for (int userIndex = 0; userIndex < 2; userIndex++) {
@@ -706,7 +702,6 @@ public class GameController {
                 sendGameHistories(winner);
             }
         }
-        // TODO: return winner to the graphical controller
     }
 
     public void sendGameHistories(User winner){

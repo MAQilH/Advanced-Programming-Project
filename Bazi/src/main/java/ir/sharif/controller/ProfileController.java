@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 public class ProfileController {
 
-    // TODO: regex checking for inputs
     public CommandResult changeUsername(String newUsername) {
         if(!Regex.USERNAME.matches(newUsername))
             return new CommandResult(ResultCode.FAILED, "new username is invalid");
@@ -29,14 +28,12 @@ public class ProfileController {
 
 
         user.setUsername(newUsername);
-        // TODO: change in database
         return new CommandResult(ResultCode.ACCEPT, "Username changed successfully");
     }
 
     public CommandResult changeNickname(String newNickname) {
         User user = UserService.getInstance().getCurrentUser();
         user.setNickname(newNickname);
-        // TODO: change in database
         return new CommandResult(ResultCode.ACCEPT, "Nickname changed successfully");
     }
 
@@ -46,7 +43,6 @@ public class ProfileController {
         }
         User user = UserService.getInstance().getCurrentUser();
         user.setEmail(newEmail);
-        // TODO: change in database
         return new CommandResult(ResultCode.ACCEPT, "Email changed successfully");
     }
 
@@ -63,7 +59,6 @@ public class ProfileController {
             return new CommandResult(ResultCode.FAILED, "password is incorrect");
 
         user.setPassword(newPassword);
-        // TODO: change in database
         return new CommandResult(ResultCode.ACCEPT, "password changed successfully");
     }
 

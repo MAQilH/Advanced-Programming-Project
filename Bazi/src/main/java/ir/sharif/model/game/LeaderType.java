@@ -30,7 +30,7 @@ public enum LeaderType {
     private final Faction faction;
     private final Ability ability;
 
-    LeaderType() { // TODO: remove that
+    LeaderType() {
         this.name = "";
         this.faction = null;
         this.ability = null;

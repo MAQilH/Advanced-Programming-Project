@@ -65,7 +65,6 @@ public class Ranking {
 		HashMap<User, Boolean> isOnline = new HashMap<>();
 		for (User user : allUsers) {
 			TCPClient client = new TCPClient();
-			// TODO: add ranks
 			ranks.put(user, GameHistoryService.getInstance().getUserRank(user.getUsername()));
 			isOnline.put(user, client.getUserStatus(user.getUsername()));
 		}

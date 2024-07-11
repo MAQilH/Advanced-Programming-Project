@@ -22,8 +22,6 @@ public class UserTable {
         for (CardTypes cardTypes : deckInfo.getStorage()) {
             deck.add(cardTypes.getInstance());
         }
-
-        //TODO: add random cards to hand using deckInfo
     }
 
     public int getPower(){

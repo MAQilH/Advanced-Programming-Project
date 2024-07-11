@@ -49,7 +49,6 @@ public class PreGameController {
         if(enemy == UserService.getInstance().getCurrentUser()){
             return new CommandResult(ResultCode.FAILED, "you can not play with yourself");
         }
-        // TODO: create game
         return new CommandResult(ResultCode.ACCEPT, "game created successfully");
     }
 

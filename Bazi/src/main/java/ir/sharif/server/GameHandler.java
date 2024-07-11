@@ -111,12 +111,12 @@ public class GameHandler {
     }
 
     public synchronized ServerMessage gameRequest(GameRequestMessage gameRequestMessage) {
-        if(userInGame.getOrDefault(gameRequestMessage.getReceiver(), false)){
-            return new ServerMessage(ResultCode.FAILED, gameRequestMessage.getReceiver() + " is in the middle of a game!");
-        }
-        if(UserHandler.getInstance().getUserStatus().getOrDefault(gameRequestMessage.getReceiver(), false)){
-            return new ServerMessage(ResultCode.FAILED, gameRequestMessage.getReceiver() + " is not available!");
-        }
+//        if(userInGame.getOrDefault(gameRequestMessage.getReceiver(), false)){
+//            return new ServerMessage(ResultCode.FAILED, gameRequestMessage.getReceiver() + " is in the middle of a game!");
+//        }
+//        if(UserHandler.getInstance().getUserStatus().getOrDefault(gameRequestMessage.getReceiver(), false)){
+//            return new ServerMessage(ResultCode.FAILED, gameRequestMessage.getReceiver() + " is not available!");
+//        }
 
         String token = Random.generateNewToken();
         System.err.println(token);

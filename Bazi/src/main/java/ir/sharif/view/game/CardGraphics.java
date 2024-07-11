@@ -72,7 +72,7 @@ public class CardGraphics extends Pane {
 
 		ImageView power;
 		boolean isHero = false;
-		if (card.isHero()) { // TODO: fix this
+		if (card.isHero()) {
 			power = new ImageView(this.getClass().getResource("/icons/hero.png").toExternalForm());
 			isHero = true;
 		} else {

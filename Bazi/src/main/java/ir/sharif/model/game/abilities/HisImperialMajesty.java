@@ -23,7 +23,6 @@ public class HisImperialMajesty implements Ability {
             cardsInHand.remove(card);
             toBeShown.add(card);
         }
-        //TODO: call the graphic method to show this ArrayList
     }
 
 }
