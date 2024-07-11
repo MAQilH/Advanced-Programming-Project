@@ -7,13 +7,12 @@ import ir.sharif.view.GameGraphics;
 import ir.sharif.view.game.CardGraphics;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class GameReaction {
-	@FXML
-	TextField textField;
 
 	@FXML
 	ImageView kian;
@@ -23,6 +22,9 @@ public class GameReaction {
 	ImageView soheil;
 	@FXML
 	ImageView ta;
+
+	@FXML
+	Label hi, bye, yay, gg;
 
 	public Pair<Double, Double> getPositionPair() {
 		Pair<Double, Double> pos = null;
@@ -68,11 +70,29 @@ public class GameReaction {
 		});
 
 
-		textField.setOnKeyPressed(event -> {
-			if (event.getCode().toString().equals("ENTER")) {
-				TCPClient client = new TCPClient();
-				client.sendReaction(UserService.getInstance().getCurrentUser().getNickname(), textField.getText(), getPositionPair());
-			}
+		hi.setOnMouseClicked(event -> {
+			TCPClient client = new TCPClient();
+			client.sendReaction(UserService.getInstance().getCurrentUser().getNickname(), "Hi", getPositionPair());
 		});
+
+		bye.setOnMouseClicked(event -> {
+			TCPClient client = new TCPClient();
+			client.sendReaction(UserService.getInstance().getCurrentUser().getNickname(), "Bye", getPositionPair());
+		});
+
+		yay.setOnMouseClicked(event -> {
+			TCPClient client = new TCPClient();
+			client.sendReaction(UserService.getInstance().getCurrentUser().getNickname(), "Yayyyy", getPositionPair());
+		});
+
+		gg.setOnMouseClicked(event -> {
+			TCPClient client = new TCPClient();
+			client.sendReaction(UserService.getInstance().getCurrentUser().getNickname(), "Good Game", getPositionPair());
+		});
+
+		hi.setText("Hi");
+		bye.setText("Bye");
+		yay.setText("Yay");
+		gg.setText("GG");
 	}
 }
