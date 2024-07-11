@@ -59,7 +59,6 @@ public class CardGraphics extends Pane {
 			setBackground(CardTypes.getCardType(card.getName()).getCardLMImageAddress());
 		} catch (Exception e) {
 			setBackground("/images/old_card.png");
-			System.err.println("fucked up: " + card.getName());
 		}
 	}
 

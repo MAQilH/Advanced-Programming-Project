@@ -1,6 +1,6 @@
 package ir.sharif.view.controllers;
 
-import ir.sharif.model.server.TwoFactorAuth;
+import ir.sharif.server.TwoFactorAuth;
 import ir.sharif.service.UserService;
 import ir.sharif.view.ViewLoader;
 import javafx.fxml.FXML;

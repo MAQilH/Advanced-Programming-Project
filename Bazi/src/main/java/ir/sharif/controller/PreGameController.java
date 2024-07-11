@@ -101,7 +101,6 @@ public class PreGameController {
             }
         }
 
-	    System.err.println(count);
         return count;
     }
 

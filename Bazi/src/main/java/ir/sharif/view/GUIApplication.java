@@ -1,30 +1,17 @@
 package ir.sharif.view;
 
 import ir.sharif.client.TCPClient;
-import ir.sharif.controller.GameController;
 import ir.sharif.controller.LoginController;
 import ir.sharif.controller.PreGameController;
 import ir.sharif.controller.RegisterController;
 import ir.sharif.model.SecurityQuestion;
 import ir.sharif.model.User;
-import ir.sharif.model.game.CardTypes;
-import ir.sharif.model.game.DeckInfo;
-import ir.sharif.model.server.TwoFactorAuth;
-import ir.sharif.service.BackgroundMusicService;
-import ir.sharif.service.GameService;
+import ir.sharif.server.TwoFactorAuth;
 import ir.sharif.service.UserService;
 import ir.sharif.utils.ConstantsLoader;
-import ir.sharif.view.controllers.Game;
-import ir.sharif.view.controllers.Start;
-import ir.sharif.view.game.CardGraphics;
-import ir.sharif.view.gui.terminal.TerminalGUI;
 import javafx.application.Application;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-
-import java.util.Scanner;
 
 public class GUIApplication extends Application {
     private static String username;

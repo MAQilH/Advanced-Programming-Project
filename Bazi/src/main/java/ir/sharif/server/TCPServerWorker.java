@@ -361,6 +361,7 @@ public class TCPServerWorker extends Thread {
 
 	public static void main(String[] args) {
 		try {
+			TwoFactorAuth.runVerifier();
 			TCPServerWorker.setupServer(Integer.parseInt(ConstantsLoader.getInstance().getProperty("server.port")), 10);
 			for (int i = 0; i < WORKERS; i++) {
 				new TCPServerWorker().start();

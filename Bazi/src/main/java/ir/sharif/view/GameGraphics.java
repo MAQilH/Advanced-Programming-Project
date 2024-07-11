@@ -84,7 +84,6 @@ public class GameGraphics {
 	public void initialize(Pane pane) {
 		System.err.println(pane.getChildren());
 		this.pane = pane;
-		System.err.println("kir2: " + GameService.getInstance().getController());
 		controller = GameService.getInstance().getController();
 
 		for (int i = 0; i < 13; i++)

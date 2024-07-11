@@ -1,5 +1,8 @@
-package ir.sharif.model.server;
+package ir.sharif.server;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
 import ir.sharif.utils.Random;
 import jakarta.mail.Message;
 import jakarta.mail.PasswordAuthentication;
@@ -9,12 +12,20 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class TwoFactorAuth {
 	private static TwoFactorAuth instance = null;
 
 	private TwoFactorAuth() {}
+
+	private ArrayList<String> verifiedTokens = new ArrayList<>();
+
 
 	public static TwoFactorAuth getInstance() {
 		if (instance == null) instance = new TwoFactorAuth();
@@ -66,6 +77,54 @@ public class TwoFactorAuth {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
 
+	public static void runVerifier() throws IOException {
+		HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+		server.createContext("/verify", new VerifyHandler());
+		server.setExecutor(null);
+		server.start();
+		System.out.println("Server started on port 8080");
+	}
+
+	static class VerifyHandler implements HttpHandler {
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			System.err.println("ruuuuu: " + exchange.getRequestURI().getQuery());
+			if ("GET".equals(exchange.getRequestMethod())) {
+				Map<String, String> queryParams = parseQueryParams(exchange.getRequestURI().getQuery());
+				String token = queryParams.get("token");
+				System.out.println("verify :" + token);
+				String response;
+				if (verifyToken(token)) {
+					response = "Email verified successfully!";
+				} else {
+					response = "Invalid or expired token.";
+				}
+
+				exchange.sendResponseHeaders(200, response.length());
+				OutputStream os = exchange.getResponseBody();
+				os.write(response.getBytes());
+				os.close();
+			}
+		}
+
+		private Map<String, String> parseQueryParams(String query) {
+			Map<String, String> queryParams = new HashMap<>();
+			String[] pairs = query.split("&");
+			for (String pair : pairs) {
+				int idx = pair.indexOf("=");
+				queryParams.put(pair.substring(0, idx), pair.substring(idx + 1));
+			}
+			return queryParams;
+		}
+
+		private boolean verifyToken(String token) {
+			return getInstance().verifiedTokens.contains(token);
+		}
+	}
+
+	public void isVerified(String token) {
+		verifiedTokens.add(token);
 	}
 }

@@ -51,7 +51,6 @@ public class GameController {
             if(gameState == GameState.ONLINE_OBSERVER) GameService.getInstance().setActionLock(true);
             Thread thread;
 			thread = new Thread(() -> {
-				System.err.println("looooloooo: " + ViewLoader.getViewName());
                 while (ViewLoader.getViewName().equals("game")){
                     ArrayList<String> newAction = GameService.getInstance().getNewActions();
                     GameService.getInstance().setActionLock(true);
@@ -79,7 +78,6 @@ public class GameController {
 				ArrayList<String> newAction = GameService.getInstance().getNewActions();
 				GameService.getInstance().setActionLock(true);
 				for (String action : newAction) {
-					System.err.println("khar----" + action);
 					runne(action);
 					try {
 						Thread.sleep(1500);
@@ -117,9 +115,6 @@ public class GameController {
             Card card = GameService.getInstance().getMatchTable().getCurrentUserTable().getHand().get(index);
             result = placeCard(card, pos);
         }
-
-	    System.err.println("khaar2: " + action);
-	    System.err.println("Result: " + result.message());
     }
 
     public CardPosition getCardPositionByRowNumber(int rowNumber) {
